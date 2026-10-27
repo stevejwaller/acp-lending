@@ -47,6 +47,17 @@ main { max-width: 1000px; margin: 0 auto; padding: 20px 20px 50px; }
 .card { background: var(--gray-bg); padding: 14px; border-radius: 6px; }
 h2 { color: var(--navy); border-bottom: 2px solid var(--gold); padding-bottom: 4px; margin-top: 28px; }
 
-.site-footer, .site-footer * { color: #fff; }
-.site-footer a { color: var(--gold); }
-.site-footer { background: var(--navy); border-top: 1px solid var(--gold); padding: 16px; margin-top: 36px; font-size: 12px; text-align: center; }
+.site-footer {
+background: var(--navy);
+border-top: 1px solid var(--gold);
+padding: 14px 16px;
+margin-top: 36px;
+font-size: 13px;
+text-align: center;
+color: #fff;
+}
+.site-footer a { color: #fff; text-decoration: underline; }
+.site-footer a:hover { color: var(--gold); }
+.footer-inner { max-width: 900px; margin: 0 auto; line-height: 1.6; }
+.footer-social { margin-top: 8px; font-weight: 600; }
+.footer-links { margin-top: 6px; }
