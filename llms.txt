@@ -43,18 +43,12 @@ Service area: United States, with Texas-specific programs
   unit rentals and 5-9 unit multifamily in a single facility. Up to 70% LTV tiered by credit
   score. 5, 7 or 10-year terms with 30-year amortization or interest-only. Non-recourse
   structure available. Portfolios generally need to be at least 90% leased.
-- [Commercial Real Estate Loans](https://acp-lending.com/commercial-real-estate-loans): $100,000
-  to $17.5 million for investors and owner-users. Office, retail, warehouse and industrial,
-  self-storage, automotive, mixed-use, multifamily (5+), hospitality and assisted living.
-  30-year fully amortizing, fixed rate, no balloon; 24-month interest-only bridge available.
-  Investor leverage generally 65% to 75%; owner-users up to 90% through SBA 504. Credit
-  scores as low as 600, with a lower-leverage option for recent credit events.
 
 ## Tools and resources
 
 - [Deal Estimator](https://acp-lending.com/deal-calculator): Flip underwriting calculator
 - [Meet Steve Waller / How ACP Works](https://acp-lending.com/about): Who ACP is, how a deal is analyzed, structured and matched to 90 lending programs from 36 capital sources, with an intro video and a process video
-- [Sample Deal Report](https://acp-lending.com/sample-deal-report): A full example of the ACP deal report: executive summary, ARV from same-subdivision sales, financing at 70% of ARV in Texas and 90/10 outside Texas, realistic profit or loss, and the flip-or-rent decision. The report on your own deal is $49.99, reimbursed if the deal closes with ACP
+- [Sample Deal Report](https://acp-lending.com/sample-deal-report): A full example of the ACP deal report: executive summary, ARV from same-subdivision sales, financing at 70% and 75% of ARV, realistic profit or loss, and the flip-or-rent decision. The report on your own deal is $49.99, reimbursed if the deal closes with ACP
 - [Free Deal Check](https://acp-lending.com/deal-check): Instant deal grade, estimated cash due at closing and best-fit loan structure; full deal report on request
   plus a flip-versus-rent exit comparison (refinance proceeds, NOI, DSCR, cash flow).
   Includes a Texas HML advance option that sizes the loan on after-repair value alone.
