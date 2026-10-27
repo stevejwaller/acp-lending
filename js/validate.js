@@ -1,5 +1,5 @@
 (function(){
-  var FLIP=['purchasePrice','repairsBudget','arvEstimate','arvPct','interestRate','originationPct','processingFee','appraisalFee','creditReportFee','titleInsurance','escrowFee','recordingFee','hoaTransferFee','surveyFee','misc1Fee','misc2Fee','earnestCredit','brokerOrigPct','brokerClosingFlat','monthsToSell','sellingCostsPct','annualTaxes','annualInsurance'];
+  var FLIP=['purchasePrice','repairsBudget','arvEstimate','arvPct','interestRate','originationPct','processingFee','dailyInterest','appraisalFee','creditReportFee','titleInsurance','escrowFee','recordingFee','hoaTransferFee','surveyFee','misc1Fee','misc2Fee','earnestCredit','brokerOrigPct','brokerClosingFlat','monthsToSell','sellingCostsPct','annualTaxes','annualInsurance'];
   var RENT=FLIP.concat(['fr-rent','fr-months','fr-rate','fr-ltv','fr-term','fr-refiCost','fr-vac','fr-maint','fr-mgmt']);
   var REQ={'calc-recalc-btn':FLIP,'fr-run-btn':RENT};
   var MARK='acp-missing';

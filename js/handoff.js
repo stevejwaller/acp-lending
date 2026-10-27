@@ -1,6 +1,6 @@
 (function () {
   'use strict';
-  // Carries a completed DSCR run across to the Deal Estimator so the same
+  // Carries a completed DSCR run across to the Deal Calculator so the same
   // property can be compared as a flip. Added 9 Sep 2026.
   // Deliberately self-contained: this file touches no arithmetic. calculator.js,
   // validate.js, dscr.js and fix-or-rent.js are all left alone.
@@ -33,7 +33,7 @@
     hint.className = 'footnote';
     hint.id = 'dscr-compare-hint';
     hint.style.display = 'none';
-    hint.textContent = 'Takes these figures to the Deal Estimator so you can run the same property as a flip and compare the two exits side by side.';
+    hint.textContent = 'Takes these figures to the Deal Calculator so you can run the same property as a flip and compare the two exits side by side.';
     verdict.parentNode.insertBefore(hint, verdict.nextSibling);
 
     function reveal() {
@@ -73,7 +73,7 @@
     });
   }
 
-  // ---- Receiving side: the Deal Estimator -------------------------------
+  // ---- Receiving side: the Deal Calculator -------------------------------
   function takePayload() {
     var raw;
     try {
@@ -123,7 +123,7 @@
     }
 
     // "Months to Refinance" has no DSCR-side equivalent and validate.js treats it
-    // as required, so fall back to the deal estimator's own months-to-sell figure.
+    // as required, so fall back to the deal calculator's own months-to-sell figure.
     var months = el('fr-months');
     var sell = el('monthsToSell');
     if (months && !String(months.value || '').trim() && sell) {

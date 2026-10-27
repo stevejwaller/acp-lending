@@ -17,11 +17,7 @@ Service area: United States, with Texas-specific programs
   Maximum (720+ credit, 10+ flips with five in state, loan $800,000 or less, $1,000,000 in
   California): up to 100% purchase and 100% renovation, capped at 75% of after-repair value. Texas only: a 70% advance structure under
   which a deal may close with nothing out of pocket when purchase, renovation and closing
-  costs all fit inside 70% of after-repair value. Individual and LLC borrowers. Rates 9% to 12%
-  interest-only, 1 to 2 points, closing in 5 business days once a complete file is received.
-- [Houston Hard Money Loans](https://acp-lending.com/houston-hard-money-loans): Fix-and-flip
-  financing for Houston-area investors - zero out of pocket at 70% of ARV, 90/100 and 100/100
-  programs, minimum loan $75,000.
+  costs all fit inside 70% of after-repair value. Individual and LLC borrowers.
 - [DSCR Rental Loans](https://acp-lending.com/dscr-rental-loans): Qualification on property
   cash flow rather than personal income. 30-year fixed, 5/1 ARM and 7/1 ARM, with
   interest-only structures. Purchase, rate-and-term refinance and cash-out refinance.
@@ -46,10 +42,7 @@ Service area: United States, with Texas-specific programs
 
 ## Tools and resources
 
-- [Deal Estimator](https://acp-lending.com/deal-calculator): Flip underwriting calculator
-- [Meet Steve Waller / How ACP Works](https://acp-lending.com/about): Who ACP is, how a deal is analyzed, structured and matched to 90 lending programs from 36 capital sources, with an intro video and a process video
-- [Sample Deal Report](https://acp-lending.com/sample-deal-report): A full example of the ACP deal report: executive summary, ARV from same-subdivision sales, financing at 70% and 75% of ARV, realistic profit or loss, and the flip-or-rent decision. The report on your own deal is $49.99, reimbursed if the deal closes with ACP
-- [Free Deal Check](https://acp-lending.com/deal-check): Instant deal grade, estimated cash due at closing and best-fit loan structure; full deal report on request
+- [Deal Calculator](https://acp-lending.com/deal-calculator): Flip underwriting calculator
   plus a flip-versus-rent exit comparison (refinance proceeds, NOI, DSCR, cash flow).
   Includes a Texas HML advance option that sizes the loan on after-repair value alone.
 - [DSCR Calculator](https://acp-lending.com/dscr-calculator): Debt-service coverage calculator
@@ -80,6 +73,5 @@ Service area: United States, with Texas-specific programs
 All figures above are program maximums, not offers. Financing is subject to underwriting,
 lender approval, appraisal or valuation, title, insurance, property eligibility and program
 availability. Preliminary analyses are not commitments to lend. Advance rates vary by state;
-the 70% advance with zero out-of-pocket closing is specific to Texas. Fix-and-flip rates run 9% to 12%
-interest-only with 1 to 2 points, depending on program, leverage, credit and experience.
-Fix-and-flip files close in 5 business days once a complete file is received.
+the 70% advance with zero out-of-pocket closing is specific to Texas. Rates are not published
+because they move with the market - contact ACP Lending for current pricing.
