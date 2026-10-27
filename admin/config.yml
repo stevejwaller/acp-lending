@@ -1,4 +1,4 @@
-oauth_worker_url: "https://your-worker-url.workers.dev"
+oauth_worker_url: "https://acp-decap-oauth.owner-1ab.workers.dev"
 github_owner: "stevejwaller"
 github_repo: "acp-lending"
 settings_file: "content/settings.json"
