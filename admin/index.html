@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ACP Lending - Admin Panel</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .container {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            max-width: 900px;
+            width: 100%;
+            padding: 40px;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            border-bottom: 2px solid #f0f0f0;
+            padding-bottom: 20px;
+        }
+        .header h1 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+        .header p {
+            color: #999;
+            font-size: 14px;
+        }
+        .login-section { display: none; }
+        .login-section.active { display: block; }
+        .admin-section { display: none; }
+        .admin-section.active { display: block; }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 500;
+            font-size: 14px;
+        }
+        input, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-family: inherit;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        .form-grid.full { grid-template-columns: 1fr; }
+        button {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .btn-primary {
+            background: #667eea;
+            color: white;
+            width: 100%;
+        }
+        .btn-primary:hover { background: #5568d3; }
+        .btn-secondary {
+            background: #f0f0f0;
+            color: #333;
+            margin-right: 10px;
+        }
+        .btn-secondary:hover { background: #e0e0e0; }
+        .btn-logout {
+            background: #ff6b6b;
+            color: white;
+            padding: 10px 20px;
+            margin-top: 20px;
+        }
+        .social-links {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+        .status-message {
+            padding: 12px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            display: none;
+        }
+        .status-message.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+            display: block;
+        }
+        .status-message.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+            display: block;
+        }
+        .loading { opacity: 0.6; pointer-events: none; }
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+            margin-top: 30px;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🏢 ACP Lending Admin</h1>
+            <p>Edit your website content</p>
+        </div>
+
+        <div id="loginSection" class="login-section active">
+            <button class="btn-primary" onclick="loginWithGithub()">
+                Sign in with GitHub
+            </button>
+            <p style="text-align: center; color: #999; margin-top: 20px; font-size: 13px;">
+                Your GitHub account is used to authenticate edits to the website.
+            </p>
+        </div>
+
+        <div id="adminSection" class="admin-section">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
+                <h2 style="margin: 0;">Website Settings</h2>
+                <button class="btn-secondary btn-logout" onclick="logout()">Sign Out</button>
+            </div>
+
+            <div id="statusMessage" class="status-message"></div>
+
+            <form id="settingsForm" onsubmit="saveSettings(event)">
+                <div class="section-title">Contact Information</div>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="phone">Phone Number</label>
+                        <input type="tel" id="phone" name="phone" placeholder="936-522-8951">
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email Address</label>
+                        <input type="email" id="email" name="email" placeholder="owner@acp-lending.com">
+                    </div>
+                </div>
+
+                <div class="section-title">Social Media</div>
+                <div class="social-links">
+                    <div class="form-group">
+                        <label for="facebook">Facebook URL</label>
+                        <input type="url" id="facebook" name="facebook" placeholder="https://facebook.com/ACPRealEstateLending">
+                    </div>
+                    <div class="form-group">
+                        <label for="linkedin">LinkedIn URL</label>
+                        <input type="url" id="linkedin" name="linkedin" placeholder="https://linkedin.com/company/acp-lending">
+                    </div>
+                    <div class="form-group">
+                        <label for="instagram">Instagram URL</label>
+                        <input type="url" id="instagram" name="instagram" placeholder="https://instagram.com/acprealestatelending">
+                    </div>
+                    <div class="form-group">
+                        <label for="youtube">YouTube URL</label>
+                        <input type="url" id="youtube" name="youtube" placeholder="https://youtube.com/@stevewaller3458">
+                    </div>
+                </div>
+
+                <div class="section-title">Navigation Links</div>
+                <div class="form-grid full">
+                    <div class="form-group">
+                        <label for="navLinks">Navigation Links (JSON format)</label>
+                        <textarea id="navLinks" name="navLinks" rows="4" placeholder='[{"text": "Home", "href": "/"}, {"text": "Invest", "href": "/invest"}]'></textarea>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-primary">💾 Save Changes</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = 'https://api.github.com';
+        const OWNER = 'stevejwaller';
+        const REPO = 'acp-lending';
+        const TOKEN_KEY = 'github_token';
+
+        function loginWithGithub() {
+            const oauthUrl = 'https://your-worker-url.workers.dev/oauth';
+            window.location.href = oauthUrl;
+        }
+
+        function logout() {
+            localStorage.removeItem(TOKEN_KEY);
+            document.getElementById('loginSection').classList.add('active');
+            document.getElementById('adminSection').classList.remove('active');
+        }
+
+        function getToken() {
+            return localStorage.getItem(TOKEN_KEY);
+        }
+
+        function showMessage(message, type) {
+            const element = document.getElementById('statusMessage');
+            element.textContent = message;
+            element.className = `status-message ${type}`;
+            setTimeout(() => {
+                element.className = 'status-message';
+            }, 5000);
+        }
+
+        async function loadSettings() {
+            try {
+                const response = await fetch('/content/settings.json');
+                const settings = await response.json();
+                document.getElementById('phone').value = settings.phone || '';
+                document.getElementById('email').value = settings.email || '';
+                document.getElementById('facebook').value = settings.facebook || '';
+                document.getElementById('linkedin').value = settings.linkedin || '';
+                document.getElementById('instagram').value = settings.instagram || '';
+                document.getElementById('youtube').value = settings.youtube || '';
+                document.getElementById('navLinks').value = JSON.stringify(settings.navLinks || [], null, 2);
+            } catch (error) {
+                console.error('Error loading settings:', error);
+            }
+        }
+
+        async function saveSettings(event) {
+            event.preventDefault();
+            const button = event.target.querySelector('button[type="submit"]');
+            button.classList.add('loading');
+
+            const settings = {
+                phone: document.getElementById('phone').value,
+                email: document.getElementById('email').value,
+                facebook: document.getElementById('facebook').value,
+                linkedin: document.getElementById('linkedin').value,
+                instagram: document.getElementById('instagram').value,
+                youtube: document.getElementById('youtube').value,
+                navLinks: JSON.parse(document.getElementById('navLinks').value || '[]')
+            };
+
+            try {
+                const response = await fetch('/content/settings.json', {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(settings)
+                });
+
+                if (response.ok) {
+                    showMessage('✅ Changes saved! Your site will update in 1-2 minutes.', 'success');
+                } else {
+                    showMessage('❌ Error saving changes. Try again.', 'error');
+                }
+            } catch (error) {
+                showMessage(`❌ Error: ${error.message}`, 'error');
+            } finally {
+                button.classList.remove('loading');
+            }
+        }
+
+        function checkAuth() {
+            const token = getToken();
+            if (token) {
+                document.getElementById('loginSection').classList.remove('active');
+                document.getElementById('adminSection').classList.add('active');
+                loadSettings();
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', checkAuth);
+    </script>
+</body>
+</html>

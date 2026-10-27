@@ -1,0 +1,23 @@
+name = "acp-lending-oauth"
+main = "worker/oauth-proxy.js"
+compatibility_date = "2024-01-15"
+
+[env.production]
+routes = [
+  { pattern = "acp-lending.com/oauth/*", zone_name = "acp-lending.com" },
+  { pattern = "acp-lending.com/callback", zone_name = "acp-lending.com" }
+]
+
+[[env.production.triggers.crons]]
+cron = "0 0 * * *"
+
+[build]
+command = ""
+
+[build.upload]
+format = "service-worker"
+
+[vars]
+CLIENT_ID = "YOUR_GITHUB_CLIENT_ID"
+CLIENT_SECRET = "YOUR_GITHUB_CLIENT_SECRET"
+REDIRECT_URI = "https://acp-lending.com/callback"
