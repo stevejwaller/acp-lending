@@ -1,0 +1,91 @@
+# ACP Lending
+
+> Investment-property financing for real estate investors. ACP Lending originates,
+> underwrites, and structures financing directly with institutional capital partners.
+> Business-purpose lending only; not a consumer mortgage lender.
+
+Contact: Steve Waller - 936-522-8951 - steve@acp-lending.com
+Website: https://acp-lending.com/
+Service area: United States, with Texas-specific programs
+
+## Financing programs
+
+- [Fix-and-Flip Bridge Loans](https://acp-lending.com/fix-and-flip-bridge-loans): Tiered by
+  experience. Standard: up to 90% purchase and 100% renovation, capped by the lower of 90%
+  loan-to-cost and 70% of after-repair value. Preferred (720+ credit, 10+ flips in three
+  years): up to 95% purchase and 100% renovation, capped at 75% of after-repair value.
+  Maximum (720+ credit, 10+ flips with five in state, loan $800,000 or less, $1,000,000 in
+  California): up to 100% purchase and 100% renovation, capped at 75% of after-repair value. Texas only: a 70% advance structure under
+  which a deal may close with nothing out of pocket when purchase, renovation and closing
+  costs all fit inside 70% of after-repair value. Individual and LLC borrowers. Rates 9% to 12%
+  interest-only, 1 to 2 points, closing in 5 business days once a complete file is received.
+- [Houston Hard Money Loans](https://acp-lending.com/houston-hard-money-loans): Fix-and-flip
+  financing for Houston-area investors - zero out of pocket at 70% of ARV, 90/100 and 100/100
+  programs, minimum loan $75,000.
+- [DSCR Rental Loans](https://acp-lending.com/dscr-rental-loans): Qualification on property
+  cash flow rather than personal income. 30-year fixed, 5/1 ARM and 7/1 ARM, with
+  interest-only structures. Purchase, rate-and-term refinance and cash-out refinance.
+  Leverage up to 80% LTV on purchase and rate-and-term; cash-out refinances are typically
+  capped lower, generally around 75%. DSCR requirements as low as 0.80x on certain programs.
+- [Ground-Up Construction Loans](https://acp-lending.com/ground-up-construction-loans): Loan
+  amounts generally $100,000 to $10 million. Interest-only on funds actually drawn.
+  Milestone-based draws verified by inspection. Up to 85% of total project cost and up to
+  70% of completed value. Single-family spec homes, infill construction, build-to-rent, and
+  certain 2-4 unit residential projects.
+- [Multifamily Loans](https://acp-lending.com/multifamily-loans): 5+ units. Short-term bridge
+  from $250,000 to $2,000,000 on 12-18 month terms with extensions available, up to 75% LTV
+  purchase / 70% refinance / 65% cash-out, with a value-add variant to 80% of purchase price
+  plus 100% of rehab for experienced sponsors. Long-term financing for stabilized 5-9 unit
+  properties from $150,000 to $1,500,000 on a 30-year term, up to 70% LTV purchase and
+  refinance, 65% cash-out, with a higher minimum credit score.
+- [Portfolio Loans](https://acp-lending.com/portfolio-loans): $2 million to $75 million or
+  more. Portfolios of 20 to 100+ units, scattered-site and multi-state accepted. Blends 1-4
+  unit rentals and 5-9 unit multifamily in a single facility. Up to 70% LTV tiered by credit
+  score. 5, 7 or 10-year terms with 30-year amortization or interest-only. Non-recourse
+  structure available. Portfolios generally need to be at least 90% leased.
+- [Commercial Real Estate Loans](https://acp-lending.com/commercial-real-estate-loans): $100,000
+  to $17.5 million for investors and owner-users. Office, retail, warehouse and industrial,
+  self-storage, automotive, mixed-use, multifamily (5+), hospitality and assisted living.
+  30-year fully amortizing, fixed rate, no balloon; 24-month interest-only bridge available.
+  Investor leverage generally 65% to 75%; owner-users up to 90% through SBA 504. Credit
+  scores as low as 600, with a lower-leverage option for recent credit events.
+
+## Tools and resources
+
+- [Deal Estimator](https://acp-lending.com/deal-calculator): Flip underwriting calculator
+- [Meet Steve Waller / How ACP Works](https://acp-lending.com/about): Who ACP is, how a deal is analyzed, structured and matched to 90 lending programs from 36 capital sources, with an intro video and a process video
+- [Sample Deal Report](https://acp-lending.com/sample-deal-report): A full example of the ACP deal report: executive summary, ARV from same-subdivision sales, financing at 70% of ARV in Texas and 90/10 outside Texas, realistic profit or loss, and the flip-or-rent decision. The report on your own deal is $49.99, reimbursed if the deal closes with ACP
+- [Free Deal Check](https://acp-lending.com/deal-check): Instant deal grade, estimated cash due at closing and best-fit loan structure; full deal report on request
+  plus a flip-versus-rent exit comparison (refinance proceeds, NOI, DSCR, cash flow).
+  Includes a Texas HML advance option that sizes the loan on after-repair value alone.
+- [DSCR Calculator](https://acp-lending.com/dscr-calculator): Debt-service coverage calculator
+  for rental-property financing. Returns LTV, NOI, payment, PITIA, lender DSCR (rent divided by
+  PITIA) and a stricter NOI-based DSCR, plus monthly cash flow.
+- [Pre-Approval Request](https://acp-lending.com/pre-approval): Conditional pre-approval
+  letter for use with offers.
+- [Request for Information](https://acp-lending.com/request-for-information): Submit a deal
+  for review or ask about a program.
+- [Loan Forms](https://acp-lending.com/loan-documents): Every form needed to prepare and return a financing request
+- [Investor Guidance](https://acp-lending.com/investor-resources): How ARV, leverage, DSCR and borrower contribution are evaluated
+- [ACP Investor Brief](https://acp-lending.com/investor-brief/): Investor guides on DSCR
+- [Choosing Your Strategy and Your Market](https://acp-lending.com/investor-brief/choosing-your-strategy-and-market): Sep 2026 guide — three investor strategies ranked by current data, running a deal from both a lending and a profitability position, the six costs that decide every project, lender structure that preserves liquidity, and Texas vs. out-of-state market conditions.
+- [Why Are More Homes Sitting on the Market?](https://acp-lending.com/investor-brief/why-homes-are-sitting-on-the-market): Sep 2026 guide — why inventory is rising on slower absorption rather than more listings, and where investor deals come from.
+- [Four Doors, One Hidden Coverage Problem](https://acp-lending.com/investor-brief/dscr-four-condo-case-study): Sep 2026 DSCR case study — a four-condo package where HOA dues and taxes consume 43% of stabilized rent, producing a 0.81 DSCR at current occupancy and 1.15 stabilized. Full PITIA and NOI math, coverage by down payment, and the condo-specific items to verify before financing. Two-page PDF at /investor-brief/acp-dscr-four-condo-case-study.pdf
+- [ACP Investor Brief — Daily](https://acp-lending.com/investor-brief/daily/): Auto-published market updates, Monday, Wednesday and Friday plus a Sunday recap. RSS at /investor-brief/daily/feed.xml
+  versus bridge financing, how construction draws work, and how a deal is underwritten,
+  plus dated market updates on rates, permits, starts, construction costs and inflation as
+  they affect investment-property financing.
+
+## Policies
+
+- [Privacy Policy](https://acp-lending.com/privacy)
+- [Terms of Use](https://acp-lending.com/terms)
+
+## Terms of use for this information
+
+All figures above are program maximums, not offers. Financing is subject to underwriting,
+lender approval, appraisal or valuation, title, insurance, property eligibility and program
+availability. Preliminary analyses are not commitments to lend. Advance rates vary by state;
+the 70% advance with zero out-of-pocket closing is specific to Texas. Fix-and-flip rates run 9% to 12%
+interest-only with 1 to 2 points, depending on program, leverage, credit and experience.
+Fix-and-flip files close in 5 business days once a complete file is received.
