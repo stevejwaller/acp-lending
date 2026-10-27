@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ACP Lending Matrix — Short-Term & Long-Term Financing</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: #1a1a1a;
+            background: #ffffff;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        h1 {
+            font-size: 32px;
+            margin: 0 0 12px 0;
+            color: #1a1a1a;
+        }
+        .subtitle {
+            font-size: 16px;
+            color: #666;
+            margin-bottom: 32px;
+        }
+        .section {
+            margin-bottom: 48px;
+        }
+        .section h2 {
+            font-size: 24px;
+            margin: 0 0 24px 0;
+            color: #0066cc;
+            border-bottom: 2px solid #0066cc;
+            padding-bottom: 12px;
+        }
+        .matrix-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 32px;
+        }
+        .product-card {
+            border: 1px solid #e5e5e5;
+            border-radius: 8px;
+            padding: 20px;
+            background: #f9f9f9;
+            transition: all 0.3s ease;
+        }
+        .product-card:hover {
+            border-color: #0066cc;
+            box-shadow: 0 4px 12px rgba(0, 102, 204, 0.1);
+        }
+        .product-card h3 {
+            font-size: 18px;
+            margin: 0 0 12px 0;
+            color: #0066cc;
+        }
+        .product-code {
+            display: inline-block;
+            background: #0066cc;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-left: 8px;
+        }
+        .terms-list {
+            list-style: none;
+            padding: 0;
+            margin: 12px 0;
+        }
+        .terms-list li {
+            padding: 6px 0;
+            border-bottom: 1px solid #e5e5e5;
+            font-size: 14px;
+        }
+        .terms-list li:last-child {
+            border-bottom: none;
+        }
+        .term-label {
+            font-weight: 600;
+            color: #333;
+            display: inline-block;
+            width: 100px;
+        }
+        .term-value {
+            color: #666;
+        }
+        .highlight {
+            background: #fffacd;
+            padding: 2px 4px;
+            border-radius: 2px;
+        }
+        .cta-button {
+            display: inline-block;
+            background: #0066cc;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 4px;
+            text-decoration: none;
+            font-weight: 600;
+            margin-top: 12px;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .cta-button:hover {
+            background: #0052a3;
+        }
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 24px 0;
+            background: white;
+        }
+        .comparison-table th {
+            background: #f0f0f0;
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+            border-bottom: 2px solid #e5e5e5;
+        }
+        .comparison-table td {
+            padding: 12px;
+            border-bottom: 1px solid #e5e5e5;
+        }
+        .comparison-table tr:hover {
+            background: #fafafa;
+        }
+        .program-code {
+            font-weight: 600;
+            color: #0066cc;
+        }
+        .footer-note {
+            background: #f5f5f5;
+            border-left: 4px solid #0066cc;
+            padding: 16px;
+            margin: 32px 0;
+            border-radius: 4px;
+            font-size: 13px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <h1>ACP Lending Matrix</h1>
+    <p class="subtitle">Short-Term & Long-Term Financing Options</p>
+
+    <!-- SHORT-TERM SECTION -->
+    <div class="section">
+        <h2>Short-Term Financing (6–24 Months)</h2>
+        <p>Quick funding for acquisitions, repositioning, and fix-and-flip projects. Bridge loans designed for rapid closings and flexible exit strategies.</p>
+
+        <div class="matrix-grid">
+            <!-- ACP Own Tiers -->
+            <div class="product-card">
+                <h3>ACP Standard<span class="product-code">ACP</span></h3>
+                <ul class="terms-list">
+                    <li><span class="term-label">Program:</span> <span class="term-value">90% Purchase / 100% Rehab</span></li>
+                    <li><span class="term-label">Loan Size:</span> <span class="term-value">$75K–$2M</span></li>
+                    <li><span class="term-label">Min FICO:</span> <span class="term-value">720</span></li>
+                    <li><span class="term-label">Closing:</span> <span class="term-value">5 business days</span></li>
+                    <li><span class="term-label">Rate:</span> <span class="term-value">9–12%</span></li>
+                    <li><span class="term-label">Points:</span> <span class="term-value">1–2%</span></li>
+                    <li><span class="term-label">Properties:</span> <span class="term-value">1–4 units</span></li>
+                    <li><span class="term-label">Borrower Brings:</span> <span class="term-value">Closing costs</span></li>
+                </ul>
+                <button class="cta-button">Get a Quote</button>
+            </div>
+
+            <!-- ACP Max (100/100) -->
+            <div class="product-card">
+                <h3>ACP Maximum<span class="product-code">ACP-MAX</span></h3>
+                <ul class="terms-list">
+                    <li><span class="term-label">Program:</span> <span class="term-value">100% Purchase / 100% Rehab</span></li>
+                    <li><span class="term-label">Loan Size:</span> <span class="term-value">$75K–$800K</span></li>
+                    <li><span class="term-label">Min FICO:</span> <span class="term-value">720 + 10 deals / 3 yrs</span></li>
+                    <li><span class="term-label">Cap:</span> <span class="term-value">75% ARV</span></li>
+                    <li><span class="term-label">Rate:</span> <span class="term-value">9–12%</span></li>
+                    <li><span class="term-label">Points:</span> <span class="term-value">1–2%</span></li>
+                    <li><span class="term-label">Properties:</span> <span class="term-value">1–4 units</span></li>
+                    <li><span class="term-label">Borrower Brings:</span> <span class="term-value">Nothing</span></li>
+                </ul>
+                <button class="cta-button">Get a Quote</button>
+            </div>
+
+            <!-- Kiavi -->
+            <div class="product-card">
+                <h3>ACP-K (Kiavi)<span class="product-code">ACP-K</span></h3>
+                <ul class="terms-list">
+                    <li><span class="term-label">Program:</span> <span class="term-value">100% Purchase / 95% LTC</span></li>
+                    <li><span class="term-label">Loan Size:</span> <span class="term-value">$100K–$5M</span></li>
+                    <li><span class="term-label">Min FICO:</span> <span class="term-value">640</span></li>
+                    <li><span class="term-label">ARV Cap:</span> <span class="term-value">80%</span></li>
+                    <li><span class="term-label">Closing:</span> <span class="term-value">7–10 days</span></li>
+                    <li><span class="term-label">No Appraisal:</span> <span class="term-value">✓</span></li>
+                    <li><span class="term-label">Properties:</span> <span class="term-value">1–8 units, 32 states</span></li>
+                    <li><span class="term-label">Borrower Brings:</span> <span class="term-value">Closing costs</span></li>
+                </ul>
+                <button class="cta-button">Get a Quote</button>
+            </div>
+
+            <!-- Easy Street -->
+            <div class="product-card">
+                <h3>ACP-E (Easy Street)<span class="product-code">ACP-E</span></h3>
+                <ul class="terms-list">
+                    <li><span class="term-label">Program:</span> <span class="term-value">EasyFix: 93% LTC / 75% ARV</span></li>
+                    <li><span class="term-label">Loan Size:</span> <span class="term-value">$75K–$2M</span></li>
+                    <li><span class="term-label">Min FICO:</span> <span class="term-value">600 (Fix), 640 (Rent)</span></li>
+                    <li><span class="term-label">Closing:</span> <span class="term-value">24–48 hours</span></li>
+                    <li><span class="term-label">No Appraisal:</span> <span class="term-value">✓</span></li>
+                    <li><span class="term-label">Draws:</span> <span class="term-value">48 hrs via ACH</span></li>
+                    <li><span class="term-label">Properties:</span> <span class="term-value">1–10 units</span></li>
+                    <li><span class="term-label">Borrower Brings:</span> <span class="term-value">Closing costs + $1,995 doc fee</span></li>
+                </ul>
+                <button class="cta-button">Get a Quote</button>
+            </div>
+
+            <!-- RFG -->
+            <div class="product-card">
+                <h3>ACP-F (Rehab Financial)<span class="product-code">ACP-F</span></h3>
+                <ul class="terms-list">
+                    <li><span class="term-label">Program:</span> <span class="term-value">100% Purchase / 100% Rehab</span></li>
+                    <li><span class="term-label">Loan Size:</span> <span class="term-value">$100K–$1.25M</span></li>
+                    <li><span class="term-label">Min FICO:</span> <span class="term-value">650</span></li>
+                    <li><span class="term-label">ARV Cap:</span> <span class="term-value">65–75% (by credit & experience)</span></li>
+                    <li><span class="term-label">Term:</span> <span class="term-value">9 months + 3 month extension</span></li>
+                    <li><span class="term-label">Rate:</span> <span class="term-value">From 9.99%</span></li>
+                    <li><span class="term-label">Properties:</span> <span class="term-value">1–4 units, TX, GA</span></li>
+                    <li><span class="term-label">Borrower Brings:</span> <span class="term-value">Closing costs + liquidity</span></li>
+                </ul>
+                <button class="cta-button">Get a Quote</button>
+            </div>
+
+            <!-- Tidal Loans -->
+            <div class="product-card">
+                <h3>ACP-T (Tidal Loans)<span class="product-code">ACP-T</span></h3>
+                <ul class="terms-list">
+                    <li><span class="term-label">Program:</span> <span class="term-value">Up to 90% Purchase / 100% Rehab</span></li>
+                    <li><span class="term-label">Loan Size:</span> <span class="term-value">$75K–$5M</span></li>
+                    <li><span class="term-label">Min FICO:</span> <span class="term-value">No minimum</span></li>
+                    <li><span class="term-label">Term:</span> <span class="term-value">12 months interest-only</span></li>
+                    <li><span class="term-label">No Prepay:</span> <span class="term-value">✓</span></li>
+                    <li><span class="term-label">Term Sheets:</span> <span class="term-value">24 hours</span></li>
+                    <li><span class="term-label">Properties:</span> <span class="term-value">1–4 units, select metros</span></li>
+                    <li><span class="term-label">Borrower Brings:</span> <span class="term-value">Varies by structure</span></li>
+                </ul>
+                <button class="cta-button">Get a Quote</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- LONG-TERM SECTION -->
+    <div class="section">
+        <h2>Long-Term Financing (30-Year Terms)</h2>
+        <p>Permanent financing for rental properties, DSCR loans, and construction projects. Build equity and cash flow with fixed-rate options.</p>
+
+        <div class="matrix-grid">
+            <!-- DSCR -->
+            <div class="product-card">
+                <h3>DSCR Loans<span class="product-code">DSCR</span></h3>
+                <ul class="terms-list">
+                    <li><span class="term-label">Program:</span> <span class="term-value">30-yr fixed, ARM, or Interest-Only</span></li>
+                    <li><span class="term-label">Loan Size:</span> <span class="term-value">$85K–$2M+</span></li>
+                    <li><span class="term-label">Min FICO:</span> <span class="term-value">640 (no minimum on some programs)</span></li>
+                    <li><span class="term-label">LTV:</span> <span class="term-value">80% purchase / 75% cash-out</span></li>
+                    <li><span class="term-label">Min DSCR:</span> <span class="term-value">0.75 (or no minimum for higher rate)</span></li>
+                    <li><span class="term-label">Properties:</span> <span class="term-value">1–10+ units, STR allowed</span></li>
+                    <li><span class="term-label">Docs:</span> <span class="term-value">No income verification options</span></li>
+                    <li><span class="term-label">Note:</span> <span class="term-value">Foreign nationals welcome</span></li>
+                </ul>
+                <button class="cta-button">Get a Quote</button>
+            </div>
+
+            <!-- Ground-Up Construction -->
+            <div class="product-card">
+                <h3>Ground-Up Construction<span class="product-code">CONST</span></h3>
+                <ul class="terms-list">
+                    <li><span class="term-label">Program:</span> <span class="term-value">Construction + Permanent financing</span></li>
+                    <li><span class="term-label">Loan Size:</span> <span class="term-value">$100K–$2M+</span></li>
+                    <li><span class="term-label">Min FICO:</span> <span class="term-value">670</span></li>
+                    <li><span class="term-label">LTC:</span> <span class="term-value">90% total costs (some 75% ARV)</span></li>
+                    <li><span class="term-label">Draw Period:</span> <span class="term-value">12–24 months</span></li>
+                    <li><span class="term-label">Interest:</span> <span class="term-value">Monthly on drawn balance</span></li>
+                    <li><span class="term-label">Rate:</span> <span class="term-value">9–12%</span></li>
+                    <li><span class="term-label">Note:</span> <span class="term-value">Borrower or GC partner pays contractors</span></li>
+                </ul>
+                <button class="cta-button">Get a Quote</button>
+            </div>
+
+            <!-- Multifamily Bridge -->
+            <div class="product-card">
+                <h3>Multifamily (5+ Units)<span class="product-code">MF</span></h3>
+                <ul class="terms-list">
+                    <li><span class="term-label">Program:</span> <span class="term-value">DSCR rental + Multifamily Bridge</span></li>
+                    <li><span class="term-label">Loan Size:</span> <span class="term-value">$250K–$10M</span></li>
+                    <li><span class="term-label">Min FICO:</span> <span class="term-value">700</span></li>
+                    <li><span class="term-label">LTV:</span> <span class="term-value">65–75% depending on structure</span></li>
+                    <li><span class="term-label">Units:</span> <span class="term-value">5–30+ units</span></li>
+                    <li><span class="term-label">Min DSCR:</span> <span class="term-value">1.15–1.25</span></li>
+                    <li><span class="term-label">Terms:</span> <span class="term-value">15–30 year amortization</span></li>
+                    <li><span class="term-label">Note:</span> <span class="term-value">Portfolio option available</span></li>
+                </ul>
+                <button class="cta-button">Get a Quote</button>
+            </div>
+
+            <!-- Portfolio/SFR Rentals -->
+            <div class="product-card">
+                <h3>Portfolio Loans (SFR Rentals)<span class="product-code">PORT</span></h3>
+                <ul class="terms-list">
+                    <li><span class="term-label">Program:</span> <span class="term-value">Hold 3+ rental properties in one loan</span></li>
+                    <li><span class="term-label">Loan Size:</span> <span class="term-value">$250K–$3M</span></li>
+                    <li><span class="term-label">Min FICO:</span> <span class="term-value">680</span></li>
+                    <li><span class="term-label">LTV:</span> <span class="term-value">80% / 75% cash-out</span></li>
+                    <li><span class="term-label">Properties:</span> <span class="term-value">3–20 SFR units</span></li>
+                    <li><span class="term-label">Min DSCR:</span> <span class="term-value">1.0 (portfolio average)</span></li>
+                    <li><span class="term-label">Rate:</span> <span class="term-value">Based on combined DSCR</span></li>
+                    <li><span class="term-label">Note:</span> <span class="term-value">Consolidate holdings into one loan</span></li>
+                </ul>
+                <button class="cta-button">Get a Quote</button>
+            </div>
+
+            <!-- Commercial Real Estate -->
+            <div class="product-card">
+                <h3>Commercial Real Estate<span class="product-code">CRE</span></h3>
+                <ul class="terms-list">
+                    <li><span class="term-label">Program:</span> <span class="term-value">Retail, Office, Industrial, Mixed-Use</span></li>
+                    <li><span class="term-label">Loan Size:</span> <span class="term-value">$200K–$17.5M</span></li>
+                    <li><span class="term-label">Min FICO:</span> <span class="term-value">600</span></li>
+                    <li><span class="term-label">LTV:</span> <span class="term-value">65–75% based on property type</span></li>
+                    <li><span class="term-label">Min DSCR:</span> <span class="term-value">1.15–1.25</span></li>
+                    <li><span class="term-label">Terms:</span> <span class="term-value">5–20 year amortization</span></li>
+                    <li><span class="term-label">Investor:</span> <span class="term-value">Investor or owner-user conventional, SBA 504</span></li>
+                    <li><span class="term-label">Note:</span> <span class="term-value">All states, no banked financing</span></li>
+                </ul>
+                <button class="cta-button">Get a Quote</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- COMPARISON TABLE -->
+    <div class="section">
+        <h2>Quick Comparison: Key Terms by Program</h2>
+        <table class="comparison-table">
+            <thead>
+                <tr>
+                    <th>Program</th>
+                    <th>Loan Size Range</th>
+                    <th>Min FICO</th>
+                    <th>Advance Rate</th>
+                    <th>Term Length</th>
+                    <th>Best For</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><span class="program-code">ACP</span> Standard</td>
+                    <td>$75K–$2M</td>
+                    <td>720</td>
+                    <td>90/100</td>
+                    <td>6–24 mo</td>
+                    <td>Fix-and-flip with experience</td>
+                </tr>
+                <tr>
+                    <td><span class="program-code">ACP-MAX</span> 100/100</td>
+                    <td>$75K–$800K</td>
+                    <td>720 + 10 deals</td>
+                    <td>100/100</td>
+                    <td>6–24 mo</td>
+                    <td>Experienced flippers, zero cash out</td>
+                </tr>
+                <tr>
+                    <td><span class="program-code">ACP-K</span> Kiavi</td>
+                    <td>$100K–$5M</td>
+                    <td>640</td>
+                    <td>100/95 LTC, 80% ARV</td>
+                    <td>6–24 mo</td>
+                    <td>No-doc flips, fast closings</td>
+                </tr>
+                <tr>
+                    <td><span class="program-code">ACP-E</span> Easy Street</td>
+                    <td>$75K–$2M</td>
+                    <td>600 (Fix), 640 (Rent)</td>
+                    <td>93% LTC / 75% ARV</td>
+                    <td>6–24 mo</td>
+                    <td>Lower credit, fast 24-hr closing</td>
+                </tr>
+                <tr>
+                    <td><span class="program-code">ACP-F</span> RFG</td>
+                    <td>$100K–$1.25M</td>
+                    <td>650</td>
+                    <td>100/100 up to 75% ARV</td>
+                    <td>9 mo + 3 mo ext</td>
+                    <td>Texas/GA flippers, competitive rates</td>
+                </tr>
+                <tr>
+                    <td><span class="program-code">DSCR</span> Rental</td>
+                    <td>$85K–$2M+</td>
+                    <td>640 (or none)</td>
+                    <td>80/75</td>
+                    <td>30 years</td>
+                    <td>Buy-and-hold rentals, no income docs</td>
+                </tr>
+                <tr>
+                    <td><span class="program-code">CONST</span> Ground-Up</td>
+                    <td>$100K–$2M+</td>
+                    <td>670</td>
+                    <td>90% costs / 75% ARV</td>
+                    <td>12–24 mo (draw), 30 yr perm</td>
+                    <td>New construction, development</td>
+                </tr>
+                <tr>
+                    <td><span class="program-code">MF</span> Multifamily</td>
+                    <td>$250K–$10M</td>
+                    <td>700</td>
+                    <td>65–75% LTV</td>
+                    <td>15–30 years</td>
+                    <td>5–30+ unit apartments, complexes</td>
+                </tr>
+                <tr>
+                    <td><span class="program-code">CRE</span> Commercial</td>
+                    <td>$200K–$17.5M</td>
+                    <td>600</td>
+                    <td>65–75% LTV</td>
+                    <td>5–20 years</td>
+                    <td>Retail, office, industrial, mixed-use</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- FOOTER -->
+    <div class="footer-note">
+        <strong>Important Notes:</strong> All programs subject to borrower qualification, property appraisal, and credit review. Rates and terms listed are starting rates and may vary based on borrower credit, experience, and market conditions. Contact ACP Lending for current rates and program details. <strong>The full investor report on loan financing is available at <a href="https://acp-lending.com">acp-lending.com</a>. Sign up to receive new reports by email at <a href="https://acp-lending.com/investor-brief">acp-lending.com/investor-brief</a>.</strong>
+    </div>
+
+</body>
+</html>
