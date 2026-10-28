@@ -429,11 +429,10 @@ HVAC and roof: $20,000
     const successDiv = document.getElementById('success');
 
     // Clear form button handler
-    clearBtn.addEventListener('click', (e) => {
-      e.preventDefault();
+    clearBtn.addEventListener('click', function() {
       form.reset();
-      errorDiv.style.display = 'none';
-      successDiv.style.display = 'none';
+      if (errorDiv) errorDiv.style.display = 'none';
+      if (successDiv) successDiv.style.display = 'none';
     });
 
     form.addEventListener('submit', async (e) => {
