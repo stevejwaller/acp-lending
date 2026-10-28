@@ -680,7 +680,7 @@
           <div style="border-top: 2px solid #d9cec1; margin-top: 12px; padding-top: 12px;">
             <div class="result-row">
               <span class="result-label" style="font-weight: 700;">TOTAL CASH DUE AT CLOSING</span>
-              <span class="result-value" style="font-size: 24px; color: #c9974a;">—</span>
+              <span class="result-value" id="result-cash-due-final" style="font-size: 24px; color: #c9974a;">—</span>
             </div>
           </div>
         </div>
@@ -902,14 +902,37 @@ function calculateClosingCosts() {
   document.getElementById('fee-thirdparty-subtotal').textContent = '$' + thirdpartySubtotal.toLocaleString('en-US', {maximumFractionDigits: 0});
   document.getElementById('fee-total-closing').textContent = '$' + totalClosing.toLocaleString('en-US', {maximumFractionDigits: 0});
 
-  // Cash to close calculation
-  const reserves = repairs * 0.25;
-  const totalCashNeeded = purchase + repairs + totalClosing + reserves;
+  // Cash to close calculation - exact formula
+  // Step 1: Determine advance percentage based on tier
+  const fico = parseFloat(document.getElementById('borrower-credit').value) || 0;
+  const flips = parseInt(document.getElementById('flips-36-months').value) || 0;
+  let advancePercentage = 0.90; // Standard
+
+  if (fico >= 720 && flips >= 10) {
+    advancePercentage = 1.00; // Maximum
+  } else if (fico >= 720) {
+    advancePercentage = 0.95; // Preferred
+  }
+
+  // Step 2: Calculate loan amount (lower of LTC or ARV cap)
+  const ltcAmount = (purchase * advancePercentage) + (repairs * 1.00);
+  const arvCapAmount = arv * 0.75;
+  const loanAmount = Math.min(ltcAmount, arvCapAmount);
+
+  // Step 3: Calculate amount available for purchase
+  const availableForPurchase = loanAmount - repairs - acpSubtotal;
+
+  // Step 4: Calculate cash due (or zero if no cash out)
+  const cashDuePriorToTP = Math.max(0, purchase - availableForPurchase);
+
+  // Step 5: Add third-party closing costs
+  const totalDueAtClosing = cashDuePriorToTP + thirdpartySubtotal;
 
   document.getElementById('result-close-purchase').textContent = '$' + purchase.toLocaleString('en-US', {maximumFractionDigits: 0});
   document.getElementById('result-close-repairs').textContent = '$' + repairs.toLocaleString('en-US', {maximumFractionDigits: 0});
-  document.getElementById('result-close-costs').textContent = '$' + totalClosing.toLocaleString('en-US', {maximumFractionDigits: 0});
-  document.getElementById('result-close-reserves').textContent = '$' + reserves.toLocaleString('en-US', {maximumFractionDigits: 0});
+  document.getElementById('result-close-costs').textContent = '$' + acpSubtotal.toLocaleString('en-US', {maximumFractionDigits: 0});
+  document.getElementById('result-close-reserves').textContent = '$' + thirdpartySubtotal.toLocaleString('en-US', {maximumFractionDigits: 0});
+  document.getElementById('result-cash-due-final').textContent = '$' + totalDueAtClosing.toLocaleString('en-US', {maximumFractionDigits: 0});
 }
 
 // Live update closing costs on input
