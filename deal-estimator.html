@@ -611,6 +611,18 @@
             </tr>
             <tr>
               <td>
+                <label for="fee-broker-pct" style="display: block; font-size: 13px;">Broker Fee</label>
+                <select id="fee-broker-pct" style="width: 100%; padding: 6px; font-size: 12px; margin-top: 4px;">
+                  <option value="0">None</option>
+                  <option value="1">1% of Loan</option>
+                  <option value="2">2% of Loan</option>
+                  <option value="3">3% of Loan</option>
+                </select>
+              </td>
+              <td class="fee-value" id="fee-broker-display">—</td>
+            </tr>
+            <tr>
+              <td>
                 <label for="fee-annual-insurance" style="display: block; font-size: 13px;">Estimated Annual Insurance</label>
                 <input type="number" id="fee-annual-insurance" placeholder="Enter amount" style="width: 100%; padding: 6px; font-size: 12px; margin-top: 4px;">
               </td>
@@ -868,18 +880,21 @@ function calculateClosingCosts() {
   const acpSubtotal = acpFlats + originationFee;
 
   // Third-party fees
+  const brokerPct = parseFloat(document.getElementById('fee-broker-pct').value) || 0;
+  const brokerFee = loanEstimate * (brokerPct / 100);
   const annualIns = parseFloat(document.getElementById('fee-annual-insurance').value) || 0;
   const floodIns = parseFloat(document.getElementById('fee-flood-insurance').value) || 0;
   const legalFee = parseFloat(document.getElementById('fee-legal').value) || 0;
   const otherFees = parseFloat(document.getElementById('fee-other').value) || 0;
 
-  const thirdpartySubtotal = titleInsurance + annualIns + floodIns + legalFee + otherFees;
+  const thirdpartySubtotal = titleInsurance + brokerFee + annualIns + floodIns + legalFee + otherFees;
   const totalClosing = acpSubtotal + thirdpartySubtotal;
 
   // Closing costs section
   document.getElementById('fee-origination').textContent = '$' + originationFee.toLocaleString('en-US', {maximumFractionDigits: 0});
   document.getElementById('fee-acp-subtotal').textContent = '$' + acpSubtotal.toLocaleString('en-US', {maximumFractionDigits: 0});
   document.getElementById('fee-title').textContent = '$' + titleInsurance.toLocaleString('en-US', {maximumFractionDigits: 0});
+  document.getElementById('fee-broker-display').textContent = brokerFee > 0 ? '$' + brokerFee.toLocaleString('en-US', {maximumFractionDigits: 0}) : '—';
   document.getElementById('fee-annual-display').textContent = annualIns > 0 ? '$' + annualIns.toLocaleString('en-US', {maximumFractionDigits: 0}) : '—';
   document.getElementById('fee-flood-display').textContent = floodIns > 0 ? '$' + floodIns.toLocaleString('en-US', {maximumFractionDigits: 0}) : '—';
   document.getElementById('fee-legal-display').textContent = legalFee > 0 ? '$' + legalFee.toLocaleString('en-US', {maximumFractionDigits: 0}) : '—';
@@ -898,7 +913,7 @@ function calculateClosingCosts() {
 }
 
 // Live update closing costs on input
-['fee-annual-insurance', 'fee-flood-insurance', 'fee-legal', 'fee-other'].forEach(id => {
+['fee-broker-pct', 'fee-annual-insurance', 'fee-flood-insurance', 'fee-legal', 'fee-other'].forEach(id => {
   document.getElementById(id).addEventListener('change', calculateClosingCosts);
 });
 
