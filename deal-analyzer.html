@@ -428,45 +428,14 @@ HVAC and roof: $20,000
     const errorDiv = document.getElementById('error');
     const successDiv = document.getElementById('success');
 
-    // Clear form button handler - set onclick directly with delay
-    (function setupClearButton() {
-      try {
-        const btn = document.getElementById('clearBtn');
-        const frm = document.getElementById('analyzerForm');
-        console.log('setupClearButton: btn=' + (btn ? 'FOUND' : 'NOT FOUND') + ', frm=' + (frm ? 'FOUND' : 'NOT FOUND'));
-        if (btn && frm) {
-          btn.onclick = function(event) {
-            console.log('Clear button clicked!');
-            event.preventDefault();
-            frm.reset();
-            const errDiv = document.getElementById('error');
-            const sucDiv = document.getElementById('success');
-            if (errDiv) errDiv.style.display = 'none';
-            if (sucDiv) sucDiv.style.display = 'none';
-            return false;
-          };
-          console.log('onclick handler set');
-        } else {
-          console.warn('Could not set onclick handler: btn=' + btn + ', frm=' + frm);
-        }
-      } catch(e) {
-        console.error('Error setting up clear button:', e);
-      }
-    })();
-
-    // Also try with addEventListener as backup
-    console.log('Attempting addEventListener: clearBtn=' + (clearBtn ? 'FOUND' : 'NOT FOUND'));
+    // Clear form button handler using addEventListener
     if (clearBtn) {
       clearBtn.addEventListener('click', function(e) {
-        console.log('Clear button click event received!');
         e.preventDefault();
         form.reset();
         if (errorDiv) errorDiv.style.display = 'none';
         if (successDiv) successDiv.style.display = 'none';
       });
-      console.log('addEventListener attached');
-    } else {
-      console.warn('clearBtn not available for addEventListener');
     }
 
     form.addEventListener('submit', async (e) => {
