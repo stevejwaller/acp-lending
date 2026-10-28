@@ -557,9 +557,14 @@
             <span class="error-message">Liquid assets required</span>
           </div>
           <div class="form-group">
-            <label for="flips-36-months">Number of Flips in Last 36 Months *</label>
+            <label for="flips-36-months">Number of Flips/Fix-Rent/DSCR Loans (Last 36 Months) *</label>
             <input type="number" id="flips-36-months" name="flips_36_months" placeholder="0" min="0" required>
-            <span class="error-message">Flip count required</span>
+            <span class="error-message">Experience count required (in borrower name)</span>
+          </div>
+          <div class="form-group">
+            <label for="annual-property-taxes">Estimated Annual Property Taxes *</label>
+            <input type="number" id="annual-property-taxes" name="annual_property_taxes" placeholder="3000" required>
+            <span class="error-message">Annual property taxes required</span>
           </div>
         </div>
 
@@ -584,6 +589,30 @@
           <div class="result-row">
             <span class="result-label">Interest Rate Range</span>
             <span class="result-value" id="result-rate">—</span>
+          </div>
+        </div>
+
+        <div class="results-box" id="preapproval-box" style="display: none; background: #e6f7f0; border-color: #4a7c59;">
+          <h3 style="margin: 0 0 16px 0; color: #4a7c59;">Pre-Approval Eligibility</h3>
+          <div class="result-row">
+            <span class="result-label">Credit Score (600+)</span>
+            <span class="result-value" id="pa-credit">✓</span>
+          </div>
+          <div class="result-row">
+            <span class="result-label">Liquidity Requirement</span>
+            <span class="result-value" id="pa-liquidity-label">—</span>
+          </div>
+          <div class="result-row">
+            <span class="result-label">Your Available Liquidity</span>
+            <span class="result-value" id="pa-your-liquidity">—</span>
+          </div>
+          <div class="result-row">
+            <span class="result-label">Experience (1+ in 36mo)</span>
+            <span class="result-value" id="pa-experience">✓</span>
+          </div>
+          <div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid #d9cec1;">
+            <div style="font-weight: 600; color: #4a7c59; margin-bottom: 8px;">✓ QUALIFIES FOR PRE-APPROVAL</div>
+            <p style="margin: 0; font-size: 13px; color: #666;">You meet all qualifying criteria. A pre-approval letter can be prepared for your deal.</p>
           </div>
         </div>
 
@@ -893,6 +922,49 @@ function calculateLendingMatrix() {
 
   // Calculate closing costs
   calculateClosingCosts();
+
+  // Check pre-approval eligibility
+  checkPreApprovalEligibility();
+}
+
+// Check pre-approval eligibility
+function checkPreApprovalEligibility() {
+  const fico = parseFloat(document.getElementById('borrower-credit').value) || 0;
+  const flips = parseInt(document.getElementById('flips-36-months').value) || 0;
+  const liquidAssets = parseFloat(document.getElementById('liquid-assets').value) || 0;
+  const repairs = parseFloat(document.getElementById('repair-budget').value) || 0;
+  const purchase = parseFloat(document.getElementById('purchase-price').value) || 0;
+  const annualTaxes = parseFloat(document.getElementById('annual-property-taxes').value) || 0;
+
+  // Calculate estimated monthly interest (use 10% as middle estimate for 9-11.5% range)
+  const estimatedLoanAmount = purchase + repairs;
+  const estimatedAnnualInterest = estimatedLoanAmount * 0.10;
+  const estimatedMonthlyInterest = estimatedAnnualInterest / 12;
+
+  // Calculate required liquidity
+  const repairsThird = repairs / 3;
+  const sixMonthsInterest = estimatedMonthlyInterest * 6;
+  const taxesHalf = annualTaxes / 2;
+  const requiredLiquidity = repairsThird + sixMonthsInterest + taxesHalf;
+
+  // Check all three criteria
+  const creditQualifies = fico >= 600;
+  const liquidityQualifies = liquidAssets >= requiredLiquidity;
+  const experienceQualifies = flips >= 1;
+
+  // Display pre-approval box if ALL criteria met
+  const preapprovalBox = document.getElementById('preapproval-box');
+  if (creditQualifies && liquidityQualifies && experienceQualifies) {
+    preapprovalBox.style.display = 'block';
+
+    // Update pre-approval display
+    document.getElementById('pa-credit').textContent = fico >= 600 ? '✓' : '✗';
+    document.getElementById('pa-liquidity-label').textContent = '$' + Math.round(requiredLiquidity).toLocaleString('en-US');
+    document.getElementById('pa-your-liquidity').textContent = '$' + Math.round(liquidAssets).toLocaleString('en-US');
+    document.getElementById('pa-experience').textContent = flips >= 1 ? '✓' : '✗';
+  } else {
+    preapprovalBox.style.display = 'none';
+  }
 }
 
 // Calculate closing costs
@@ -966,9 +1038,14 @@ function calculateClosingCosts() {
   document.getElementById('result-cash-due-final').textContent = '$' + totalDueAtClosing.toLocaleString('en-US', {maximumFractionDigits: 0});
 }
 
-// Live update closing costs on input
+// Live update closing costs and pre-approval on input
 ['fee-broker-pct', 'fee-annual-insurance', 'fee-flood-insurance', 'fee-legal', 'fee-other'].forEach(id => {
   document.getElementById(id).addEventListener('change', calculateClosingCosts);
+});
+
+// Update pre-approval eligibility when key fields change
+['borrower-credit', 'flips-36-months', 'liquid-assets', 'repair-budget', 'purchase-price', 'annual-property-taxes'].forEach(id => {
+  document.getElementById(id).addEventListener('change', checkPreApprovalEligibility);
 });
 
 // Form submission
@@ -996,6 +1073,7 @@ form.addEventListener('submit', function(e) {
     borrower_credit: parseFloat(document.getElementById('borrower-credit').value),
     liquid_assets: parseFloat(document.getElementById('liquid-assets').value),
     flips_36_months: parseInt(document.getElementById('flips-36-months').value),
+    annual_property_taxes: parseFloat(document.getElementById('annual-property-taxes').value),
     timestamp: new Date().toISOString()
   };
 

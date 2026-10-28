@@ -27,7 +27,8 @@ export async function onRequest(context) {
       const required = [
         'property_address', 'property_type', 'purchase_price', 'arv',
         'repair_budget', 'borrower_credit', 'borrower_name',
-        'borrower_email', 'borrower_phone'
+        'borrower_email', 'borrower_phone', 'loan_type', 'collateral_type',
+        'collateral_locations', 'annual_property_taxes'
       ];
 
       for (const field of required) {
