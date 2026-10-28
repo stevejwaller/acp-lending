@@ -399,7 +399,7 @@ HVAC and roof: $20,000
         <!-- Actions -->
         <div class="button-group" style="margin-top: 40px;">
           <button type="submit" class="btn-primary" id="submitBtn">Generate Report (HTML)</button>
-          <button type="button" class="btn-secondary" id="clearBtn" onclick="document.getElementById('analyzerForm').reset();">Clear Form</button>
+          <button type="button" class="btn-secondary" id="clearBtn">Clear Form</button>
         </div>
 
         <div class="loading" id="loading">
@@ -428,12 +428,17 @@ HVAC and roof: $20,000
     const errorDiv = document.getElementById('error');
     const successDiv = document.getElementById('success');
 
-    // Clear form button handler
-    clearBtn.addEventListener('click', function() {
-      form.reset();
-      if (errorDiv) errorDiv.style.display = 'none';
-      if (successDiv) successDiv.style.display = 'none';
-    });
+    // Clear form button handler - use setTimeout to ensure it's set up after all page load events
+    setTimeout(function() {
+      if (clearBtn) {
+        clearBtn.onclick = function() {
+          form.reset();
+          if (errorDiv) errorDiv.style.display = 'none';
+          if (successDiv) successDiv.style.display = 'none';
+          return false;
+        };
+      }
+    }, 100);
 
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
