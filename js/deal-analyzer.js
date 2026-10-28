@@ -25,14 +25,48 @@ form.addEventListener('submit', async (e) => {
     const formData = new FormData(form);
     const data = Object.fromEntries(formData);
 
+    // Required fields
+    if (!data.address || !data.city || !data.state || !data.subdivision) {
+      throw new Error('Address, city, state, and subdivision are required');
+    }
+
     // Parse numbers
     const purchasePrice = parseFloat(data.purchasePrice) || 0;
-    const arv = parseFloat(data.arv) || 0;
+    const borrowerArv = parseFloat(data.arv) || 0;
     const repairs = parseFloat(data.repairs) || 0;
     const closingCostPercent = (parseFloat(data.closingCosts) || 3) / 100;
 
-    if (!purchasePrice || !arv || !repairs) {
-      throw new Error('Purchase price, ARV, and repairs are required');
+    if (!purchasePrice || !repairs) {
+      throw new Error('Purchase price and repairs are required');
+    }
+
+    // Fetch comps from PropertyReach API
+    const compsResponse = await fetch('/api/v1/comps', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        address: data.address,
+        city: data.city,
+        state: data.state,
+        subdivision: data.subdivision
+      })
+    });
+
+    if (!compsResponse.ok) {
+      throw new Error(`PropertyReach API error: ${compsResponse.status}`);
+    }
+
+    const compsData = await compsResponse.json();
+
+    // ACP's ARV is based on comps, not borrower input
+    let arv = borrowerArv;
+    let compCount = 0;
+
+    if (compsData.comps && compsData.comps.length > 0) {
+      // Calculate median from comps
+      const prices = compsData.comps.map(c => c.salePrice).sort((a, b) => a - b);
+      arv = Math.round(prices[Math.floor(prices.length / 2)]);
+      compCount = compsData.comps.length;
     }
 
     // Calculate financing at 70% and 75%
@@ -57,8 +91,11 @@ form.addEventListener('submit', async (e) => {
       state: data.state,
       zip: data.zip,
       subdivision: data.subdivision,
+      mlsNumber: data.mlsNumber || '',
+      realtorWebsite: data.realtorWebsite || '',
       purchasePrice,
       arv,
+      borrowerArv,
       repairs,
       advance70: Math.round(advance70),
       advance75: Math.round(advance75),
@@ -72,7 +109,9 @@ form.addEventListener('submit', async (e) => {
       sqft: data.sqft,
       yearBuilt: data.yearBuilt,
       propertyDescription: data.propertyDescription,
-      repairDetails: data.repairDetails
+      repairDetails: data.repairDetails,
+      compCount,
+      comps: compsData.comps || []
     });
 
     // Create downloadable file
@@ -100,18 +139,20 @@ form.addEventListener('submit', async (e) => {
 
 function generateDealBook(data) {
   const {
-    address, city, state, zip, purchasePrice, arv, repairs,
+    address, city, state, zip, purchasePrice, arv, borrowerArv, repairs,
     advance70, advance75, closingCosts70, closingCosts75,
     maxPurchase70, maxPurchase75, walkAwayCeiling,
     cashDueAtClosing70, cashDueAtClosing75,
-    sqft, yearBuilt, propertyDescription, repairDetails
+    sqft, yearBuilt, propertyDescription, repairDetails,
+    mlsNumber, realtorWebsite, compCount, comps, subdivision
   } = data;
 
-  // Executive summary narrative
+  // Executive summary narrative - based on ACP analysis, not borrower input
   const gap75 = Math.round(purchasePrice - maxPurchase75);
+  const arvNote = borrowerArv !== arv ? ` (seller estimated $${borrowerArv.toLocaleString()})` : '';
   const summaryText = gap75 > 0
-    ? `Our review supports the $${arv.toLocaleString()} ARV. With repairs now $${repairs.toLocaleString()}, the $${purchasePrice.toLocaleString()} price is $${gap75.toLocaleString()} over the most the numbers support. The numbers support an offer of $${Math.round(maxPurchase75).toLocaleString()} with a walk-away ceiling of $${walkAwayCeiling.toLocaleString()}.`
-    : `Our review supports the $${arv.toLocaleString()} ARV. With repairs estimated at $${repairs.toLocaleString()}, the $${purchasePrice.toLocaleString()} purchase price is supportable.`;
+    ? `ACP's analysis supports a $${arv.toLocaleString()} ARV${arvNote}. With repairs estimated at $${repairs.toLocaleString()}, the $${purchasePrice.toLocaleString()} price is $${gap75.toLocaleString()} over the most the numbers support. The numbers support an offer of $${Math.round(maxPurchase75).toLocaleString()} with a walk-away ceiling of $${walkAwayCeiling.toLocaleString()}.`
+    : `ACP's analysis supports a $${arv.toLocaleString()} ARV${arvNote}. With repairs estimated at $${repairs.toLocaleString()}, the $${purchasePrice.toLocaleString()} purchase price is supportable.`;
 
   return `<!DOCTYPE html>
 <html lang="en">
@@ -201,6 +242,14 @@ function generateDealBook(data) {
     <div class="header">
       <div style="font-size: 12px; color: #001a4d; margin-bottom: 8px;">ACP REAL ESTATE LENDING | Deal Analysis, ARV, Repairs, Slotting — ${new Date().toLocaleDateString()}</div>
       <div class="header-title">${address}, ${city}, ${state} ${zip}</div>
+      ${mlsNumber ? `<div class="address">MLS #${mlsNumber}</div>` : ''}
+      ${realtorWebsite ? `<div class="address"><a href="${realtorWebsite}" target="_blank" style="color: #001a4d;">${realtorWebsite}</a></div>` : '<div class="address"><a href="https://www.har.com" target="_blank" style="color: #001a4d;">View on HAR.com</a> | <a href="https://www.zillow.com" target="_blank" style="color: #001a4d;">View on Zillow</a></div>'}
+    </div>
+
+    <!-- Curbside Photo -->
+    <div style="margin-bottom: 30px; text-align: center;">
+      <img src="https://maps.googleapis.com/maps/api/streetview?size=600x400&location=${encodeURIComponent(address + ',' + city + ',' + state)}&key=AIzaSyDummyKey" alt="Street View" style="max-width: 100%; height: auto; border: 1px solid #ddd;" onerror="this.src='https://via.placeholder.com/600x400?text=Street+View+Unavailable'">
+      <div style="font-size: 11px; color: #999; margin-top: 8px;">Curbside view from Google Maps Street View</div>
     </div>
 
     <div class="executive-summary">
@@ -247,7 +296,32 @@ function generateDealBook(data) {
     <!-- After-Repair Value -->
     <div class="section">
       <div class="section-header">After-Repair Value — $${arv.toLocaleString()}</div>
-      <p>ARV estimate based on subdivision comps (PropertyReach integration pending) — minimum 20 closed sales, same subdivision only, within 20% of subject size and configuration.</p>
+      <p>ACP's ARV based on ${compCount} comparable sales in ${subdivision} (PropertyReach data) — closed sales, same subdivision, within comparable size and configuration.${borrowerArv && borrowerArv !== arv ? ` Seller estimated $${borrowerArv.toLocaleString()}.` : ''}</p>
+
+      ${comps && comps.length > 0 ? `
+      <div style="margin-top: 20px;">
+        <table>
+          <thead>
+            <tr>
+              <th>Address</th>
+              <th>Sale Date</th>
+              <th>Sale Price</th>
+              <th>$/SF</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${comps.slice(0, 10).map(comp => `
+            <tr>
+              <td>${comp.address || 'N/A'}</td>
+              <td>${comp.saleDate ? new Date(comp.saleDate).toLocaleDateString() : 'N/A'}</td>
+              <td>$${comp.salePrice ? comp.salePrice.toLocaleString() : 'N/A'}</td>
+              <td>$${comp.pricePerSqft ? comp.pricePerSqft.toFixed(0) : 'N/A'}</td>
+            </tr>
+            `).join('')}
+          </tbody>
+        </table>
+      </div>
+      ` : '<p style="font-size: 12px; color: #999; background: #f9f9f9; padding: 12px; margin-top: 12px;">No comparable sales data available. Manual ARV verification recommended.</p>'}
     </div>
 
     <!-- Financing -->
@@ -308,20 +382,19 @@ function generateDealBook(data) {
     <!-- Lender Options (Placeholder for Matrix) -->
     <div class="section">
       <div class="section-header">Best Financing Options</div>
-      <p style="font-size: 12px; color: #666; margin-bottom: 14px;">Lender matrix comparison coming with PropertyReach API integration. Will show cash due at closing for each lender option (ACP-K, ACP-R, ACP-E, ACP-F, ACP-L).</p>
+      <p style="font-size: 12px; color: #666; margin-bottom: 14px;">Lender matrix comparison coming. Will show cash due at closing for each lender option (ACP-K, ACP-R, ACP-E, ACP-F, ACP-L).</p>
       <table>
         <thead>
           <tr>
             <th>Lender Option</th>
             <th>Loan Amount</th>
-            <th>Cash @ 1031k</th>
-            <th>Cash @ 138k</th>
+            <th>Cash @ Closing</th>
             <th>Rate</th>
           </tr>
         </thead>
         <tbody>
           <tr>
-            <td colspan="5" style="text-align: center; color: #999; padding: 20px;">PropertyReach API integration pending — will auto-populate lender options and pricing</td>
+            <td colspan="4" style="text-align: center; color: #999; padding: 20px;">Lender options pending — contact ACP Lending for specific pricing</td>
           </tr>
         </tbody>
       </table>
@@ -330,7 +403,7 @@ function generateDealBook(data) {
     <!-- Footer -->
     <div class="footer">
       <p><strong>ACP Real Estate Lending</strong> | Steve Waller | steve@acp-lending.com | 936-522-8951 | acp-lending.com</p>
-      <p>This analysis is ACP's review of public record and MLS data. It is not an appraisal or a commitment to lend. Business-purpose investment financing only.</p>
+      <p>This analysis is ACP's independent review of public record and MLS data. It is not an appraisal or a commitment to lend. Business-purpose investment financing only.</p>
       <p style="margin-top: 14px; font-size: 10px;">Generated ${new Date().toLocaleDateString()} at ${new Date().toLocaleTimeString()}</p>
     </div>
   </div>
