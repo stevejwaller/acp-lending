@@ -429,6 +429,14 @@
       <div class="step-number">3</div>
       <div class="step-label">Closing Costs</div>
     </div>
+    <div class="step" data-step="4">
+      <div class="step-number">4</div>
+      <div class="step-label">Profit Analysis</div>
+    </div>
+    <div class="step" data-step="5">
+      <div class="step-number">5</div>
+      <div class="step-label">Recommendation</div>
+    </div>
   </div>
 
   <form id="estimator-form" novalidate>
@@ -755,13 +763,132 @@
             Repair estimate review • Exit strategy recommendations<br><br>
             <strong>Reimbursable at closing if you fund with ACP</strong>
           </div>
-          <button type="submit" class="btn btn-primary" style="width: 100%; padding: 14px;">Submit Deal for Complete Analysis</button>
+          <button type="button" class="btn btn-primary" onclick="nextSection(4)" style="width: 100%; padding: 14px;">Next: Profit Analysis →</button>
         </div>
 
         <div class="button-group">
           <button type="button" class="btn btn-secondary" onclick="prevSection(2)">← Back</button>
           <div></div>
         </div>
+      </div>
+    </div>
+
+    <!-- STEP 4: PROFIT ANALYSIS -->
+    <div class="section" data-section="4">
+      <div class="section-header">
+        <h2>Step 4: Profit Analysis</h2>
+        <p>See your expected returns for this deal.</p>
+      </div>
+
+      <div class="results-box">
+        <h3 style="margin: 0 0 16px 0;" id="profit-title">Flip Profit Analysis</h3>
+
+        <!-- FLIP SCENARIO -->
+        <div id="flip-scenario" style="display: none;">
+          <div class="result-row">
+            <span class="result-label">Sale Price (ARV)</span>
+            <span class="result-value" id="profit-arv">—</span>
+          </div>
+          <div class="result-row">
+            <span class="result-label">Less: Purchase Price</span>
+            <span class="result-value" id="profit-purchase-neg">—</span>
+          </div>
+          <div class="result-row">
+            <span class="result-label">Less: Repair Budget</span>
+            <span class="result-value" id="profit-repairs-neg">—</span>
+          </div>
+          <div class="result-row">
+            <span class="result-label">Less: Total Loan Costs</span>
+            <span class="result-value" id="profit-costs-neg">—</span>
+          </div>
+          <div class="result-row">
+            <span class="result-label">Less: Your Cash at Closing</span>
+            <span class="result-value" id="profit-cash-neg">—</span>
+          </div>
+          <div style="margin-top: 12px; padding-top: 12px; border-top: 2px solid #e0d5c7;">
+            <div class="result-row">
+              <span class="result-label" style="font-weight: 700;">Flip Profit</span>
+              <span class="result-value" id="profit-flip" style="font-size: 18px; color: #4a7c59;">—</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- RENTAL SCENARIO -->
+        <div id="rental-scenario" style="display: none;">
+          <div class="result-row">
+            <span class="result-label">Estimated Monthly Rent (Market)</span>
+            <span class="result-value" id="profit-monthly-rent">—</span>
+          </div>
+          <div class="result-row">
+            <span class="result-label">Annual Gross Rent</span>
+            <span class="result-value" id="profit-annual-rent">—</span>
+          </div>
+          <div class="result-row">
+            <span class="result-label">Estimated Loan Balance (Refinance)</span>
+            <span class="result-value" id="profit-loan-balance">—</span>
+          </div>
+          <div class="result-row">
+            <span class="result-label">Your Equity (ARV - Loan)</span>
+            <span class="result-value" id="profit-equity">—</span>
+          </div>
+          <div style="margin-top: 12px; padding-top: 12px; border-top: 2px solid #e0d5c7;">
+            <div class="result-row">
+              <span class="result-label" style="font-weight: 700;">Cash on Cash Return (Annual)</span>
+              <span class="result-value" id="profit-coc" style="font-size: 18px; color: #4a7c59;">—</span>
+            </div>
+          </div>
+        </div>
+
+        <div id="profit-note" style="margin-top: 20px; padding: 12px; background: #f9f7f3; border-radius: 4px; font-size: 12px; color: #666; line-height: 1.5; display: none;">
+          <strong>Note:</strong> Rental estimates are based on market rent assumptions. Actual rent, expenses, and refinance terms will be confirmed during ACP's analysis of your property.
+        </div>
+      </div>
+
+      <div class="button-group">
+        <button type="button" class="btn btn-secondary" onclick="prevSection(3)">← Back</button>
+        <button type="button" class="btn btn-primary" onclick="nextSection(5)">Next: Get Recommendation →</button>
+      </div>
+    </div>
+
+    <!-- STEP 5: RECOMMENDATION -->
+    <div class="section" data-section="5">
+      <div class="section-header">
+        <h2>Step 5: ACP Financing Recommendation</h2>
+        <p>Based on your deal financials and profit analysis, here's how ACP recommends financing this property.</p>
+      </div>
+
+      <div class="results-box" id="recommendation-box">
+        <div style="text-align: center; padding: 20px;">
+          <h3 id="recommendation-strategy" style="color: #c9974a; font-size: 24px; margin: 0 0 16px 0;">—</h3>
+          <p id="recommendation-summary" style="font-size: 14px; color: #666; line-height: 1.6; margin: 0;"></p>
+        </div>
+
+        <div style="margin-top: 30px; padding-top: 30px; border-top: 2px solid #e0d5c7;">
+          <h4 style="margin-bottom: 12px;">Key Financial Metrics</h4>
+          <div class="result-row">
+            <span class="result-label">Loan Amount</span>
+            <span class="result-value" id="rec-loan-amount">—</span>
+          </div>
+          <div class="result-row">
+            <span class="result-label">Cash Required at Closing</span>
+            <span class="result-value" id="rec-cash-due">—</span>
+          </div>
+          <div class="result-row">
+            <span class="result-label">Projected Return</span>
+            <span class="result-value" id="rec-return">—</span>
+          </div>
+        </div>
+
+        <div style="margin-top: 20px; padding: 16px; background: #f9f7f3; border-radius: 4px; border-left: 4px solid #c9974a;">
+          <p style="margin: 0; font-size: 13px; color: #666; line-height: 1.6;">
+            <strong>Next Steps:</strong> Submit your deal to ACP's Deal Desk for a complete analysis. Steve will review your property, verify the numbers, and send you a formal pre-approval letter with program details and closing timeline.
+          </p>
+        </div>
+      </div>
+
+      <div class="button-group">
+        <button type="button" class="btn btn-secondary" onclick="prevSection(4)">← Back</button>
+        <button type="submit" class="btn btn-primary">Submit Deal for Complete Analysis</button>
       </div>
     </div>
 
@@ -786,7 +913,10 @@
 // Form state
 let formState = {
   section1Complete: false,
-  section2Complete: false
+  section2Complete: false,
+  section3Complete: false,
+  section4Complete: false,
+  section5Complete: false
 };
 
 const form = document.getElementById('estimator-form');
@@ -838,6 +968,14 @@ function nextSection(num) {
     formState.section2Complete = true;
     calculateLendingMatrix();
     unlockSection(3);
+  } else if (num === 4) {
+    formState.section3Complete = true;
+    calculateProfitAnalysis();
+    unlockSection(4);
+  } else if (num === 5) {
+    formState.section4Complete = true;
+    calculateRecommendation();
+    unlockSection(5);
   }
 
   changeSection(num);
@@ -967,6 +1105,196 @@ function checkPreApprovalEligibility() {
   }
 }
 
+// Calculate profit analysis
+function calculateProfitAnalysis() {
+  const loanType = document.getElementById('loan-type').value;
+  const arv = parseFloat(document.getElementById('arv').value) || 0;
+  const purchase = parseFloat(document.getElementById('purchase-price').value) || 0;
+  const repairs = parseFloat(document.getElementById('repair-budget').value) || 0;
+
+  // Show appropriate scenario
+  const isFlip = loanType === 'Fix & Flip';
+  const isRental = ['DSCR Rental', 'Fix/Rent', 'Portfolio'].includes(loanType);
+
+  document.getElementById('flip-scenario').style.display = isFlip ? 'block' : 'none';
+  document.getElementById('rental-scenario').style.display = isRental ? 'block' : 'none';
+  document.getElementById('profit-note').style.display = isRental ? 'block' : 'none';
+
+  if (isFlip) {
+    // FLIP PROFIT CALCULATION
+    const fico = parseFloat(document.getElementById('borrower-credit').value) || 0;
+    const flips = parseInt(document.getElementById('flips-36-months').value) || 0;
+    let advancePercentage = 0.90;
+    if (fico >= 720 && flips >= 10) advancePercentage = 1.00;
+    else if (fico >= 720) advancePercentage = 0.95;
+
+    const ltcAmount = (purchase * advancePercentage) + (repairs * 1.00);
+    const arvCapAmount = arv * 0.75;
+    const loanAmount = Math.min(ltcAmount, arvCapAmount);
+
+    // Calculate all costs
+    const originationFee = loanAmount * 0.03;
+    const acpFlats = 1500 + 500 + 350;
+    const acpSubtotal = acpFlats + originationFee;
+
+    const titleInsurance = loanAmount * 0.015;
+    const brokerPct = parseFloat(document.getElementById('fee-broker-pct').value) || 0;
+    const brokerFee = loanAmount * (brokerPct / 100);
+    const annualIns = parseFloat(document.getElementById('fee-annual-insurance').value) || 0;
+    const floodIns = parseFloat(document.getElementById('fee-flood-insurance').value) || 0;
+    const legalFee = parseFloat(document.getElementById('fee-legal').value) || 0;
+    const otherFees = parseFloat(document.getElementById('fee-other').value) || 0;
+
+    const thirdpartySubtotal = titleInsurance + brokerFee + annualIns + floodIns + legalFee + otherFees;
+    const totalClosing = acpSubtotal + thirdpartySubtotal;
+
+    // Calculate cash due
+    const availableForPurchase = loanAmount - repairs - acpSubtotal;
+    const cashDuePriorToTP = Math.max(0, purchase - availableForPurchase);
+    const totalDueAtClosing = cashDuePriorToTP + thirdpartySubtotal;
+
+    // Flip profit
+    const flipProfit = arv - purchase - repairs - totalClosing;
+
+    document.getElementById('profit-arv').textContent = '$' + arv.toLocaleString('en-US', {maximumFractionDigits: 0});
+    document.getElementById('profit-purchase-neg').textContent = '($' + purchase.toLocaleString('en-US', {maximumFractionDigits: 0}) + ')';
+    document.getElementById('profit-repairs-neg').textContent = '($' + repairs.toLocaleString('en-US', {maximumFractionDigits: 0}) + ')';
+    document.getElementById('profit-costs-neg').textContent = '($' + totalClosing.toLocaleString('en-US', {maximumFractionDigits: 0}) + ')';
+    document.getElementById('profit-cash-neg').textContent = '($' + totalDueAtClosing.toLocaleString('en-US', {maximumFractionDigits: 0}) + ')';
+    document.getElementById('profit-flip').textContent = flipProfit >= 0 ? '$' + flipProfit.toLocaleString('en-US', {maximumFractionDigits: 0}) : '($' + Math.abs(flipProfit).toLocaleString('en-US', {maximumFractionDigits: 0}) + ')';
+
+    if (flipProfit < 0) {
+      document.getElementById('profit-flip').style.color = '#d32f2f';
+    } else {
+      document.getElementById('profit-flip').style.color = '#4a7c59';
+    }
+
+  } else if (isRental) {
+    // RENTAL INCOME & EQUITY CALCULATION
+    // Estimate monthly rent at 0.8% - 1% of ARV (conservative)
+    const monthlyRent = Math.round(arv * 0.009); // 0.9% estimate
+    const annualRent = monthlyRent * 12;
+
+    // Refinance amount is typically 70-75% of ARV
+    const refinanceAmount = Math.round(arv * 0.70);
+    const equity = arv - refinanceAmount;
+
+    // Cash on cash return: annual rent / cash invested
+    const fico = parseFloat(document.getElementById('borrower-credit').value) || 0;
+    const flips = parseInt(document.getElementById('flips-36-months').value) || 0;
+    let advancePercentage = 0.90;
+    if (fico >= 720 && flips >= 10) advancePercentage = 1.00;
+    else if (fico >= 720) advancePercentage = 0.95;
+
+    const ltcAmount = (purchase * advancePercentage) + (repairs * 1.00);
+    const arvCapAmount = arv * 0.75;
+    const loanAmount = Math.min(ltcAmount, arvCapAmount);
+
+    const originationFee = loanAmount * 0.03;
+    const acpFlats = 1500 + 500 + 350;
+    const acpSubtotal = acpFlats + originationFee;
+    const titleInsurance = loanAmount * 0.015;
+    const brokerPct = parseFloat(document.getElementById('fee-broker-pct').value) || 0;
+    const brokerFee = loanAmount * (brokerPct / 100);
+    const annualIns = parseFloat(document.getElementById('fee-annual-insurance').value) || 0;
+    const floodIns = parseFloat(document.getElementById('fee-flood-insurance').value) || 0;
+    const legalFee = parseFloat(document.getElementById('fee-legal').value) || 0;
+    const otherFees = parseFloat(document.getElementById('fee-other').value) || 0;
+
+    const thirdpartySubtotal = titleInsurance + brokerFee + annualIns + floodIns + legalFee + otherFees;
+    const totalClosing = acpSubtotal + thirdpartySubtotal;
+
+    const availableForPurchase = loanAmount - repairs - acpSubtotal;
+    const cashDuePriorToTP = Math.max(0, purchase - availableForPurchase);
+    const totalDueAtClosing = cashDuePriorToTP + thirdpartySubtotal;
+
+    const cocReturn = totalDueAtClosing > 0 ? ((annualRent / totalDueAtClosing) * 100).toFixed(1) : 0;
+
+    document.getElementById('profit-monthly-rent').textContent = '$' + monthlyRent.toLocaleString('en-US');
+    document.getElementById('profit-annual-rent').textContent = '$' + annualRent.toLocaleString('en-US');
+    document.getElementById('profit-loan-balance').textContent = '$' + refinanceAmount.toLocaleString('en-US', {maximumFractionDigits: 0});
+    document.getElementById('profit-equity').textContent = '$' + equity.toLocaleString('en-US', {maximumFractionDigits: 0});
+    document.getElementById('profit-coc').textContent = cocReturn + '%';
+  }
+}
+
+// Calculate recommendation based on profit analysis
+function calculateRecommendation() {
+  const loanType = document.getElementById('loan-type').value;
+  const arv = parseFloat(document.getElementById('arv').value) || 0;
+  const purchase = parseFloat(document.getElementById('purchase-price').value) || 0;
+  const repairs = parseFloat(document.getElementById('repair-budget').value) || 0;
+  const fico = parseFloat(document.getElementById('borrower-credit').value) || 0;
+  const flips = parseInt(document.getElementById('flips-36-months').value) || 0;
+
+  // Determine advance percentage
+  let advancePercentage = 0.90;
+  if (fico >= 720 && flips >= 10) advancePercentage = 1.00;
+  else if (fico >= 720) advancePercentage = 0.95;
+
+  // Calculate loan amount
+  const ltcAmount = (purchase * advancePercentage) + (repairs * 1.00);
+  const arvCapAmount = arv * 0.75;
+  const loanAmount = Math.min(ltcAmount, arvCapAmount);
+
+  // Calculate closing costs
+  const originationFee = loanAmount * 0.03;
+  const acpFlats = 1500 + 500 + 350;
+  const acpSubtotal = acpFlats + originationFee;
+  const titleInsurance = loanAmount * 0.015;
+  const brokerPct = parseFloat(document.getElementById('fee-broker-pct').value) || 0;
+  const brokerFee = loanAmount * (brokerPct / 100);
+  const annualIns = parseFloat(document.getElementById('fee-annual-insurance').value) || 0;
+  const floodIns = parseFloat(document.getElementById('fee-flood-insurance').value) || 0;
+  const legalFee = parseFloat(document.getElementById('fee-legal').value) || 0;
+  const otherFees = parseFloat(document.getElementById('fee-other').value) || 0;
+
+  const thirdpartySubtotal = titleInsurance + brokerFee + annualIns + floodIns + legalFee + otherFees;
+  const totalClosing = acpSubtotal + thirdpartySubtotal;
+
+  const availableForPurchase = loanAmount - repairs - acpSubtotal;
+  const cashDuePriorToTP = Math.max(0, purchase - availableForPurchase);
+  const totalDueAtClosing = cashDuePriorToTP + thirdpartySubtotal;
+
+  // Determine recommendation based on loan type
+  let strategy = '';
+  let summary = '';
+  let returnMetric = '';
+
+  const isFlip = loanType === 'Fix & Flip';
+  const flipProfit = arv - purchase - repairs - totalClosing;
+
+  if (isFlip) {
+    strategy = 'Fix & Flip with Bridge Financing';
+    const profitMargin = flipProfit > 0 ? ((flipProfit / arv) * 100).toFixed(1) : 0;
+    summary = `Based on your deal, we recommend a bridge loan structure. ` +
+              `You'll purchase and renovate with our ${advancePercentage * 100}% advance, ` +
+              `then sell at ${arv > 0 ? arv.toLocaleString('en-US', {maximumFractionDigits: 0}) : '—'} ARV ` +
+              `for an estimated profit of $${flipProfit.toLocaleString('en-US', {maximumFractionDigits: 0})} ` +
+              `(${profitMargin}% margin).`;
+    returnMetric = flipProfit >= 0 ? '$' + flipProfit.toLocaleString('en-US', {maximumFractionDigits: 0}) : '($' + Math.abs(flipProfit).toLocaleString('en-US', {maximumFractionDigits: 0}) + ')';
+  } else {
+    strategy = 'Rental Property with Refinance';
+    const monthlyRent = Math.round(arv * 0.009);
+    const annualRent = monthlyRent * 12;
+    const refinanceAmount = Math.round(arv * 0.70);
+    const equity = arv - refinanceAmount;
+    const cocReturn = totalDueAtClosing > 0 ? ((annualRent / totalDueAtClosing) * 100).toFixed(1) : 0;
+    summary = `Based on your deal, we recommend holding as a rental property. ` +
+              `Purchase with our ${advancePercentage * 100}% bridge loan, stabilize tenant, ` +
+              `then refinance with ACP's DSCR program at $${refinanceAmount.toLocaleString('en-US', {maximumFractionDigits: 0})} ` +
+              `leaving you $${equity.toLocaleString('en-US', {maximumFractionDigits: 0})} equity ` +
+              `and ${cocReturn}% annual cash-on-cash return.`;
+    returnMetric = cocReturn + '% COC';
+  }
+
+  document.getElementById('recommendation-strategy').textContent = strategy;
+  document.getElementById('recommendation-summary').textContent = summary;
+  document.getElementById('rec-loan-amount').textContent = '$' + loanAmount.toLocaleString('en-US', {maximumFractionDigits: 0});
+  document.getElementById('rec-cash-due').textContent = '$' + totalDueAtClosing.toLocaleString('en-US', {maximumFractionDigits: 0});
+  document.getElementById('rec-return').textContent = returnMetric;
+}
+
 // Calculate closing costs
 function calculateClosingCosts() {
   const purchase = parseFloat(document.getElementById('purchase-price').value) || 0;
@@ -1048,6 +1376,12 @@ function calculateClosingCosts() {
   document.getElementById(id).addEventListener('change', checkPreApprovalEligibility);
 });
 
+// Update profit analysis when key fields change
+['loan-type', 'arv', 'purchase-price', 'repair-budget', 'borrower-credit', 'fee-broker-pct', 'fee-annual-insurance', 'fee-flood-insurance', 'fee-legal', 'fee-other'].forEach(id => {
+  const elem = document.getElementById(id);
+  if (elem) elem.addEventListener('change', calculateProfitAnalysis);
+});
+
 // Form submission
 form.addEventListener('submit', function(e) {
   e.preventDefault();
@@ -1092,7 +1426,7 @@ form.addEventListener('submit', function(e) {
       alert('Thank you! Your deal has been submitted. Steve will contact you within 24 hours with your complete analysis.');
       form.reset();
       changeSection(1);
-      formState = { section1Complete: false, section2Complete: false };
+      formState = { section1Complete: false, section2Complete: false, section3Complete: false, section4Complete: false, section5Complete: false };
       submitBtn.disabled = false;
       submitBtn.textContent = 'Submit Deal for Complete Analysis';
     } else {
