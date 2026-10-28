@@ -282,13 +282,13 @@
 
         <div class="form-group">
           <label for="address">Street Address <span class="required">*</span></label>
-          <input type="text" id="address" name="address" placeholder="312 Dover Ln" required>
+          <input type="text" id="address" name="address" placeholder="222 Summer Creek Ln" required>
         </div>
 
         <div class="form-row">
           <div class="form-group">
             <label for="city">City <span class="required">*</span></label>
-            <input type="text" id="city" name="city" placeholder="Friendswood" required>
+            <input type="text" id="city" name="city" placeholder="Rosenberg" required>
           </div>
           <div class="form-group">
             <label for="state">State <span class="required">*</span></label>
@@ -316,18 +316,18 @@
         <div class="form-row">
           <div class="form-group">
             <label for="purchasePrice">Purchase Price <span class="required">*</span></label>
-            <input type="number" id="purchasePrice" name="purchasePrice" placeholder="180000" required>
+            <input type="number" id="purchasePrice" name="purchasePrice" placeholder="159000" required>
           </div>
           <div class="form-group">
             <label for="arv">After-Repair Value (ARV) <span class="required">*</span></label>
-            <input type="number" id="arv" name="arv" placeholder="290000" required>
+            <input type="number" id="arv" name="arv" placeholder="340000" required>
           </div>
         </div>
 
         <div class="form-row">
           <div class="form-group">
             <label for="repairs">Estimated Repairs <span class="required">*</span></label>
-            <input type="number" id="repairs" name="repairs" placeholder="55000" required>
+            <input type="number" id="repairs" name="repairs" placeholder="12000" required>
           </div>
           <div class="form-group">
             <label for="closingCosts">Closing Costs %</label>
@@ -344,11 +344,11 @@
         <div class="form-row">
           <div class="form-group">
             <label for="sqft">Square Feet</label>
-            <input type="number" id="sqft" name="sqft" placeholder="1546">
+            <input type="number" id="sqft" name="sqft" placeholder="2532">
           </div>
           <div class="form-group">
             <label for="yearBuilt">Year Built</label>
-            <input type="number" id="yearBuilt" name="yearBuilt" placeholder="1970">
+            <input type="number" id="yearBuilt" name="yearBuilt" placeholder="2006">
           </div>
         </div>
 
@@ -399,7 +399,7 @@ HVAC and roof: $20,000
         <!-- Actions -->
         <div class="button-group" style="margin-top: 40px;">
           <button type="submit" class="btn-primary" id="submitBtn">Generate Report (HTML)</button>
-          <button type="reset" class="btn-secondary">Clear Form</button>
+          <button type="button" class="btn-secondary" id="clearBtn">Clear Form</button>
         </div>
 
         <div class="loading" id="loading">
@@ -423,9 +423,18 @@ HVAC and roof: $20,000
   <script>
     const form = document.getElementById('analyzerForm');
     const submitBtn = document.getElementById('submitBtn');
+    const clearBtn = document.getElementById('clearBtn');
     const loading = document.getElementById('loading');
     const errorDiv = document.getElementById('error');
     const successDiv = document.getElementById('success');
+
+    // Clear form button handler
+    clearBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      form.reset();
+      errorDiv.style.display = 'none';
+      successDiv.style.display = 'none';
+    });
 
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
