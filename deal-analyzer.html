@@ -271,8 +271,35 @@
       </div>
 
       <form id="analyzerForm">
-        <!-- Property Location -->
+        <!-- Client Contact Information -->
         <div class="section-header">
+          <h3>Client Contact Information</h3>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="borrowerName">Borrower / Client Name <span class="required">*</span></label>
+            <input type="text" id="borrowerName" name="borrowerName" placeholder="Enter borrower or client name" required>
+          </div>
+          <div class="form-group">
+            <label for="borrowerPhone">Phone</label>
+            <input type="text" id="borrowerPhone" name="borrowerPhone" placeholder="Enter phone number">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="borrowerEmail">Email</label>
+            <input type="email" id="borrowerEmail" name="borrowerEmail" placeholder="Enter email address">
+          </div>
+          <div class="form-group">
+            <label for="entityType">Entity Type</label>
+            <input type="text" id="entityType" name="entityType" placeholder="e.g., LLC, Individual, Corp">
+          </div>
+        </div>
+
+        <!-- Property Location -->
+        <div class="section-header" style="margin-top: 40px;">
           <h3>Property Location</h3>
         </div>
 
@@ -376,30 +403,6 @@
           <label for="repairDetails">Repair Breakdown (or notes)</label>
           <textarea id="repairDetails" name="repairDetails" placeholder="e.g., Interior paint/flooring: $7,500&#10;Kitchen refresh: $14,000&#10;HVAC and roof: $20,000"></textarea>
           <div class="help-text">Line-by-line repair estimates (will be organized in exhibit)</div>
-        </div>
-
-        <!-- Lender Analysis -->
-        <div class="section-header" style="margin-top: 40px;">
-          <h3>Lender Routing (Coming Soon)</h3>
-        </div>
-
-        <div class="form-group">
-          <label>Which lenders to compare?</label>
-          <div style="margin-top: 10px;">
-            <label style="display: inline-block; margin-right: 20px; font-weight: 400;">
-              <input type="checkbox" name="lenders" value="ACP-K" checked> Kiavi (ACP-K)
-            </label>
-            <label style="display: inline-block; margin-right: 20px; font-weight: 400;">
-              <input type="checkbox" name="lenders" value="ACP-R" checked> RCN (ACP-R)
-            </label>
-            <label style="display: inline-block; margin-right: 20px; font-weight: 400;">
-              <input type="checkbox" name="lenders" value="ACP-E" checked> Easy Street (ACP-E)
-            </label>
-            <label style="display: inline-block; font-weight: 400;">
-              <input type="checkbox" name="lenders" value="ACP-F" checked> RFG (ACP-F)
-            </label>
-          </div>
-          <div class="help-text">Lender matrix will automatically calculate cash due at closing for each option</div>
         </div>
 
         <!-- Actions -->
