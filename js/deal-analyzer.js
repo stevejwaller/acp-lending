@@ -1,8 +1,18 @@
+console.log('deal-analyzer.js loaded');
+
 const form = document.getElementById('analyzerForm');
 const submitBtn = document.getElementById('submitBtn');
 const loading = document.getElementById('loading');
 const errorDiv = document.getElementById('error');
 const successDiv = document.getElementById('success');
+
+console.log('Elements found:', {
+  form: !!form,
+  submitBtn: !!submitBtn,
+  loading: !!loading,
+  errorDiv: !!errorDiv,
+  successDiv: !!successDiv
+});
 
 form.addEventListener('submit', async (e) => {
   e.preventDefault();
