@@ -501,6 +501,37 @@
       <div id="section-2-content" style="display: none;">
         <div class="form-grid">
           <div class="form-group">
+            <label for="loan-type">Loan Type *</label>
+            <select id="loan-type" name="loan_type" required>
+              <option value="">Select loan type</option>
+              <option value="bridge">Bridge Loan</option>
+              <option value="fix-flip">Fix & Flip</option>
+              <option value="construction">Construction</option>
+              <option value="dscr">DSCR Rental</option>
+              <option value="portfolio">Portfolio</option>
+              <option value="commercial">Commercial</option>
+              <option value="multifamily">Multifamily</option>
+            </select>
+            <span class="error-message">Loan type is required</span>
+          </div>
+          <div class="form-group">
+            <label for="collateral-type">Collateral Type *</label>
+            <select id="collateral-type" name="collateral_type" required>
+              <option value="">Select collateral type</option>
+              <option value="residential">Residential</option>
+              <option value="multifamily">Multifamily</option>
+              <option value="commercial">Commercial</option>
+              <option value="land">Land</option>
+              <option value="mixed-use">Mixed Use</option>
+            </select>
+            <span class="error-message">Collateral type is required</span>
+          </div>
+          <div class="form-group full">
+            <label for="collateral-locations">Collateral Location(s) *</label>
+            <input type="text" id="collateral-locations" name="collateral_locations" required placeholder="City, State (e.g., Houston, TX or multiple locations)">
+            <span class="error-message">Collateral location is required</span>
+          </div>
+          <div class="form-group">
             <label for="purchase-price">Purchase Price *</label>
             <input type="number" id="purchase-price" name="purchase_price" placeholder="500000">
             <span class="error-message">Purchase price is required</span>
@@ -956,6 +987,9 @@ form.addEventListener('submit', function(e) {
     property_address: document.getElementById('property-address').value,
     property_type: document.getElementById('property-type').value,
     estimated_value: parseFloat(document.getElementById('estimated-value').value),
+    loan_type: document.getElementById('loan-type').value,
+    collateral_type: document.getElementById('collateral-type').value,
+    collateral_locations: document.getElementById('collateral-locations').value,
     purchase_price: parseFloat(document.getElementById('purchase-price').value),
     arv: parseFloat(document.getElementById('arv').value),
     repair_budget: parseFloat(document.getElementById('repair-budget').value),
