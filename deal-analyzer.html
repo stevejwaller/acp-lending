@@ -431,6 +431,7 @@ HVAC and roof: $20,000
     const successDiv = document.getElementById('success');
     console.log('All elements found:', { form: !!form, submitBtn: !!submitBtn, loading: !!loading, errorDiv: !!errorDiv, successDiv: !!successDiv });
 
+    console.log('About to attach submit event listener to form:', form.id);
     form.addEventListener('submit', async (e) => {
       console.log('=== FORM SUBMIT EVENT TRIGGERED ===');
       e.preventDefault();
@@ -517,6 +518,7 @@ HVAC and roof: $20,000
         loading.style.display = 'none';
       }
     });
+    console.log('Submit event listener attached successfully');
 
     function generateDealBook(data) {
       const {
