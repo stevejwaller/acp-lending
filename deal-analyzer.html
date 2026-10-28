@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ACP Deal Executive Summary Analyzer</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background: linear-gradient(135deg, #001a4d 0%, #003d99 100%);
+      min-height: 100vh;
+      padding: 40px 20px;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      overflow: hidden;
+    }
+
+    .header {
+      background: linear-gradient(135deg, #001a4d 0%, #003d99 100%);
+      color: white;
+      padding: 40px;
+      text-align: center;
+    }
+
+    .header h1 {
+      font-size: 28px;
+      margin-bottom: 8px;
+      font-weight: 700;
+    }
+
+    .header p {
+      font-size: 14px;
+      opacity: 0.95;
+    }
+
+    .content {
+      padding: 40px;
+    }
+
+    .form-wrapper {
+      display: block;
+    }
+
+    .form-group {
+      margin-bottom: 24px;
+    }
+
+    label {
+      display: block;
+      font-weight: 600;
+      color: #333;
+      margin-bottom: 8px;
+      font-size: 14px;
+    }
+
+    label .required {
+      color: #c33;
+    }
+
+    input[type="text"],
+    input[type="number"],
+    select {
+      width: 100%;
+      padding: 12px 14px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      font-size: 16px;
+      font-family: inherit;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    input:focus,
+    select:focus {
+      outline: none;
+      border-color: #c9974a;
+      box-shadow: 0 0 0 3px rgba(201, 151, 74, 0.15);
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    @media (max-width: 600px) {
+      .form-row {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .button-group {
+      display: flex;
+      gap: 12px;
+      margin-top: 32px;
+    }
+
+    button {
+      flex: 1;
+      padding: 14px;
+      border: none;
+      border-radius: 6px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.1s;
+    }
+
+    .btn-primary {
+      background: #c9974a;
+      color: white;
+    }
+
+    .btn-primary:hover:not(:disabled) {
+      background: #b8843f;
+      transform: translateY(-2px);
+    }
+
+    .btn-primary:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+    }
+
+    .btn-secondary {
+      background: #f0f0f0;
+      color: #333;
+    }
+
+    .btn-secondary:hover {
+      background: #e0e0e0;
+    }
+
+    .loading {
+      display: none;
+      text-align: center;
+      padding: 24px;
+      background: #f9f9f9;
+      border-radius: 6px;
+      margin-top: 16px;
+    }
+
+    .spinner {
+      display: inline-block;
+      width: 24px;
+      height: 24px;
+      border: 3px solid #f0f0f0;
+      border-top-color: #c9974a;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .loading-text {
+      margin-top: 12px;
+      color: #666;
+      font-size: 14px;
+    }
+
+    .error {
+      display: none;
+      background: #fde4e4;
+      border-left: 4px solid #c33;
+      color: #c33;
+      padding: 14px;
+      border-radius: 6px;
+      margin-bottom: 20px;
+      font-size: 14px;
+    }
+
+    .success {
+      display: none;
+      background: #e4f5e4;
+      border-left: 4px solid #3a3;
+      color: #3a3;
+      padding: 14px;
+      border-radius: 6px;
+      margin-bottom: 20px;
+      font-size: 14px;
+    }
+
+    .section-header {
+      background: #f9f9f9;
+      padding: 16px;
+      border-radius: 6px;
+      margin-bottom: 24px;
+    }
+
+    .section-header h3 {
+      font-size: 14px;
+      color: #001a4d;
+      margin-bottom: 0;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      font-weight: 700;
+    }
+
+    .help-text {
+      font-size: 13px;
+      color: #666;
+      margin-top: 6px;
+    }
+
+    .info-box {
+      background: #e3f2fd;
+      border-left: 4px solid #2196F3;
+      padding: 12px;
+      border-radius: 4px;
+      font-size: 13px;
+      color: #1565c0;
+      margin-bottom: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>Deal Executive Summary Analyzer</h1>
+      <p>Generate comprehensive property analysis with comps, financing & market positioning</p>
+    </div>
+
+    <div class="content">
+      <div class="error" id="error"></div>
+      <div class="success" id="success"></div>
+
+      <div class="info-box">
+        <strong>Coming Soon:</strong> PropertyReach API integration for automated comp pulling and market analysis. Currently in beta.
+      </div>
+
+      <form id="analyzerForm">
+        <!-- Property Location -->
+        <div class="section-header">
+          <h3>Property Location</h3>
+        </div>
+
+        <div class="form-group">
+          <label for="address">Street Address <span class="required">*</span></label>
+          <input type="text" id="address" name="address" placeholder="123 Main Street" required>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="city">City <span class="required">*</span></label>
+            <input type="text" id="city" name="city" placeholder="Houston" required>
+          </div>
+          <div class="form-group">
+            <label for="state">State <span class="required">*</span></label>
+            <input type="text" id="state" name="state" placeholder="TX" value="TX" maxlength="2" required>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="zip">ZIP Code</label>
+            <input type="text" id="zip" name="zip" placeholder="77001">
+          </div>
+          <div class="form-group">
+            <label for="subdivision">Subdivision</label>
+            <input type="text" id="subdivision" name="subdivision" placeholder="e.g., Alief, Sterling Ridge">
+            <div class="help-text">Optional - helps with comp matching</div>
+          </div>
+        </div>
+
+        <!-- Deal Parameters -->
+        <div class="section-header" style="margin-top: 32px;">
+          <h3>Deal Parameters</h3>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="purchasePrice">Purchase Price <span class="required">*</span></label>
+            <input type="number" id="purchasePrice" name="purchasePrice" placeholder="250000" required>
+          </div>
+          <div class="form-group">
+            <label for="arv">After-Repair Value (ARV) <span class="required">*</span></label>
+            <input type="number" id="arv" name="arv" placeholder="350000" required>
+            <div class="help-text">Or leave blank to calculate from comps</div>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="repairs">Estimated Repairs <span class="required">*</span></label>
+            <input type="number" id="repairs" name="repairs" placeholder="50000" required>
+          </div>
+          <div class="form-group">
+            <label for="closingCosts">Closing Costs %</label>
+            <input type="number" id="closingCosts" name="closingCosts" placeholder="3" value="3">
+            <div class="help-text">As percentage of advance (default: 3%)</div>
+          </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="button-group">
+          <button type="submit" class="btn-primary" id="submitBtn">Generate Report</button>
+          <button type="reset" class="btn-secondary">Clear Form</button>
+        </div>
+
+        <div class="loading" id="loading">
+          <div class="spinner"></div>
+          <div class="loading-text">Generating deal analysis and preparing report...</div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    const form = document.getElementById('analyzerForm');
+    const submitBtn = document.getElementById('submitBtn');
+    const loading = document.getElementById('loading');
+    const errorDiv = document.getElementById('error');
+    const successDiv = document.getElementById('success');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      errorDiv.style.display = 'none';
+      successDiv.style.display = 'none';
+      submitBtn.disabled = true;
+      loading.style.display = 'block';
+
+      try {
+        const formData = new FormData(form);
+        const data = Object.fromEntries(formData);
+
+        // Parse numbers
+        const purchasePrice = parseFloat(data.purchasePrice) || 0;
+        const arv = parseFloat(data.arv) || 0;
+        const repairs = parseFloat(data.repairs) || 0;
+        const closingCostPercent = (parseFloat(data.closingCosts) || 3) / 100;
+
+        if (!purchasePrice || !arv || !repairs) {
+          throw new Error('Purchase price, ARV, and repairs are required');
+        }
+
+        // Calculate financing at 70% and 75%
+        const advance70 = arv * 0.70;
+        const advance75 = arv * 0.75;
+
+        const closingCosts70 = advance70 * closingCostPercent;
+        const closingCosts75 = advance75 * closingCostPercent;
+
+        const maxPurchase70 = advance70 - repairs - closingCosts70;
+        const maxPurchase75 = advance75 - repairs - closingCosts75;
+
+        const cashDueAtClosing70 = Math.max(0, purchasePrice - maxPurchase70);
+        const cashDueAtClosing75 = Math.max(0, purchasePrice - maxPurchase75);
+
+        const walkAwayCeiling = Math.max(Math.round(maxPurchase70), Math.round(maxPurchase75));
+
+        // Generate HTML report
+        const reportHTML = generateReport({
+          address: data.address,
+          city: data.city,
+          state: data.state,
+          zip: data.zip,
+          purchasePrice,
+          arv,
+          repairs,
+          advance70: Math.round(advance70),
+          advance75: Math.round(advance75),
+          closingCosts70: Math.round(closingCosts70),
+          closingCosts75: Math.round(closingCosts75),
+          maxPurchase70: Math.max(0, Math.round(maxPurchase70)),
+          maxPurchase75: Math.max(0, Math.round(maxPurchase75)),
+          walkAwayCeiling,
+          cashDueAtClosing70: Math.round(cashDueAtClosing70),
+          cashDueAtClosing75: Math.round(cashDueAtClosing75)
+        });
+
+        // Create downloadable file
+        const blob = new Blob([reportHTML], { type: 'text/html' });
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `deal-summary-${data.address.replace(/\s+/g, '-')}-${new Date().toISOString().split('T')[0]}.html`;
+        document.body.appendChild(link);
+        link.click();
+        window.URL.revokeObjectURL(url);
+        link.remove();
+
+        successDiv.textContent = 'Report generated and downloaded successfully! Open the HTML file in your browser and print to PDF if needed.';
+        successDiv.style.display = 'block';
+        form.reset();
+      } catch (err) {
+        errorDiv.textContent = 'Error: ' + err.message;
+        errorDiv.style.display = 'block';
+      } finally {
+        submitBtn.disabled = false;
+        loading.style.display = 'none';
+      }
+    });
+
+    function generateReport(data) {
+      const {
+        address, city, state, zip, purchasePrice, arv, repairs,
+        advance70, advance75, closingCosts70, closingCosts75,
+        maxPurchase70, maxPurchase75, walkAwayCeiling,
+        cashDueAtClosing70, cashDueAtClosing75
+      } = data;
+
+      return `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Deal Executive Summary - ${address}</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body { height: 100%; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+      line-height: 1.6;
+      color: #333;
+      background: white;
+    }
+    .container { max-width: 900px; margin: 0 auto; padding: 40px 30px; }
+    .header {
+      border-bottom: 3px solid #001a4d;
+      padding-bottom: 24px;
+      margin-bottom: 40px;
+    }
+    .header h1 { font-size: 26px; color: #001a4d; margin-bottom: 6px; font-weight: 700; }
+    .address-line { color: #666; font-size: 14px; }
+    .section {
+      margin-bottom: 40px;
+      page-break-inside: avoid;
+    }
+    .section h2 {
+      font-size: 14px;
+      color: #001a4d;
+      border-bottom: 2px solid #c9974a;
+      padding-bottom: 10px;
+      margin-bottom: 16px;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      font-weight: 700;
+    }
+    .metrics {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin-bottom: 20px;
+    }
+    .metric {
+      background: #f9f9f9;
+      border-left: 4px solid #c9974a;
+      padding: 16px;
+      border-radius: 4px;
+    }
+    .metric-label { font-size: 11px; color: #999; text-transform: uppercase; letter-spacing: 0.5px; }
+    .metric-value { font-size: 22px; color: #001a4d; font-weight: 700; margin-top: 6px; }
+    .metric-value.positive { color: #3a3; }
+    .metric-value.negative { color: #c33; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 16px;
+      font-size: 13px;
+    }
+    th {
+      background: #f0f0f0;
+      padding: 10px;
+      text-align: left;
+      font-weight: 600;
+      border-bottom: 2px solid #ddd;
+    }
+    td { padding: 10px; border-bottom: 1px solid #eee; }
+    tr:hover { background: #fafafa; }
+    .footer {
+      font-size: 11px;
+      color: #999;
+      text-align: center;
+      padding-top: 20px;
+      margin-top: 40px;
+      border-top: 1px solid #eee;
+    }
+    @page { margin: 0.5in; }
+    @media print { body { margin: 0; padding: 0; } }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>DEAL EXECUTIVE SUMMARY</h1>
+      <div class="address-line">${address}, ${city}, ${state} ${zip || ''}</div>
+    </div>
+
+    <div class="section">
+      <h2>Purchase Price & Walkaway Estimate</h2>
+      <div class="metrics">
+        <div class="metric">
+          <div class="metric-label">Target Purchase Price</div>
+          <div class="metric-value">\$${purchasePrice.toLocaleString()}</div>
+        </div>
+        <div class="metric">
+          <div class="metric-label">Walkaway Ceiling (75%)</div>
+          <div class="metric-value">\$${walkAwayCeiling.toLocaleString()}</div>
+        </div>
+        <div class="metric">
+          <div class="metric-label">Cash Due at Closing (75%)</div>
+          <div class="metric-value ${cashDueAtClosing75 > 0 ? 'negative' : 'positive'}">\$${cashDueAtClosing75.toLocaleString()}</div>
+        </div>
+        <div class="metric">
+          <div class="metric-label">Estimated Repairs</div>
+          <div class="metric-value">\$${repairs.toLocaleString()}</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>ARV Estimate & Financing</h2>
+      <div class="metrics">
+        <div class="metric">
+          <div class="metric-label">After-Repair Value</div>
+          <div class="metric-value">\$${arv.toLocaleString()}</div>
+        </div>
+        <div class="metric">
+          <div class="metric-label">70% ARV Advance</div>
+          <div class="metric-value">\$${advance70.toLocaleString()}</div>
+        </div>
+        <div class="metric">
+          <div class="metric-label">75% ARV Advance</div>
+          <div class="metric-value">\$${advance75.toLocaleString()}</div>
+        </div>
+        <div class="metric">
+          <div class="metric-label">Maximum Purchase Price (75%)</div>
+          <div class="metric-value">\$${maxPurchase75.toLocaleString()}</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>Financing at 70% & 75% ARV</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Metric</th>
+            <th>70% ARV</th>
+            <th>75% ARV</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>ARV Advance</td>
+            <td>\$${advance70.toLocaleString()}</td>
+            <td>\$${advance75.toLocaleString()}</td>
+          </tr>
+          <tr>
+            <td>Less: Repairs</td>
+            <td>-\$${repairs.toLocaleString()}</td>
+            <td>-\$${repairs.toLocaleString()}</td>
+          </tr>
+          <tr>
+            <td>Less: Closing Costs</td>
+            <td>-\$${closingCosts70.toLocaleString()}</td>
+            <td>-\$${closingCosts75.toLocaleString()}</td>
+          </tr>
+          <tr style="background: #f0f0f0; font-weight: 600;">
+            <td>Maximum Purchase Price</td>
+            <td>\$${maxPurchase70.toLocaleString()}</td>
+            <td>\$${maxPurchase75.toLocaleString()}</td>
+          </tr>
+          <tr>
+            <td>Target Purchase Price</td>
+            <td>\$${purchasePrice.toLocaleString()}</td>
+            <td>\$${purchasePrice.toLocaleString()}</td>
+          </tr>
+          <tr style="background: #fde4e4; color: #c33; font-weight: 600;">
+            <td>Cash Due at Closing</td>
+            <td>\$${cashDueAtClosing70.toLocaleString()}</td>
+            <td>\$${cashDueAtClosing75.toLocaleString()}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="footer">
+      <p><strong>ACP Lending</strong> | Deal Executive Summary Report</p>
+      <p>Generated ${new Date().toLocaleDateString()} | To print as PDF: Press Ctrl+P (or Cmd+P on Mac) and select "Save as PDF"</p>
+    </div>
+  </div>
+</body>
+</html>`;
+    }
+  </script>
+</body>
+</html>
