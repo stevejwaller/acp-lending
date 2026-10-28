@@ -421,18 +421,25 @@ HVAC and roof: $20,000
 
   <script src="/js/nav.js?v=34" defer></script>
   <script>
+    console.log('=== INLINE SCRIPT STARTING ===');
     const form = document.getElementById('analyzerForm');
+    console.log('Form found:', !!form);
     const submitBtn = document.getElementById('submitBtn');
+    console.log('Submit button found:', !!submitBtn);
     const loading = document.getElementById('loading');
     const errorDiv = document.getElementById('error');
     const successDiv = document.getElementById('success');
+    console.log('All elements found:', { form: !!form, submitBtn: !!submitBtn, loading: !!loading, errorDiv: !!errorDiv, successDiv: !!successDiv });
 
     form.addEventListener('submit', async (e) => {
+      console.log('=== FORM SUBMIT EVENT TRIGGERED ===');
       e.preventDefault();
+      console.log('preventDefault() called');
       errorDiv.style.display = 'none';
       successDiv.style.display = 'none';
       submitBtn.disabled = true;
       loading.style.display = 'block';
+      console.log('Loading indicator shown');
 
       try {
         const formData = new FormData(form);
