@@ -3,20 +3,20 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Deal Estimator | ACP Lending</title>
+<title>Deal Calculator | ACP Lending</title>
 <link rel="stylesheet" href="/css/style.css?v=34">
-<link rel="canonical" href="https://acp-lending.com/deal-estimator">
+<link rel="canonical" href="https://acp-lending.com/deal-calculator">
 <meta name="description" content="Deal calculator, borrower worksheets, and submission forms to prepare an investment-property financing request with ACP Lending.">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="ACP Lending">
-<meta property="og:title" content="Deal Estimator | ACP Lending">
+<meta property="og:title" content="Deal Calculator | ACP Lending">
 <meta property="og:description" content="Deal calculator, borrower worksheets, and submission forms to prepare an investment-property financing request with ACP Lending.">
-<meta property="og:url" content="https://acp-lending.com/deal-estimator">
+<meta property="og:url" content="https://acp-lending.com/deal-calculator">
 <meta property="og:image" content="https://acp-lending.com/og-image.png?v=2">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Deal Estimator | ACP Lending">
+<meta name="twitter:title" content="Deal Calculator | ACP Lending">
 <meta name="twitter:description" content="Deal calculator, borrower worksheets, and submission forms to prepare an investment-property financing request with ACP Lending.">
 <meta name="twitter:image" content="https://acp-lending.com/og-image.png?v=2">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
@@ -69,7 +69,7 @@
         <span class="nav-label">Client Tools</span>
         <ul>
           <li><a href="/pre-approval">Pre-Approval</a></li>
-          <li class="active"><a href="/deal-estimator">Deal Estimator</a></li>
+          <li class="active"><a href="/deal-calculator">Deal Calculator</a></li>
           <li><a href="/dscr-calculator">DSCR Calculator</a></li>
           <li><a href="/request-for-information">Request Financing</a></li>
           <li><a href="/loan-documents">Forms</a></li>
@@ -83,15 +83,15 @@
 </header>
 <div class="hero">
   <div class="hero-inner">
-    <h1>Investor Resources &amp; Deal Estimator</h1>
+    <h1>Investor Resources &amp; Deal Calculator</h1>
   </div>
 </div>
 <main>
-<h2>Deal Estimator</h2>
+<h2>Deal Calculator</h2>
 <p>Use the calculator below for a quick preliminary estimate, then download the ACP-branded forms to organize the information needed for a financing review.</p>
 <div class="calc-wrap" id="deal-calculator">
   <div class="calc-title">
-    <h3>ACP Deal Estimator</h3>
+    <h3>ACP Deal Calculator</h3>
     <p>Estimate potential leverage and carrying costs for a bridge, fix-and-flip, or ground-up construction project.</p>
   </div>
   <div class="calc-print-head" id="calc-print-head">
@@ -186,7 +186,15 @@
               <option>VA</option><option>WA</option><option>WV</option><option>WI</option><option>WY</option>
             </select>
           </div>
+          <div class="calc-field" id="hmlField" style="display:none">
+            <label for="hmlFunded">HML Advance <span class="hint">Texas only</span></label>
+            <select id="hmlFunded">
+              <option value="">No</option>
+              <option value="hml">Yes — HML funds this deal</option>
+            </select>
+          </div>
         </div>
+        <p class="footnote" id="calc-state-note" style="display:none">HML Advance (Texas): the maximum loan is based on ARV alone, typically 70–75%. The 90% of cost test is not applied. Estimates only, not a commitment to lend.</p>
         
         <div class="calc-field-row">
           <div class="calc-field">
@@ -465,7 +473,7 @@
 <div class="brief-optin">
 <h3>Get new ACP reports by email</h3>
 <p>Every Investor Brief and market report goes out by email the morning it is published. The market data, and what it means for your financing. No rates, no pitch, and you can stop them in one click.</p>
-<form class="optin-form" data-source="/deal-estimator" novalidate>
+<form class="optin-form" data-source="/deal-calculator" novalidate>
 <label class="sr-only" for="optin-name-deal">First name</label>
 <input id="optin-name-deal" type="text" name="first_name" autocomplete="given-name" placeholder="First name (optional)">
 <label class="sr-only" for="optin-email-deal">Email address</label>
