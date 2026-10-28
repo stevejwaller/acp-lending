@@ -428,17 +428,36 @@ HVAC and roof: $20,000
     const errorDiv = document.getElementById('error');
     const successDiv = document.getElementById('success');
 
-    // Clear form button handler - use setTimeout to ensure it's set up after all page load events
-    setTimeout(function() {
-      if (clearBtn) {
-        clearBtn.onclick = function() {
-          form.reset();
-          if (errorDiv) errorDiv.style.display = 'none';
-          if (successDiv) successDiv.style.display = 'none';
-          return false;
-        };
+    // Clear form button handler - set onclick directly with delay
+    (function setupClearButton() {
+      try {
+        const btn = document.getElementById('clearBtn');
+        const frm = document.getElementById('analyzerForm');
+        if (btn && frm) {
+          btn.onclick = function(event) {
+            event.preventDefault();
+            frm.reset();
+            const errDiv = document.getElementById('error');
+            const sucDiv = document.getElementById('success');
+            if (errDiv) errDiv.style.display = 'none';
+            if (sucDiv) sucDiv.style.display = 'none';
+            return false;
+          };
+        }
+      } catch(e) {
+        console.error('Error setting up clear button:', e);
       }
-    }, 100);
+    })();
+
+    // Also try with addEventListener as backup
+    if (clearBtn) {
+      clearBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        form.reset();
+        if (errorDiv) errorDiv.style.display = 'none';
+        if (successDiv) successDiv.style.display = 'none';
+      });
+    }
 
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
