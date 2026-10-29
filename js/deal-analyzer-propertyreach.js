@@ -249,11 +249,11 @@ function generateDealBook(data) {
       ${realtorWebsite ? `<div class="address"><a href="${realtorWebsite}" target="_blank" style="color: #001a4d;">${realtorWebsite}</a></div>` : '<div class="address"><a href="https://www.har.com" target="_blank" style="color: #001a4d;">View on HAR.com</a> | <a href="https://www.zillow.com" target="_blank" style="color: #001a4d;">View on Zillow</a></div>'}
     </div>
 
-    <!-- Curbside Photo -->
-    <div style="margin-bottom: 30px; text-align: center;">
-      <img id="streetViewImg" src="https://maps.googleapis.com/maps/api/streetview?size=600x400&location=${encodeURIComponent(address + ',' + city + ',' + state)}&key=AIzaSyBR80zvlUYQcMpymmRqbrqbdBDbZ51Z2Kc" alt="Street View" style="max-width: 100%; height: auto; border: 1px solid #ddd; display: block;" onerror="document.getElementById('streetViewImg').style.display='none'; document.getElementById('streetViewError').style.display='block';">
-      <div id="streetViewError" style="display: none; background: #f9f9f9; border: 1px solid #ddd; padding: 30px; text-align: center; color: #666; font-size: 14px;">Street View image unavailable. Google Maps API key may not be configured for this domain.</div>
-      <div style="font-size: 11px; color: #999; margin-top: 8px;">Curbside view from Google Maps Street View</div>
+    <!-- Property Snapshot: Curbside Photo -->
+    <div style="margin-bottom: 30px; text-align: center; border: 1px solid #ddd; border-radius: 4px; padding: 16px; background: #fafafa;">
+      <div style="font-size: 13px; color: #001a4d; font-weight: 600; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.5px;">Property Snapshot</div>
+      <img src="https://maps.googleapis.com/maps/api/streetview?size=600x400&location=${encodeURIComponent(address + ',' + city + ',' + state)}&key=AIzaSyBR80zvlUYQcMpymmRqbrqbdBDbZ51Z2Kc" alt="Street View" style="max-width: 100%; height: auto; border: 1px solid #ddd; border-radius: 3px;">
+      <div style="font-size: 11px; color: #666; margin-top: 8px;">Curbside view from Google Maps Street View</div>
     </div>
 
     <div class="executive-summary">
