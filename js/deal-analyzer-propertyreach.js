@@ -251,7 +251,8 @@ function generateDealBook(data) {
 
     <!-- Curbside Photo -->
     <div style="margin-bottom: 30px; text-align: center;">
-      <img src="https://maps.googleapis.com/maps/api/streetview?size=600x400&location=${encodeURIComponent(address + ',' + city + ',' + state)}&key=AIzaSyBR80zvlUYQcMpymmRqbrqbdBDbZ51Z2Kc" alt="Street View" style="max-width: 100%; height: auto; border: 1px solid #ddd;" onerror="this.src='https://via.placeholder.com/600x400?text=Street+View+Unavailable'">
+      <img id="streetViewImg" src="https://maps.googleapis.com/maps/api/streetview?size=600x400&location=${encodeURIComponent(address + ',' + city + ',' + state)}&key=AIzaSyBR80zvlUYQcMpymmRqbrqbdBDbZ51Z2Kc" alt="Street View" style="max-width: 100%; height: auto; border: 1px solid #ddd; display: block;" onerror="document.getElementById('streetViewImg').style.display='none'; document.getElementById('streetViewError').style.display='block';">
+      <div id="streetViewError" style="display: none; background: #f9f9f9; border: 1px solid #ddd; padding: 30px; text-align: center; color: #666; font-size: 14px;">Street View image unavailable. Google Maps API key may not be configured for this domain.</div>
       <div style="font-size: 11px; color: #999; margin-top: 8px;">Curbside view from Google Maps Street View</div>
     </div>
 
