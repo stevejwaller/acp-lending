@@ -5,7 +5,7 @@
 //   /prospects/api/...    -> JSON API (list, add, update, remove, import, PropertyReach contact lookup)
 // Bindings: env.DB (D1 acp-lending-forms, via wrangler.toml), env.PROPERTYREACH_API_KEY (Pages secret).
 
-const PASS_HASH = "02597a5744df178031b2e4e83220fd0464e83b93b7015d98746c4fa42b6037cc"; // sha256(sha256("acp-prospects:"+password))
+const PASS_HASH = "b029eed3f2094d8bdc6d1ae9b9c6fa2d4a840084fdcc649533c9bc5a34882bc3"; // sha256(sha256("acp-prospects:"+password))
 const COOKIE = "acp_px";
 const STATUSES = ["New", "Texted", "Emailed", "Talking", "Quoted", "Not now", "Not interested", "Do not contact"];
 
