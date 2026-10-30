@@ -85,14 +85,14 @@ const HEAD = `<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta n
 .dl-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px;margin:0 0 14px}
 .dl-stat{border:1px solid #dde1e7;border-radius:8px;padding:10px 12px;background:#fff}
 .dl-stat b{display:block;font-size:20px;color:#10233d}.dl-stat span{font-size:12px;color:#5a6472}
-.dl-scroll{overflow-x:auto;border:1px solid #dde1e7;border-radius:8px;background:#fff}
+.dl-scroll{overflow:auto;max-height:calc(100vh - 120px);border:1px solid #dde1e7;border-radius:8px;background:#fff}
 table.dl{border-collapse:collapse;width:100%;font-size:13px}
 table.dl th,table.dl td{padding:7px 9px;border-bottom:1px solid #eef0f3;text-align:left;vertical-align:top;white-space:nowrap}
-table.dl th{background:#10233d;color:#fff;position:sticky;top:0;cursor:pointer;user-select:none}
+table.dl th{background:#10233d;color:#fff;position:sticky;top:0;z-index:2;cursor:pointer;user-select:none}
 table.dl td.n,table.dl th.n{text-align:right}
 table.dl td.wrap{white-space:normal;min-width:220px}
 table.dl tr.row:hover{background:#f7f8fa;cursor:pointer}
-table.dl tfoot td{font-weight:700;background:#f4f3ef;border-top:2px solid #10233d}
+table.dl tfoot td{position:sticky;bottom:0;z-index:2;font-weight:700;background:#f4f3ef;border-top:2px solid #10233d}
 .pend{color:#b45309}
 tr.detail td{white-space:normal;background:#fafbfc;font-size:13px}
 .dl-login{max-width:360px;margin:60px auto;padding:24px;border:1px solid #dde1e7;border-radius:8px}
