@@ -15,6 +15,9 @@
 @keyframes da-spin { to { transform: rotate(360deg); } }
 .da-err { background: #fdecea; border: 1px solid #f5c2c0; color: #8a1f17; padding: 12px 14px; border-radius: 6px; margin: 0 24px 20px; }
 .calc-inputs .calc-field { margin-bottom: 14px; }
+.da-money { position: relative; display: block; }
+.da-money::before { content: "$"; position: absolute; left: 10px; top: 50%; transform: translateY(-50%); color: var(--ink); font-weight: 600; pointer-events: none; }
+.calc-field .da-money input { padding-left: 24px; }
 .calc-field-row.da-three { grid-template-columns: 1fr 1fr 1fr; }
 @media (max-width: 760px) { .calc-field-row.da-three { grid-template-columns: 1fr; } }
 </style>
@@ -73,12 +76,12 @@
       <div class="calc-field"><label for="zip">Zip *</label><input id="zip" required placeholder="77469"></div>
     </div>
     <div class="calc-field-row">
-      <div class="calc-field"><label for="purchasePrice">Purchase Price *</label><input id="purchasePrice" type="number" required placeholder="159000"></div>
-      <div class="calc-field"><label for="repairBudget">Repair Budget</label><input id="repairBudget" type="number" placeholder="15000"></div>
+      <div class="calc-field"><label for="purchasePrice">Purchase Price *</label><span class="da-money"><input id="purchasePrice" type="number" required placeholder="159000"></span></div>
+      <div class="calc-field"><label for="repairBudget">Repair Budget</label><span class="da-money"><input id="repairBudget" type="number" placeholder="15000"></span></div>
     </div>
     <div class="calc-field-row">
-      <div class="calc-field"><label for="arvEstimate">ARV Estimate <span class="hint">(optional)</span></label><input id="arvEstimate" type="number" placeholder="blank = compute from comps"></div>
-      <div class="calc-field"><label for="borrowerLiquidity">Borrower Liquidity <span class="hint">(cash available)</span></label><input id="borrowerLiquidity" type="number" placeholder="100000"></div>
+      <div class="calc-field"><label for="arvEstimate">ARV Estimate <span class="hint">(optional)</span></label><span class="da-money"><input id="arvEstimate" type="number" placeholder="blank = compute from comps"></span></div>
+      <div class="calc-field"><label for="borrowerLiquidity">Borrower Liquidity <span class="hint">(cash available)</span></label><span class="da-money"><input id="borrowerLiquidity" type="number" placeholder="100000"></span></div>
     </div>
     <div class="calc-field-row da-three">
       <div class="calc-field"><label for="borrowerName">Client Name *</label><input id="borrowerName" required autocomplete="name"></div>
