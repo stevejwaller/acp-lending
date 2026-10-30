@@ -54,14 +54,14 @@ export async function onRequest(context) {
   if (path === "app.js") return new Response(APP_JS, { headers: { "Content-Type": "text/javascript; charset=utf-8", ...SEC } });
   if (path === "api/list") {
     const rfi = await env.DB.prepare(
-      `SELECT 'Request for Information' AS source, id, created_at, client_full_name AS borrower, client_email AS email, client_phone AS phone,
+      `SELECT 'Request for Information' AS source, id, created_at, COALESCE(deal_status,'Active') AS status, client_full_name AS borrower, client_email AS email, client_phone AS phone,
         legal_entity_name AS entity, property_address AS property, property_type, products_of_interest AS product,
         currently_own_property AS owned, financing_amount AS financing, purchase_price AS purchase, estimated_repairs AS repairs,
         estimated_arv AS arv, estimated_credit_score AS credit, estimated_liquidity AS liquidity, target_closing_date AS closing,
         exit_strategy AS exit_strategy, project_summary AS summary, signature_name AS signature
        FROM rfi_submissions ORDER BY id`).all();
     const pre = await env.DB.prepare(
-      `SELECT 'Pre-Approval' AS source, id, created_at, borrower_full_name AS borrower, borrower_email AS email, borrower_phone AS phone,
+      `SELECT 'Pre-Approval' AS source, id, created_at, COALESCE(deal_status,'Active') AS status, borrower_full_name AS borrower, borrower_email AS email, borrower_phone AS phone,
         letter_entity AS entity, property_address AS property, '' AS property_type, financing_program AS product,
         '' AS owned, letter_amount AS financing, purchase_price AS purchase, rehab_budget AS repairs,
         estimated_arv AS arv, credit_score_range AS credit, liquidity, closing_timeframe AS closing,
@@ -133,7 +133,7 @@ function money(n){return n==null?'':'$'+Math.round(n).toLocaleString()}
 function cell(v){var s=v==null?'':String(v).trim();if(!s||/^pending$/i.test(s))return '<span class="pend">Pending</span>';return esc(s)}
 function mcell(v){var n=num(v);return n==null?'<span class="pend">Pending</span>':money(n)}
 var COLS=[
- {k:'date',t:'Date'},{k:'source',t:'Source'},{k:'borrower',t:'Borrower'},{k:'entity',t:'Entity'},
+ {k:'date',t:'Date'},{k:'status',t:'Status'},{k:'source',t:'Source'},{k:'borrower',t:'Borrower'},{k:'entity',t:'Entity'},
  {k:'property',t:'Property',wrap:1},{k:'product',t:'Product'},{k:'credit',t:'Credit'},
  {k:'financing',t:'Financing',m:1},{k:'purchase',t:'Purchase',m:1},{k:'repairs',t:'Repairs',m:1},{k:'arv',t:'ARV',m:1},{k:'liquidity',t:'Liquidity',m:1}
 ];
@@ -157,7 +157,7 @@ function render(){
  var body='';
  list.forEach(function(r){
   body+='<tr class="row" data-key="'+esc(r.key)+'">'+COLS.map(function(c){
-   var v=c.m?mcell(r[c.k]):cell(r[c.k]);if(c.k==='date'||c.k==='source')v=esc(r[c.k]);
+   var v=c.m?mcell(r[c.k]):cell(r[c.k]);if(c.k==='date'||c.k==='source')v=esc(r[c.k]);if(c.k==='status')v='<span style="font-weight:700;color:'+(r.status==='Terminated'?'#9aa1ab':'#1a7f37')+'">'+esc(r.status)+'</span>';
    return '<td class="'+(c.m?'n':'')+(c.wrap?' wrap':'')+'">'+v+'</td>'}).join('')+'</tr>';
   if(openId===r.key){
    body+='<tr class="detail"><td colspan="'+COLS.length+'"><b>'+esc(r.source)+' #'+esc(r.id)+'</b> · '+cell(r.email)+' · '+cell(r.phone)+
