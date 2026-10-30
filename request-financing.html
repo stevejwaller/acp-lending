@@ -150,6 +150,16 @@ width:100%;padding:9px 10px;border:1px solid #cfcbc0;border-radius:6px;font-size
     <div class="field"><label class="q" for="f-renovations">Have you completed any major renovations to improve the value of the property? If so, provide the dollar amount and information on the renovations.</label>
       <textarea name="renovations" id="f-renovations"></textarea></div>
 
+    <div class="field"><label class="q" id="grp-have-you-listed-the-property-in-the-last">Have you listed the property in the last 6 months? <span class="req">*</span></label>
+      <div class="choice-row">
+        <label><input type="radio" name="listed_last_6_months" value="Yes" required> Yes</label>
+        <label><input type="radio" name="listed_last_6_months" value="No"> No</label>
+      </div></div>
+
+    <div class="field"><label class="q" for="f-listing_amount">If yes, what was the listing amount?</label>
+      <p class="help">Enter amount in dollars.</p>
+      <input type="text" name="listing_amount" id="f-listing_amount"></div>
+
 </div>
 <div id="rfi-not-owned" hidden>
     <div class="field"><label class="q" for="f-est_closing_date">Estimated closing date <span class="req">*</span></label>
@@ -168,16 +178,6 @@ width:100%;padding:9px 10px;border:1px solid #cfcbc0;border-radius:6px;font-size
       <input type="text" name="estimated_arv" required id="f-estimated_arv-2"></div>
 
 </div>
-
-    <div class="field"><label class="q" id="grp-have-you-listed-the-property-in-the-last">Have you listed the property in the last 6 months? <span class="req">*</span></label>
-      <div class="choice-row">
-        <label><input type="radio" name="listed_last_6_months" value="Yes" required> Yes</label>
-        <label><input type="radio" name="listed_last_6_months" value="No"> No</label>
-      </div></div>
-
-    <div class="field"><label class="q" for="f-listing_amount">If yes, what was the listing amount?</label>
-      <p class="help">Enter amount in dollars.</p>
-      <input type="text" name="listing_amount" id="f-listing_amount"></div>
 
     <div class="field"><label class="q" id="grp-has-the-property-ever-flooded">Has the property ever flooded? <span class="req">*</span></label>
       <div class="choice-row">
