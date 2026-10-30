@@ -80,9 +80,10 @@
       <div class="calc-field"><label for="arvEstimate">ARV Estimate <span class="hint">(optional)</span></label><input id="arvEstimate" type="number" placeholder="blank = compute from comps"></div>
       <div class="calc-field"><label for="borrowerLiquidity">Borrower Liquidity <span class="hint">(cash available)</span></label><input id="borrowerLiquidity" type="number" placeholder="100000"></div>
     </div>
-    <div class="calc-field-row">
-      <div class="calc-field"><label for="borrowerName">Borrower Name</label><input id="borrowerName" placeholder="optional"></div>
-      <div class="calc-field"><label for="borrowerEmail">Email</label><input id="borrowerEmail" type="email" placeholder="optional"></div>
+    <div class="calc-field-row da-three">
+      <div class="calc-field"><label for="borrowerName">Client Name *</label><input id="borrowerName" required autocomplete="name"></div>
+      <div class="calc-field"><label for="borrowerEmail">Email *</label><input id="borrowerEmail" type="email" required autocomplete="email"></div>
+      <div class="calc-field"><label for="borrowerPhone">Phone *</label><input id="borrowerPhone" type="tel" required autocomplete="tel"></div>
     </div>
     <button type="submit" class="btn calc-submit">Generate Report</button>
   </form>
@@ -99,6 +100,6 @@
     <p class="footer-links footer-legal"><a href="/privacy">Privacy Policy</a> &middot; <a href="/terms">Terms of Use</a></p>
   </div>
 </footer>
-<script src="/js/analyze-deal.js?v=1" defer></script>
+<script src="/js/analyze-deal.js?v=2" defer></script>
 </body>
 </html>
