@@ -1,0 +1,11 @@
+# Cloudflare Pages config for the acplending project (deployed from GitHub main).
+# Added 30 Oct 2026 for the private Prospects page (functions/prospects).
+# The PropertyReach key is NOT stored here — it is a Pages secret named PROPERTYREACH_API_KEY.
+name = "acplending"
+pages_build_output_dir = "."
+compatibility_date = "2026-10-01"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "acp-lending-forms"
+database_id = "8e7a5498-22e7-40df-8bb1-c02f454c8d1e"
