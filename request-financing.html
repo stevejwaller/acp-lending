@@ -89,7 +89,7 @@ width:100%;padding:9px 10px;border:1px solid #cfcbc0;border-radius:6px;font-size
 <p class="intro">Use this preliminary request for information to provide property, product, borrower, experience, and declaration information for financing review.</p>
 <p class="notice">Do not enter a Social Security number, bank-account number, or unredacted identity-document information. ACP will provide secure instructions if sensitive documentation is needed.</p>
 
-<form method="POST" action="/request-for-information">
+<form method="POST" action="/request-financing/submit">
 
   <fieldset>
     <legend>Borrower &amp; Deal Snapshot</legend>
@@ -103,7 +103,7 @@ width:100%;padding:9px 10px;border:1px solid #cfcbc0;border-radius:6px;font-size
     <div class="field"><label class="q" for="f-client_phone">Client phone <span class="req">*</span></label>
       <input type="tel" name="client_phone" required id="f-client_phone" autocomplete="tel"></div>
 
-    <div class="field"><label class="q" for="f-estimated_credit_score">Estimated Credit Score <span class="req">*</span></label>
+    <div class="field"><label class="q" for="f-estimated_credit_score">Estimated FICO Score <span class="req">*</span></label>
       <input type="text" name="estimated_credit_score" required id="f-estimated_credit_score"></div>
 
     <div class="field"><label class="q" for="f-prior_experience">Summarize prior experience (last 36 months) <span class="req">*</span></label>
@@ -293,7 +293,7 @@ width:100%;padding:9px 10px;border:1px solid #cfcbc0;border-radius:6px;font-size
 <script>
 (function(){
  var KEY="acp_rfi_draft_v1";
- var form=document.querySelector("form[action='/request-for-information']");
+ var form=document.querySelector("form[action='/request-financing/submit']");
  if(!form) return;
  var back=document.querySelector("[data-acp-back]");
  if(back) back.addEventListener("click",function(e){e.preventDefault();
@@ -334,7 +334,7 @@ width:100%;padding:9px 10px;border:1px solid #cfcbc0;border-radius:6px;font-size
 </script>
 <script>
 (function(){
- var form=document.querySelector("form[action='/request-for-information']"); if(!form) return;
+ var form=document.querySelector("form[action='/request-financing/submit']"); if(!form) return;
  try{var p=new URLSearchParams(location.search).get("product");
   if(p){var cbs=form.querySelectorAll("input[name='products_of_interest']");
    for(var i=0;i<cbs.length;i++){ if(cbs[i].value===p) cbs[i].checked=true; }}}catch(e){}
@@ -347,6 +347,13 @@ width:100%;padding:9px 10px;border:1px solid #cfcbc0;border-radius:6px;font-size
 })();
 </script>
 
+<script>
+(function(){try{var e=new URLSearchParams(location.search).get("error"); if(!e) return;
+ var f=document.querySelector("form[action='/request-financing/submit']"); if(!f) return;
+ var d=document.createElement("div"); d.className="error-box";
+ d.textContent=e==="verify"?"We couldn't verify you're human. Please try submitting again.":"Your request did not go through. Please try again, or call 936-522-8951.";
+ f.parentNode.insertBefore(d,f);}catch(x){}})();
+</script>
 </div>
 </main>
 <footer class="site-footer">
