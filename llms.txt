@@ -50,7 +50,7 @@ Service area: United States, with Texas-specific programs
   PITIA) and a stricter NOI-based DSCR, plus monthly cash flow.
 - [Pre-Approval Request](https://acp-lending.com/pre-approval): Conditional pre-approval
   letter for use with offers.
-- [Request for Information](https://acp-lending.com/request-for-information): Submit a deal
+- [Request for Information](https://acp-lending.com/request-financing): Submit a deal
   for review or ask about a program.
 - [Loan Forms](https://acp-lending.com/loan-documents): Every form needed to prepare and return a financing request
 - [Investor Guidance](https://acp-lending.com/investor-resources): How ARV, leverage, DSCR and borrower contribution are evaluated

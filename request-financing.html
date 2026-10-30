@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Request for Information | ACP Lending</title>
+<meta name="description" content="Send ACP Lending the property, product, borrower and experience details needed to review an investment-property financing request.">
+<link rel="stylesheet" href="/css/style.css?v=34">
+<link rel="canonical" href="https://acp-lending.com/request-financing">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<script src="/js/nav.js?v=34" defer></script>
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+<style>
+.rfi-wrap p.intro{color:#4b5563;margin-top:0;margin-bottom:28px;}
+.rfi-wrap p.notice{background:#fff7e6;border:1px solid var(--gold);border-radius:8px;padding:12px 16px;font-size:.92rem;color:#5c4419;}
+.rfi-wrap fieldset{border:none;padding:0;margin:0 0 28px;}
+.rfi-wrap legend{font-size:1.15rem;font-weight:700;color:var(--navy);padding:0 0 4px;border-bottom:2px solid var(--gold);width:100%;margin-bottom:16px;}
+.rfi-wrap .field{background:#fff;border:1px solid #e3e1db;border-radius:10px;padding:16px 18px;margin-bottom:14px;}
+.rfi-wrap .field label.q{display:block;font-weight:600;margin-bottom:4px;}
+.rfi-wrap .field .help{font-size:.85rem;color:#6b7280;margin-bottom:8px;}
+.rfi-wrap .field input[type=text],
+.rfi-wrap .field input[type=email],
+.rfi-wrap .field input[type=tel],
+.rfi-wrap .field input[type=date],
+.rfi-wrap .field input[type=number],
+.rfi-wrap .field textarea,
+.rfi-wrap .field select{
+width:100%;padding:9px 10px;border:1px solid #cfcbc0;border-radius:6px;font-size:1rem;font-family:inherit;background:#fff;
+}
+.rfi-wrap .field textarea{min-height:90px;resize:vertical;}
+.rfi-wrap .req{color:#b91c1c;}
+.rfi-wrap .choice-row{display:flex;gap:22px;margin-top:4px;flex-wrap:wrap;}
+.rfi-wrap .choice-row label{font-weight:400;display:flex;align-items:center;gap:6px;cursor:pointer;}
+.rfi-wrap .check-list label{display:flex;align-items:center;gap:8px;font-weight:400;margin:6px 0;cursor:pointer;}
+.rfi-wrap .ack-desc{font-size:.88rem;color:#4b5563;background:#f4f3ef;border-radius:6px;padding:10px 12px;margin-bottom:10px;}
+.rfi-wrap button.submit-btn{background:var(--gold);border:none;color:#241a05;font-weight:700;font-size:1rem;padding:13px 28px;border-radius:8px;cursor:pointer;}
+.rfi-wrap button.submit-btn:hover{opacity:.92;}
+.rfi-wrap .cf-turnstile{margin:16px 0;}
+.rfi-wrap .success-box{background:#e9f8ef;border:1px solid #34a853;border-radius:10px;padding:24px;text-align:center;}
+.rfi-wrap .error-box{background:#fdecea;border:1px solid #d93025;border-radius:10px;padding:14px 16px;margin-bottom:20px;color:#7a1c14;}
+.rfi-wrap a.back-link{color:var(--navy);}
+.rfi-wrap input[type=file]{width:100%;padding:8px 0;}
+.rfi-wrap{max-width:760px;margin:0 auto;padding:28px 20px 60px;}
+.rfi-wrap .cf-turnstile{margin:16px 0;}
+</style>
+</head>
+<body>
+<header class="site-header">
+  <div class="header-inner">
+    <a class="brand" href="/">ACP Lending</a>
+    <button class="nav-toggle" aria-label="Menu">&#9776;</button>
+    <nav class="main-nav">
+      <div class="nav-group">
+        <span class="nav-label">Financing Products</span>
+        <ul>
+          <li><a href="/fix-and-flip-bridge-loans">Fix-and-Flip Bridge Loans</a></li>
+          <li><a href="/dscr-rental-loans">DSCR Rental Loans</a></li>
+          <li><a href="/ground-up-construction-loans">Ground-Up Construction Loans</a></li>
+          <li><a href="/multifamily-loans">Multifamily Loans</a></li>
+          <li><a href="/portfolio-loans">Portfolio Loans</a></li>
+        </ul>
+      </div>
+      <div class="nav-group">
+        <span class="nav-label">Client Tools</span>
+        <ul>
+          <li><a href="/pre-approval">Pre-Approval</a></li>
+          <li><a href="/analyze-deal">Deal Analyzer</a></li>
+          <li><a href="/dscr-calculator">DSCR Calculator</a></li>
+          <li class="active"><a href="/request-financing">Request Financing</a></li>
+          <li><a href="/loan-documents">Forms</a></li>
+          <li><a href="/investor-resources">Investor Guidance</a></li>
+          <li><a href="/investor-brief/daily/">ACP Investor Brief</a></li>
+          <li><a href="/commercial-loan-credit-application">Commercial Credit Application</a></li>
+        </ul>
+      </div>
+    </nav>
+  </div>
+</header>
+<div class="hero">
+  <div class="hero-inner">
+    <h1>Request for Information</h1>
+  </div>
+</div>
+<main>
+<div class="rfi-wrap">
+
+
+<p style="margin:0 0 14px"><a href="#" data-acp-back style="color:#0f1b2d;text-decoration:none;font-size:.95rem">&larr; Back</a></p>
+<p class="intro">Use this preliminary request for information to provide property, product, borrower, experience, and declaration information for financing review.</p>
+<p class="notice">Do not enter a Social Security number, bank-account number, or unredacted identity-document information. ACP will provide secure instructions if sensitive documentation is needed.</p>
+
+<form method="POST" action="/request-for-information">
+
+  <fieldset>
+    <legend>Borrower &amp; Deal Snapshot</legend>
+
+    <div class="field"><label class="q" for="f-client_full_name">Client full name <span class="req">*</span></label>
+      <input type="text" name="client_full_name" required id="f-client_full_name" autocomplete="name"></div>
+
+    <div class="field"><label class="q" for="f-client_email">Client email <span class="req">*</span></label>
+      <input type="email" name="client_email" required id="f-client_email" autocomplete="email"></div>
+
+    <div class="field"><label class="q" for="f-client_phone">Client phone <span class="req">*</span></label>
+      <input type="tel" name="client_phone" required id="f-client_phone" autocomplete="tel"></div>
+
+    <div class="field"><label class="q" for="f-estimated_credit_score">Estimated Credit Score <span class="req">*</span></label>
+      <input type="text" name="estimated_credit_score" required id="f-estimated_credit_score"></div>
+
+    <div class="field"><label class="q" for="f-prior_experience">Summarize prior experience (last 36 months) <span class="req">*</span></label>
+      <p class="help">Summarize the number of deals completed or active in the last 36 months by type (bridge/fix &amp; flip, fix-to-rent/BRRRR, rental acquisitions, ground-up, multifamily/portfolio) and how many rental properties you currently own.</p>
+      <textarea name="prior_experience" required id="f-prior_experience"></textarea></div>
+
+    <div class="field"><label class="q" for="f-estimated_liquidity">Estimated Liquidity Available <span class="req">*</span></label>
+      <p class="help">Enter amount in dollars.</p>
+      <input type="text" name="estimated_liquidity" required id="f-estimated_liquidity"></div>
+
+    <div class="field"><label class="q" for="f-legal_entity_name">Legal entity name <span class="req">*</span></label>
+      <p class="help">Enter NA if none.</p>
+      <input type="text" name="legal_entity_name" required id="f-legal_entity_name" autocomplete="organization"></div>
+
+    <div class="field"><label class="q" for="f-entity_type">Entity type <span class="req">*</span></label>
+      <p class="help">Examples: LLC, corporation, partnership. Enter NA if Legal entity name is NA.</p>
+      <input type="text" name="entity_type" required id="f-entity_type"></div>
+  </fieldset>
+
+  <fieldset>
+    <legend>Property</legend>
+
+    <div class="field"><label class="q" for="f-property_address-2">Property address (street, city, state, ZIP) <span class="req">*</span></label>
+      <input type="text" name="property_address" required id="f-property_address-2"></div>
+
+    <div class="field"><label class="q" for="f-property_type">Property type <span class="req">*</span></label>
+      <p class="help">Examples: single-family, condominium, 2-4 unit, multifamily, mixed-use, land.</p>
+      <input type="text" name="property_type" required id="f-property_type"></div>
+
+    <div class="field"><label class="q" id="grp-do-you-currently-own-this-property">Do you currently own this property? <span class="req">*</span></label>
+      <div class="choice-row">
+        <label><input type="radio" name="currently_own_property" value="Yes" required> Yes</label>
+        <label><input type="radio" name="currently_own_property" value="No"> No</label>
+      </div></div>
+
+<div id="rfi-owned" hidden>
+    <div class="field"><label class="q" for="f-date_property_acquired">Date property acquired?</label>
+      <input type="date" name="date_property_acquired" id="f-date_property_acquired"></div>
+
+    <div class="field"><label class="q" for="f-debt_on_property">Amount of debt on the property?</label>
+      <p class="help">Enter amount in dollars.</p>
+      <input type="text" name="debt_on_property" id="f-debt_on_property"></div>
+
+    <div class="field"><label class="q" for="f-renovations">Have you completed any major renovations to improve the value of the property? If so, provide the dollar amount and information on the renovations.</label>
+      <textarea name="renovations" id="f-renovations"></textarea></div>
+
+</div>
+<div id="rfi-not-owned" hidden>
+    <div class="field"><label class="q" for="f-est_closing_date">Estimated closing date <span class="req">*</span></label>
+      <input type="date" name="target_closing_date" required id="f-est_closing_date"></div>
+
+    <div class="field"><label class="q" for="f-purchase_price-2">Purchase Price <span class="req">*</span></label>
+      <p class="help">Enter amount in dollars.</p>
+      <input type="text" name="purchase_price" required id="f-purchase_price-2"></div>
+
+    <div class="field"><label class="q" for="f-estimated_repairs">Estimated Repairs <span class="req">*</span></label>
+      <p class="help">Enter amount in dollars.</p>
+      <input type="text" name="estimated_repairs" required id="f-estimated_repairs"></div>
+
+    <div class="field"><label class="q" for="f-estimated_arv-2">Estimated ARV <span class="req">*</span></label>
+      <p class="help">Enter amount in dollars.</p>
+      <input type="text" name="estimated_arv" required id="f-estimated_arv-2"></div>
+
+</div>
+
+    <div class="field"><label class="q" id="grp-have-you-listed-the-property-in-the-last">Have you listed the property in the last 6 months? <span class="req">*</span></label>
+      <div class="choice-row">
+        <label><input type="radio" name="listed_last_6_months" value="Yes" required> Yes</label>
+        <label><input type="radio" name="listed_last_6_months" value="No"> No</label>
+      </div></div>
+
+    <div class="field"><label class="q" for="f-listing_amount">If yes, what was the listing amount?</label>
+      <p class="help">Enter amount in dollars.</p>
+      <input type="text" name="listing_amount" id="f-listing_amount"></div>
+
+    <div class="field"><label class="q" id="grp-has-the-property-ever-flooded">Has the property ever flooded? <span class="req">*</span></label>
+      <div class="choice-row">
+        <label><input type="radio" name="property_flooded" value="Yes" required> Yes</label>
+        <label><input type="radio" name="property_flooded" value="No"> No</label>
+      </div></div>
+
+<div id="rfi-target-close">
+    <div class="field"><label class="q" for="f-target_closing_date">Target closing date <span class="req">*</span></label>
+      <input type="date" name="target_closing_date" required id="f-target_closing_date"></div>
+</div>
+  </fieldset>
+
+  <fieldset>
+    <legend>Financing</legend>
+
+    <div class="field"><label class="q" id="grp-product-s-of-interest">Product(s) of interest <span class="req">*</span></label>
+      <p class="help">Select all that apply.</p>
+      <div class="check-list"><label><input type="checkbox" name="products_of_interest" value="Bridge / Fix &amp; Flip"> Bridge / Fix &amp; Flip</label><label><input type="checkbox" name="products_of_interest" value="DSCR Rental"> DSCR Rental</label><label><input type="checkbox" name="products_of_interest" value="Ground-Up Construction"> Ground-Up Construction</label><label><input type="checkbox" name="products_of_interest" value="Multifamily"> Multifamily</label><label><input type="checkbox" name="products_of_interest" value="Portfolio"> Portfolio</label><label><input type="checkbox" name="products_of_interest" value="Refinance / Cash-Out"> Refinance / Cash-Out</label><label><input type="checkbox" name="products_of_interest" value="Other"> Other</label></div></div>
+
+    <div class="field"><label class="q" for="f-financing_amount">Financing amount <span class="req">*</span></label>
+      <p class="help">Enter amount in dollars.</p>
+      <input type="text" name="financing_amount" required id="f-financing_amount"></div>
+
+    <div class="field"><label class="q" for="f-project_summary">Project Summary / Scope of Work <span class="req">*</span></label>
+      <p class="help">Briefly describe the acquisition, renovation or construction scope, current condition, and business plan. Include a summary of the scope of work.</p>
+      <textarea name="project_summary" required id="f-project_summary"></textarea></div>
+
+    <div class="field"><label class="q" id="grp-exit-strategy">Exit Strategy <span class="req">*</span></label>
+      <div class="choice-row">
+        <label><input type="radio" name="exit_strategy" value="Sell" required> Sell</label>
+        <label><input type="radio" name="exit_strategy" value="Rent"> Rent</label>
+      </div></div>
+  </fieldset>
+
+  <fieldset>
+    <legend>2 of 2 &mdash; Declarations, Disclosure, and Certification</legend>
+    <p class="help">Answer each declaration. Explain any Yes response below.</p>
+
+    <div class="field"><label class="q" id="grp-any-outstanding-judgments">Any outstanding judgments? <span class="req">*</span></label>
+      <div class="choice-row">
+        <label><input type="radio" name="outstanding_judgments" value="Yes" required> Yes</label>
+        <label><input type="radio" name="outstanding_judgments" value="No"> No</label>
+      </div></div>
+
+    <div class="field"><label class="q" id="grp-bankruptcy-within-the-past-7-years">Bankruptcy within the past 7 years? <span class="req">*</span></label>
+      <div class="choice-row">
+        <label><input type="radio" name="bankruptcy_7yr" value="Yes" required> Yes</label>
+        <label><input type="radio" name="bankruptcy_7yr" value="No"> No</label>
+      </div></div>
+
+    <div class="field"><label class="q" id="grp-foreclosure-or-deed-in-lieu-within-the-p">Foreclosure or deed-in-lieu within the past 7 years? <span class="req">*</span></label>
+      <div class="choice-row">
+        <label><input type="radio" name="foreclosure_7yr" value="Yes" required> Yes</label>
+        <label><input type="radio" name="foreclosure_7yr" value="No"> No</label>
+      </div></div>
+
+    <div class="field"><label class="q" id="grp-currently-a-party-to-a-lawsuit">Currently a party to a lawsuit? <span class="req">*</span></label>
+      <div class="choice-row">
+        <label><input type="radio" name="party_to_lawsuit" value="Yes" required> Yes</label>
+        <label><input type="radio" name="party_to_lawsuit" value="No"> No</label>
+      </div></div>
+
+    <div class="field"><label class="q" id="grp-currently-delinquent-or-in-default-on-a-">Currently delinquent or in default on a material debt? <span class="req">*</span></label>
+      <div class="choice-row">
+        <label><input type="radio" name="delinquent_default" value="Yes" required> Yes</label>
+        <label><input type="radio" name="delinquent_default" value="No"> No</label>
+      </div></div>
+
+    <div class="field"><label class="q" id="grp-do-you-intend-to-occupy-the-subject-prop">Do you intend to occupy the subject property? <span class="req">*</span></label>
+      <div class="choice-row">
+        <label><input type="radio" name="intend_to_occupy" value="Yes" required> Yes</label>
+        <label><input type="radio" name="intend_to_occupy" value="No"> No</label>
+      </div></div>
+
+    <div class="field"><label class="q" for="f-yes_explanation">Explanation for any Yes response</label>
+      <textarea name="yes_explanation" id="f-yes_explanation"></textarea></div>
+  </fieldset>
+
+  <fieldset>
+    <legend>Acknowledgments &amp; Signature</legend>
+
+    <div class="field">
+      <label class="q" id="grp-acknowledgment-credit-application-disclo">Acknowledgment: Credit Application Disclosure</label>
+      <p class="ack-desc">If this information is used to move forward with a credit application, any credit request will be subject to underwriting, credit approval, and the borrower's acceptance of the terms of the credit approval.</p>
+      <label><input type="checkbox" name="ack_credit_disclosure" value="1" required> I acknowledge and agree to the above.</label>
+    </div>
+
+    <div class="field">
+      <label class="q" id="grp-acknowledgment-communications-consent">Acknowledgment: Communications Consent</label>
+      <p class="ack-desc">Borrower agrees that ACP Real Estate Lending is authorized to send the client emails and text messages.</p>
+      <label><input type="checkbox" name="ack_communications_consent" value="1" required> I acknowledge and agree to the above.</label>
+    </div>
+
+    <div class="field">
+      <label class="q" id="grp-acknowledgment-information-sharing-conse">Acknowledgment: Information Sharing Consent</label>
+      <p class="ack-desc">Client approves ACP Real Estate Lending sharing the information disclosed in this Request for Information with its credit partners and underwriters.</p>
+      <label><input type="checkbox" name="ack_information_sharing" value="1" required> I acknowledge and agree to the above.</label>
+    </div>
+
+    <div class="field"><label class="q" for="f-signature_name">Client typed signature <span class="req">*</span></label>
+      <p class="help">Type your full legal name to certify and sign this request for information.</p>
+      <input type="text" name="signature_name" required id="f-signature_name"></div>
+
+    <div class="field"><label class="q" for="f-signature_date">Client signature date <span class="req">*</span></label>
+      <input type="date" name="signature_date" required id="f-signature_date"></div>
+  </fieldset>
+
+  <div class="cf-turnstile" data-sitekey="0x4AAAAAAEW1FoyOTYcm9cIr"></div>
+  
+  <button class="submit-btn" type="submit">Submit</button>
+</form>
+<script>
+(function(){
+ var KEY="acp_rfi_draft_v1";
+ var form=document.querySelector("form[action='/request-for-information']");
+ if(!form) return;
+ var back=document.querySelector("[data-acp-back]");
+ if(back) back.addEventListener("click",function(e){e.preventDefault();
+  if(document.referrer && document.referrer.indexOf(location.origin)===0){history.back();} else {location.href="/";}});
+ var optOut=false; try{optOut=localStorage.getItem(KEY+"_off")==="1";}catch(e){}
+ function collect(){var o={};var els=form.querySelectorAll("input,select,textarea");
+  for(var i=0;i<els.length;i++){var el=els[i]; if(!el.name||el.type==="hidden") continue;
+   if(el.type==="checkbox"||el.type==="radio"){ if(el.checked){ if(!o[el.name]) o[el.name]=[]; o[el.name].push(el.value);} }
+   else if(el.value){o[el.name]=el.value;} } return o;}
+ function save(){ if(optOut) return; try{localStorage.setItem(KEY,JSON.stringify({t:Date.now(),d:collect()}));}catch(e){} }
+ function clear(){ try{localStorage.removeItem(KEY);}catch(e){} }
+ function restore(){ var raw=null; try{raw=localStorage.getItem(KEY);}catch(e){} if(!raw) return false;
+  var obj; try{obj=JSON.parse(raw);}catch(e){return false;} var d=obj&&obj.d; if(!d) return false;
+  var els=form.querySelectorAll("input,select,textarea"); var n=0;
+  for(var i=0;i<els.length;i++){var el=els[i]; if(!el.name||!(el.name in d)) continue; var v=d[el.name];
+   if(el.type==="checkbox"||el.type==="radio"){ if(Object.prototype.toString.call(v)==="[object Array]"&&v.indexOf(el.value)>-1){el.checked=true;n++;} }
+   else if(typeof v==="string"){el.value=v;n++;} } return n>0;}
+ var had=restore();
+ var bar=document.createElement("div");
+ bar.setAttribute("style","background:#fff;border:1px solid #e3e1db;border-left:4px solid #c9974a;border-radius:8px;padding:10px 14px;margin-bottom:18px;display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap;font-size:.88rem;color:#4b5563");
+ var span=document.createElement("span");
+ span.textContent=optOut?"Saving is off. Nothing is stored on this device.":(had?"We restored the answers you had already filled in.":"Your progress saves automatically on this device as you type.");
+ var btn=document.createElement("button");
+ btn.type="button";
+ btn.setAttribute("style","background:none;border:1px solid #cfcbc0;border-radius:6px;padding:5px 11px;font-size:.82rem;cursor:pointer;color:#1c2530;white-space:nowrap");
+ btn.textContent=optOut?"Turn saving on":"Don't save my progress";
+ btn.addEventListener("click",function(){ optOut=!optOut;
+  try{localStorage.setItem(KEY+"_off",optOut?"1":"0");}catch(e){}
+  if(optOut){clear();span.textContent="Saving is off. Nothing is stored on this device.";btn.textContent="Turn saving on";}
+  else{save();span.textContent="Your progress saves automatically on this device as you type.";btn.textContent="Don't save my progress";}});
+ bar.appendChild(span); bar.appendChild(btn);
+ form.parentNode.insertBefore(bar,form);
+ var t=null;
+ form.addEventListener("input",function(){clearTimeout(t);t=setTimeout(save,600);});
+ form.addEventListener("change",function(){clearTimeout(t);t=setTimeout(save,200);});
+ form.addEventListener("submit",function(){clear();});
+})();
+</script>
+<script>
+(function(){
+ var form=document.querySelector("form[action='/request-for-information']"); if(!form) return;
+ try{var p=new URLSearchParams(location.search).get("product");
+  if(p){var cbs=form.querySelectorAll("input[name='products_of_interest']");
+   for(var i=0;i<cbs.length;i++){ if(cbs[i].value===p) cbs[i].checked=true; }}}catch(e){}
+ function set(id,on){var b=document.getElementById(id); if(!b) return; b.hidden=!on;
+  var els=b.querySelectorAll("input,select,textarea"); for(var i=0;i<els.length;i++) els[i].disabled=!on;}
+ function sync(){var r=form.querySelector("input[name='currently_own_property']:checked"); var v=r?r.value:"";
+  set("rfi-owned",v==="Yes"); set("rfi-not-owned",v==="No"); set("rfi-target-close",v!=="No");}
+ form.addEventListener("change",function(e){ if(e.target&&e.target.name==="currently_own_property") sync(); });
+ sync();
+})();
+</script>
+
+</div>
+</main>
+<footer class="site-footer">
+  <div class="footer-inner">
+    <p class="footer-contact">ACP Lending | Steve Waller | <a href="tel:+19365228951" style="color:#c9974a;text-decoration:underline;">936-522-8951</a> | <a href="mailto:steve@acp-lending.com" style="color:#c9974a;text-decoration:underline;">steve@acp-lending.com</a></p>
+    <p class="footer-disclaimer">Investment-property financing is subject to underwriting, lender approval, appraisal or valuation, title, insurance, property eligibility, and program availability. Preliminary analyses are not commitments to lend.</p>
+    <p class="footer-links"><a href="https://www.biggerpockets.com/users/stevew482">BiggerPockets</a> | <a href="https://www.linkedin.com/in/steve-waller-b974b3424/">LinkedIn</a> | <a href="https://www.facebook.com/ACPRealEstateLending">ACP Lending on Facebook</a> | <a href="https://www.facebook.com/profile.php?id=61579789534054">Steve J Waller on Facebook</a></p>
+    <p class="footer-links footer-legal"><a href="/privacy">Privacy Policy</a> &middot; <a href="/terms">Terms of Use</a></p>
+  </div>
+</footer>
+</body>
+</html>
