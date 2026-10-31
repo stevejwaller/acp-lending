@@ -9,3 +9,8 @@ compatibility_date = "2026-10-01"
 binding = "DB"
 database_name = "acp-lending-forms"
 database_id = "8e7a5498-22e7-40df-8bb1-c02f454c8d1e"
+
+# Added 31 Oct 2026: comps for the /analyze-deal report (functions/analyze-deal/report.js).
+[[services]]
+binding = "ACP_COMPS"
+service = "acp-comps"
