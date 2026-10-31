@@ -6,7 +6,7 @@ var res=document.createElement("div");res.id="da-res";er.parentNode.insertBefore
 var ow=document.createElement("p");ow.style.cssText="text-align:right;font-size:12px;margin:6px 24px 16px";
 ow.innerHTML=OWNER?'Owner mode &middot; <a href="#" id="daOut">sign out</a>':'<a href="#" id="daIn" style="color:#9aa3ad">Owner sign-in</a>';
 res.parentNode.appendChild(ow);
-if(OWNER){var sb=f.querySelector(".calc-submit");var lv=document.createElement("div");lv.className="calc-field";lv.innerHTML='<label for="daLevel">Report level</label><select id="daLevel"><option value="summary">$49.99 Summary Report</option><option value="full">Full Report</option></select>';sb.parentNode.insertBefore(lv,sb)}
+if(OWNER){var sb=f.querySelector(".calc-submit");var lv=document.createElement("div");lv.className="calc-field";lv.innerHTML='<label for="daLevel">Report level</label><select id="daLevel"><option value="summary">$49.99 Summary Report</option><option value="financing">Financing Options Report</option><option value="full">Full Report</option></select>';sb.parentNode.insertBefore(lv,sb);var fx=document.createElement("div");fx.id="daFin";fx.innerHTML='<div class="calc-field-row da-three"><div class="calc-field"><label for="daFico">Credit Score</label><input id="daFico" type="number" placeholder="700"></div><div class="calc-field"><label for="daExp">Deals Closed (36 mo)</label><input id="daExp" type="number" placeholder="3"></div><div class="calc-field"><label for="daAdhoc">Title Ad Hoc Fees</label><span class="da-money"><input id="daAdhoc" type="number" value="1000"></span></div></div><div class="calc-field-row"><div class="calc-field"><label for="daOrig">Broker Origination</label><select id="daOrig"><option value="0">0%</option><option value="1">1%</option><option value="2" selected>2%</option></select></div><div class="calc-field"><label for="daBcf">Broker Closing Fee</label><select id="daBcf"><option>500</option><option>750</option><option selected>1000</option></select></div></div>';sb.parentNode.insertBefore(fx,sb);var sel=document.getElementById("daLevel");var tog=function(){fx.style.display=sel.value==="financing"?"block":"none"};sel.addEventListener("change",tog);tog()}
 document.addEventListener("click",async function(e){
 if(e.target.id==="daOut"){e.preventDefault();try{localStorage.removeItem("acpOwner")}catch(x){}location.reload()}
 if(e.target.id==="daIn"){e.preventDefault();var pw=prompt("Owner password");if(!pw)return;var t=await sha(await sha("acp-prospects:"+pw));if(t===PASS){try{localStorage.setItem("acpOwner","1")}catch(x){}location.reload()}else{er.innerHTML="<div class='da-err'>Wrong password</div>"}}
@@ -17,7 +17,7 @@ var d={propertyAddress:v("propertyAddress"),city:v("city"),state:v("state"),zip:
 try{var r=await fetch("/deal-analyzer/report",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(d)});if(!r.ok){var j=await r.json();throw new Error(j.error||"Report failed")}
 var raw=await r.text();
 if(!OWNER){res.innerHTML=basic(raw,d);ld.style.display="none";f.style.display="block";res.scrollIntoView({behavior:"smooth",block:"start"});return}
-var lvl=document.getElementById("daLevel").value;var html=addBar(lvl==="summary"?summary(raw):raw,d.borrowerEmail);
+var lvl=document.getElementById("daLevel").value;var html=addBar(lvl==="summary"?summary(raw):lvl==="financing"?financing(summary(raw),d):raw,d.borrowerEmail);
 var w=window.open("","_blank");if(w){w.document.write(html);w.document.close()}else{document.open();document.write(html);document.close()}}
 catch(ex){er.innerHTML="<div class='da-err'>"+esc(ex.message)+"</div>"}ld.style.display="none";f.style.display="block"});
 function v(id){return document.getElementById(id).value}
@@ -42,5 +42,40 @@ if(/^Executive Summary/.test(s.t))s.el.querySelectorAll("p,div").forEach(functio
 if(/^Property Record/.test(s.t)){s.el.querySelectorAll("h3").forEach(function(h){if(/Recent Transactions/.test(h.textContent)){var n=h.nextElementSibling;h.remove();if(n&&n.tagName==="TABLE")n.remove()}});s.el.querySelectorAll("a").forEach(function(a){if(/Google Maps/.test(a.textContent))a.remove()})}});
 doc.querySelectorAll("img").forEach(function(i){var p=i.parentElement;(p&&!p.classList.contains("sec")&&p.tagName==="DIV"?p:i).remove()});
 return "<!doctype html>"+doc.documentElement.outerHTML}
-function addBar(html,to){var bs="background:#c9a24a;color:#0f172a;border:0;border-radius:4px;padding:9px 16px;font:600 14px Arial,sans-serif;cursor:pointer";var bar='<style>@media print{.acp-bar{display:none!important}}</style><div class="acp-bar" style="position:sticky;top:0;z-index:99;background:#0f172a;padding:10px 16px;display:flex;gap:10px;justify-content:flex-end"><button type="button" id="acpPdf" style="'+bs+'">Save as PDF</button><button type="button" id="acpMail" style="'+bs+'">Email Analysis</button></div>';var js='<script>(function(){var to='+JSON.stringify(to||"").replace(/</g,"\\u003c")+';document.getElementById("acpPdf").onclick=function(){window.print()};document.getElementById("acpMail").onclick=function(){var b=document.querySelector(".acp-bar");b.style.display="none";var t=document.body.innerText.replace(/[ \\t]+\\n/g,"\\n").replace(/\\n{3,}/g,"\\n\\n").trim();b.style.display="flex";if(t.length>1800)t=t.slice(0,1800)+"\\n\\n(Full report attached as PDF.)";location.href="mailto:"+encodeURIComponent(to)+"?subject="+encodeURIComponent(document.title)+"&body="+encodeURIComponent(t)}})()<\/script>';html=/<body[^>]*>/i.test(html)?html.replace(/<body[^>]*>/i,function(m){return m+bar}):bar+html;return /<\/body>/i.test(html)?html.replace(/<\/body>/i,js+"</body>"):html+js}
+
+function num(x){return parseFloat(String(x||"").replace(/[^\d.]/g,""))||0}
+function usd(n){return "$"+Math.round(n).toLocaleString("en-US")}
+var PROGS=[
+{c:"ACP-K",fico:640,min:100000,max:5000000,pp:1,rp:1,ltc:.95,arv:function(){return .80},pts:.015,fixed:0,no:[]},
+{c:"ACP-RCN",fico:650,min:75000,max:2000000,pp:.90,rp:1,ltc:1,arv:function(){return .75},pts:.015,fixed:0,no:[]},
+{c:"ACP-E",fico:600,min:75000,max:5000000,pp:.90,rp:1,ltc:.93,arv:function(){return .75},pts:.015,fixed:1995,no:["LA","MN","ND","SD"]},
+{c:"ACP-F",fico:650,min:100000,max:1250000,pp:1,rp:1,ltc:1,arv:function(f,e){return f>=700?(e>3?.75:.70):.65},pts:.015,fixed:0,only:["PA","DE","MA","OH","CT","MD","TX","GA","TN","NJ","NC","SC","MO","IN","AL","VA","KY"]},
+{c:"ACP-L",fico:0,min:100000,max:3000000,pp:1,rp:1,ltc:.925,arv:function(){return .80},pts:0,fixed:1395+550,lfee:function(L){return Math.max(.01*L,2000)},no:["AK","NV","ND","SD"]}];
+function financing(html,d){var doc=new DOMParser().parseFromString(html,"text/html");
+var P=num(d.purchasePrice),R=num(d.repairBudget),st=String(d.state||"").trim().toUpperCase().slice(0,2);
+var arv=0;secs(doc).forEach(function(s){if(/^ARV Analysis/.test(s.t)){var m=s.el.textContent.match(/\$[\d,]+/);if(m)arv=num(m[0])}});
+var f=num(document.getElementById("daFico").value),e=num(document.getElementById("daExp").value),adhoc=num(document.getElementById("daAdhoc").value),bo=num(document.getElementById("daOrig").value)/100,bc=num(document.getElementById("daBcf").value);
+var ok=[],out=[];
+PROGS.forEach(function(p){var why="";
+if(p.fico&&f&&f<p.fico)why="credit below "+p.fico;else if(p.no&&p.no.indexOf(st)>=0)why="not available in "+st;else if(p.only&&p.only.indexOf(st)<0)why="not available in "+st;
+var a=p.arv(f,e),caps=[["purchase/rehab advance",p.pp*P+p.rp*R],["loan-to-cost",p.ltc*(P+R)],[Math.round(a*100)+"% of ARV",a*arv],["program maximum",p.max]];
+caps.sort(function(x,y){return x[1]-y[1]});var L=Math.max(0,Math.floor(caps[0][1]));
+if(!why&&L<p.min)why="loan below "+usd(p.min)+" minimum";
+if(why){out.push(p.c+" ("+why+")");return}
+var lc=(p.lfee?p.lfee(L):p.pts*L)+p.fixed,bf=bo*L+bc,tp=.015*L+adhoc,eq=P+R-L,cash=eq+lc+bf+tp;
+var liq=L*.11/12*6+R/3;
+ok.push({c:p.c,L:L,bind:caps[0][0],eq:eq,lc:lc,bf:bf,tp:tp,cash:cash,liq:liq})});
+ok.sort(function(x,y){return x.cash-y.cash});var show=ok.slice(0,2);
+var sec=doc.createElement("div");sec.className="sec";
+var h='<h2>Financing Options</h2><p><i>All figures are estimates, subject to lender review.</i></p>';
+if(!show.length){h+='<p>None of the programs in the lender matrix fit this deal as submitted. ACP will review alternatives.</p>'}else{
+var lab=["Best fit","Alternative"];
+h+='<table><tr><th></th>'+show.map(function(o,i){return "<th>"+lab[i]+": "+o.c+"</th>"}).join("")+'</tr>'+
+[["Estimated loan",function(o){return usd(o.L)}],["Loan limited by",function(o){return o.bind}],["Purchase + repairs not covered by loan",function(o){return usd(o.eq)}],["Out-of-pocket lender costs (est.)",function(o){return usd(o.lc)}],["Broker fees ("+(bo*100)+"% + "+usd(bc)+")",function(o){return usd(o.bf)}],["Third-party fees (title 1.5% + ad hoc)",function(o){return usd(o.tp)}],["<b>Estimated cash to close</b>",function(o){return "<b>"+usd(o.cash)+"</b>"}],["Liquidity most lenders want to see (6 mo. payments at ~11% + 1/3 of repairs)",function(o){return usd(o.liq)}]].map(function(r){return "<tr><td>"+r[0]+"</td>"+show.map(function(o){return "<td>"+r[1](o)+"</td>"}).join("")+"</tr>"}).join("")+'</table>'}
+if(out.length)h+='<p style="font-size:90%">Programs that do not fit as submitted: '+out.join("; ")+'.</p>';
+h+='<p style="font-size:90%">Estimates from published lender program terms'+(f?", credit score "+f:"")+(e||e===0?", "+e+" deals closed in 36 months":"")+'. Lender costs are estimated where a lender does not publish them. Final terms depend on lender review, appraisal and approval. Not a commitment to lend.</p>';
+sec.innerHTML=h;var all=secs(doc),after=null;all.forEach(function(s){if(/^Liquidity Check/.test(s.t))after=s.el});
+if(after)after.parentNode.insertBefore(sec,after.nextSibling);else doc.body.appendChild(sec);
+return "<!doctype html>"+doc.documentElement.outerHTML}
+function addBar(html,to){var bs="background:#c9a24a;color:#0f172a;border:0;border-radius:4px;padding:9px 16px;font:600 14px Arial,sans-serif;cursor:pointer";var bar='<style>.hd{text-align:center}@media print{.acp-bar{display:none!important}}</style><div class="acp-bar" style="position:sticky;top:0;z-index:99;background:#0f172a;padding:10px 16px;display:flex;gap:10px;justify-content:flex-end"><button type="button" id="acpPdf" style="'+bs+'">Save as PDF</button><button type="button" id="acpMail" style="'+bs+'">Email Analysis</button></div>';var js='<script>(function(){var to='+JSON.stringify(to||"").replace(/</g,"\\u003c")+';document.getElementById("acpPdf").onclick=function(){window.print()};document.getElementById("acpMail").onclick=function(){var b=document.querySelector(".acp-bar");b.style.display="none";var t=document.body.innerText.replace(/[ \\t]+\\n/g,"\\n").replace(/\\n{3,}/g,"\\n\\n").trim();b.style.display="flex";if(t.length>1800)t=t.slice(0,1800)+"\\n\\n(Full report attached as PDF.)";location.href="mailto:"+encodeURIComponent(to)+"?subject="+encodeURIComponent(document.title)+"&body="+encodeURIComponent(t)}})()<\/script>';html=/<body[^>]*>/i.test(html)?html.replace(/<body[^>]*>/i,function(m){return m+bar}):bar+html;return /<\/body>/i.test(html)?html.replace(/<\/body>/i,js+"</body>"):html+js}
 })();
