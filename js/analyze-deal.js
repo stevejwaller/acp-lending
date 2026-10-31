@@ -15,7 +15,7 @@ if(e.target.id==="daMail"){e.preventDefault();location.href=e.target.getAttribut
 f.addEventListener("submit",async function(e){e.preventDefault();er.innerHTML="";res.innerHTML="";f.style.display="none";ld.style.display="block";
 var d={propertyAddress:v("propertyAddress"),city:v("city"),state:v("state"),zip:v("zip"),purchasePrice:v("purchasePrice"),repairBudget:v("repairBudget"),arvEstimate:v("arvEstimate"),borrowerLiquidity:v("borrowerLiquidity"),borrowerName:v("borrowerName"),borrowerEmail:v("borrowerEmail"),borrowerPhone:v("borrowerPhone")};
 try{var r=await fetch("/deal-analyzer/report",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(d)});if(!r.ok){var j=await r.json();throw new Error(j.error||"Report failed")}
-var raw=await r.text();
+var raw=(await r.text()).replace(/\$-[\d,]+/g,function(){return "$0"});
 if(!OWNER){res.innerHTML=basic(raw,d);ld.style.display="none";f.style.display="block";res.scrollIntoView({behavior:"smooth",block:"start"});return}
 var lvl=document.getElementById("daLevel").value;var html=addBar(lvl==="summary"?summary(raw):lvl==="financing"?financing(summary(raw),d):raw,d.borrowerEmail);
 var w=window.open("","_blank");if(w){w.document.write(html);w.document.close()}else{document.open();document.write(html);document.close()}}
