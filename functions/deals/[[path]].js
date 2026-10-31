@@ -3,7 +3,10 @@
 //   /deals          -> page (login screen until signed in; same password as /prospects)
 //   /deals/app.js   -> page script (behind the same gate)
 //   /deals/api/...  -> JSON (login, logout, list)
-// Reads D1 tables rfi_submissions and preapproval_submissions (env.DB via wrangler.toml).
+// Reads D1 tables rfi_submissions and preapproval_submissions (env.DB via wrangler.toml),
+// plus hand-logged deals kept in the repo (functions/_lib/logged-deals.js).
+
+import { LOGGED_DEALS } from "../_lib/logged-deals.js";
 
 const PASS_HASH = "b029eed3f2094d8bdc6d1ae9b9c6fa2d4a840084fdcc649533c9bc5a34882bc3"; // same as /prospects
 const COOKIE = "acp_dl";
@@ -67,7 +70,7 @@ export async function onRequest(context) {
         estimated_arv AS arv, credit_score_range AS credit, liquidity, closing_timeframe AS closing,
         '' AS exit_strategy, additional_notes AS summary, '' AS signature
        FROM preapproval_submissions ORDER BY id`).all();
-    return json({ ok: true, rows: [...(rfi.results || []), ...(pre.results || [])] });
+    return json({ ok: true, rows: [...(rfi.results || []), ...(pre.results || []), ...LOGGED_DEALS] });
   }
   return json({ ok: false, error: "Not found" }, 404);
 }
