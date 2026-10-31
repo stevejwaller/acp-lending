@@ -230,6 +230,7 @@ const HEAD = `<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta n
 .px-btn{background:#1b2a41;color:#fff;border:0;border-radius:6px;padding:8px 12px;font:inherit;cursor:pointer}
 .px-btn.alt{background:#fff;color:#1b2a41;border:1px solid #1b2a41}.px-btn.gold{background:#c9974a}
 .px-btn:disabled{opacity:.5;cursor:default}
+.px-reach{margin-top:6px;display:flex;gap:6px;flex-wrap:wrap}.px-reach a.px-btn{text-decoration:none;display:inline-block}
 .px-stats{display:flex;flex-wrap:wrap;gap:16px;font-size:14px;color:#4a5568;margin:0 0 12px}
 .px-stats b{color:#1b2a41}
 .px-note{background:#fff6e6;border:1px solid #e8c98f;border-radius:6px;padding:10px 12px;margin:0 0 12px;font-size:14px}
@@ -326,12 +327,22 @@ function render(){var list=rows.filter(match);
   if(!list.length){$('list').innerHTML='<p>No prospects match.</p>';return}
   $('list').innerHTML=list.map(card).join('')}
 
+function first(r){var n=String(r.person||'').trim().split(/\s+/)[0]||'';return n?n.charAt(0).toUpperCase()+n.slice(1).toLowerCase():'there'}
+function smsBody(r){return 'Hi '+first(r)+', this is Steve Waller with ACP Lending in Houston. I work with investors on financing for their rental, flip and commercial properties. Would you have 10 minutes for a quick call this week or next? Reply STOP to opt out.'}
+function mailLink(r){var sub='ACP Lending - '+(r.entity||r.person||'financing');
+  var body='Hi '+first(r)+',\n\n\n\nBest,\nSteve Waller\nACP Lending\n936-522-8951\nacp-lending.com';
+  return 'https://mail.google.com/mail/?authuser=steve@acp-lending.com&view=cm&fs=1&to='+encodeURIComponent(r.email)+'&su='+encodeURIComponent(sub)+'&body='+encodeURIComponent(body)}
+function reach(r,dnc){var d=digits(r.phone),h='';if(dnc)return '';
+  if(d.length===10){h+='<a class="px-btn px-mini" data-act="log" data-k="called" href="tel:+1'+d+'">Call</a>';
+    h+='<a class="px-btn px-mini" data-act="log" data-k="texted" href="sms:+1'+d+'&body='+encodeURIComponent(smsBody(r))+'">Text</a>'}
+  if(r.email)h+='<a class="px-btn px-mini" data-act="log" data-k="emailed" target="_blank" rel="noopener" href="'+esc(mailLink(r))+'">Email</a>';
+  return h}
 function card(r){var L=loans(r),C=contacts(r),dnc=r.status==='Do not contact';
   var pills='<span class="px-pill'+(dnc?' dnc':'')+'">'+esc(r.status||'New')+'</span>'+(r.win?'<span class="px-pill hot">'+esc(r.win)+'</span>':'')+(r.traced_at?'<span class="px-pill ok">Looked up</span>':'');
   var h='<div class="px-card'+(open[r.id]?' open':'')+'" data-id="'+esc(r.id)+'"><div class="px-head" data-act="toggle">'+
    '<div><div class="px-name">'+esc(r.person||r.entity||(L[0]&&L[0].addr)||'Unnamed')+'</div><div class="px-sub">'+esc(r.person?r.entity:'')+'</div></div>'+
    '<div class="px-sub">'+esc(r.phone||'no phone')+'<br>'+esc(r.email||'')+'</div>'+
-   '<div class="px-sub">'+(r.soon?'Matures '+esc(r.soon):'')+'<br>'+money(r.total)+'</div><div>'+pills+'</div></div><div class="px-body">';
+   '<div class="px-sub">'+(r.soon?'Matures '+esc(r.soon):'')+'<br>'+money(r.total)+'</div><div>'+pills+'<div class="px-reach">'+reach(r,dnc)+'</div></div></div><div class="px-body">';
   h+='<div class="px-loans">'+L.map(function(l){return '<div>'+esc(l.addr)+(l.mat?' · matures '+esc(l.mat):'')+(l.amt?' · '+money(l.amt):'')+(l.lender?' · '+esc(l.lender):'')+'</div>'}).join('')+'</div>';
   if(r.sheet_notes)h+='<p class="px-sub">'+esc(r.sheet_notes)+'</p>';
   h+='<div class="px-contacts">'+(C.length?C.map(function(c){
@@ -362,6 +373,10 @@ function msg(el,t){var m=el.querySelector('[data-msg]');if(m)m.textContent=t}
 
 document.addEventListener('click',function(e){var b=e.target.closest('[data-act]');if(!b)return;
   var cardEl=b.closest('.px-card');var id=cardEl&&cardEl.dataset.id;var act=b.dataset.act;var r=id&&find(id);
+  if(act==='log'){e.stopPropagation();var k=b.dataset.k,now=new Date().toISOString(),f={};f[k]=now;
+    if(k==='texted'&&(!r.status||r.status==='New'))f.status='Texted';
+    if(k==='emailed'&&(!r.status||r.status==='New'||r.status==='Texted'))f.status='Emailed';
+    api('update',{id:id,fields:f}).then(function(x){if(x.ok){Object.assign(r,f);render()}});return}
   if(act==='toggle'){open[id]=!open[id];cardEl.classList.toggle('open');return}
   if(act==='usephone'||act==='useemail'){cardEl.querySelector('[data-f="'+(act==='usephone'?'phone':'email')+'"]').value=b.dataset.v;msg(cardEl,'Click Save to keep it');return}
   if(act==='save'){var f={};cardEl.querySelectorAll('[data-f]').forEach(function(x){f[x.dataset.f]=x.value});
