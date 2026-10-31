@@ -22,7 +22,9 @@ Service area: United States, with Texas-specific programs
   cash flow rather than personal income. 30-year fixed, 5/1 ARM and 7/1 ARM, with
   interest-only structures. Purchase, rate-and-term refinance and cash-out refinance.
   Leverage up to 80% LTV on purchase and rate-and-term; cash-out refinances are typically
-  capped lower, generally around 75%. DSCR requirements as low as 0.80x on certain programs.
+  capped lower, generally around 75%. DSCR requirements as low as 0.80x on certain programs. A Flexible Credit DSCR program
+  (30-year fixed, $75,000-$2,000,000) has no minimum credit score and no minimum DSCR, up to 75% LTV
+  on purchases; vacant properties qualify on market rent.
 - [Ground-Up Construction Loans](https://acp-lending.com/ground-up-construction-loans): Loan
   amounts generally $100,000 to $10 million. Interest-only on funds actually drawn.
   Milestone-based draws verified by inspection. Up to 85% of total project cost and up to
@@ -39,6 +41,10 @@ Service area: United States, with Texas-specific programs
   unit rentals and 5-9 unit multifamily in a single facility. Up to 70% LTV tiered by credit
   score. 5, 7 or 10-year terms with 30-year amortization or interest-only. Non-recourse
   structure available. Portfolios generally need to be at least 90% leased.
+- [Commercial Real Estate Loans](https://acp-lending.com/commercial-real-estate-loans): 30-year fixed, no balloon,
+  for assisted living homes (1-4 units, $75,000-$2,000,000 up to 75% LTV; up to $10,000,000 at 65% LTV for
+  experienced investors in major metros), 5+ unit and mixed-use from $100,000 up to 75% LTV. No minimum
+  credit score on certain programs.
 
 ## Tools and resources
 
