@@ -6,7 +6,7 @@ var res=document.createElement("div");res.id="da-res";er.parentNode.insertBefore
 var ow=document.createElement("p");ow.style.cssText="text-align:right;font-size:12px;margin:6px 24px 16px";
 ow.innerHTML=OWNER?'Owner mode &middot; <a href="#" id="daOut">sign out</a>':'<a href="#" id="daIn" style="color:#9aa3ad">Owner sign-in</a>';
 res.parentNode.appendChild(ow);
-if(OWNER){var sb=f.querySelector(".calc-submit");var lv=document.createElement("div");lv.className="calc-field";lv.innerHTML='<label for="daLevel">Report level</label><select id="daLevel"><option value="deal">$49.99 Deal Report</option><option value="full">$149.99 Full Package</option></select>';sb.parentNode.insertBefore(lv,sb);var fx=document.createElement("div");fx.id="daFin";fx.innerHTML='<div class="calc-field-row da-three"><div class="calc-field"><label for="daFico">Credit Score</label><input id="daFico" type="number" placeholder="700"></div><div class="calc-field"><label for="daExp">Deals Closed (36 mo)</label><input id="daExp" type="number" placeholder="3"></div><div class="calc-field"><label for="daAdhoc">Title Ad Hoc Fees</label><span class="da-money"><input id="daAdhoc" type="number" value="1000"></span></div></div><div class="calc-field-row"><div class="calc-field"><label for="daOrig">Broker Origination</label><select id="daOrig"><option value="0">0%</option><option value="1">1%</option><option value="2" selected>2%</option></select></div><div class="calc-field"><label for="daBcf">Broker Closing Fee</label><select id="daBcf"><option>500</option><option>750</option><option selected>1000</option></select></div></div>';sb.parentNode.insertBefore(fx,sb);}
+if(OWNER){var sb=f.querySelector(".calc-submit");var lv=document.createElement("div");lv.className="calc-field";lv.innerHTML='<label for="daLevel">Report level</label><select id="daLevel"><option value="deal">$49.99 Deal Report</option><option value="full">$149.99 Full Package</option></select>';sb.parentNode.insertBefore(lv,sb);var fx=document.createElement("div");fx.id="daFin";fx.innerHTML='<div class="calc-field-row da-three"><div class="calc-field"><label for="daFico">Credit Score</label><input id="daFico" type="number" placeholder="700"></div><div class="calc-field"><label for="daExp">Deals Closed (36 mo)</label><input id="daExp" type="number" placeholder="3"></div><div class="calc-field"><label for="daAdhoc">Title Ad Hoc Fees</label><span class="da-money"><input id="daAdhoc" type="number" value="1000"></span></div></div><div class="calc-field-row"><div class="calc-field"><label for="daOrig">Broker Origination</label><select id="daOrig"><option value="0">0%</option><option value="1">1%</option><option value="2" selected>2%</option></select></div><div class="calc-field"><label for="daBcf">Broker Closing Fee</label><select id="daBcf"><option>500</option><option>750</option><option selected>1000</option></select></div></div><div class="calc-field"><label><input id="daPhotos" type="checkbox"> Interior and exterior photos available</label></div><div class="calc-field"><label>Shown not needed (from photos or records):</label> <label><input id="daNoHvac" type="checkbox"> HVAC</label> &nbsp; <label><input id="daNoRoof" type="checkbox"> Roof</label> &nbsp; <label><input id="daNoFdn" type="checkbox"> Foundation</label></div>';sb.parentNode.insertBefore(fx,sb);}
 document.addEventListener("click",async function(e){
 if(e.target.id==="daOut"){e.preventDefault();try{localStorage.removeItem("acpOwner")}catch(x){}location.reload()}
 if(e.target.id==="daIn"){e.preventDefault();var pw=prompt("Owner password");if(!pw)return;var t=await sha(await sha("acp-prospects:"+pw));if(t===PASS){try{localStorage.setItem("acpOwner","1")}catch(x){}location.reload()}else{er.innerHTML="<div class='da-err'>Wrong password</div>"}}
@@ -17,7 +17,7 @@ var d={propertyAddress:v("propertyAddress"),city:v("city"),state:v("state"),zip:
 try{var r=await fetch("/deal-analyzer/report",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(d)});if(!r.ok){var j=await r.json();throw new Error(j.error||"Report failed")}
 var raw=(await r.text()).replace(/\$-[\d,]+/g,function(){return "$0"});
 if(!OWNER){res.innerHTML=basic(raw,d);ld.style.display="none";f.style.display="block";res.scrollIntoView({behavior:"smooth",block:"start"});return}
-var lvl=document.getElementById("daLevel").value;raw=common(raw,d);var html=addBar(lvl==="full"?offer(financing(raw,d),d):financing(summary(raw),d),d.borrowerEmail);
+var lvl=document.getElementById("daLevel").value;raw=repairs(raw,d);raw=common(raw,d);var html=addBar(lvl==="full"?offer(financing(raw,d),d):financing(summary(raw),d),d.borrowerEmail);
 var w=window.open("","_blank");if(w){w.document.write(html);w.document.close()}else{document.open();document.write(html);document.close()}}
 catch(ex){er.innerHTML="<div class='da-err'>"+esc(ex.message)+"</div>"}ld.style.display="none";f.style.display="block"});
 function v(id){return document.getElementById(id).value}
@@ -42,6 +42,28 @@ if(/^Property Record/.test(s.t)){s.el.querySelectorAll("h3").forEach(function(h)
 doc.querySelectorAll("img").forEach(function(i){var p=i.parentElement;(p&&!p.classList.contains("sec")&&p.tagName==="DIV"?p:i).remove()});
 return "<!doctype html>"+doc.documentElement.outerHTML}
 
+function ck(id){var e=document.getElementById(id);return !!(e&&e.checked)}
+function repairs(raw,d){if(ck("daPhotos"))return raw;var doc=new DOMParser().parseFromString(raw,"text/html");var kv={};
+doc.querySelectorAll("table.kv tr").forEach(function(tr){var c=tr.children;if(c.length>1&&!(c[0].textContent.trim() in kv))kv[c[0].textContent.trim()]=c[1].textContent.trim()});
+var sf=num(kv["Sq Ft"])||1500,yb=num(kv["Year Built"]),bb=String(kv["Beds / Baths"]||"").split("/"),ba=num(bb[1])||2,full=Math.max(1,Math.floor(ba)),half=ba-Math.floor(ba)>0?1:0,age=yb?new Date().getFullYear()-yb:40;
+var it=[];
+if(!ck("daNoHvac"))it.push(["Major","HVAC (full replacement)",Math.max(7500,Math.round(4.5*sf))]);
+if(!ck("daNoRoof"))it.push(["Major","Roof (full replacement)",Math.max(9000,Math.round(5*sf))]);
+if(!ck("daNoFdn"))it.push(["Major","Foundation (leveling / repair)",sf>2000?10000:8000]);
+it.push(["Interior","Flooring throughout ("+Math.round(sf).toLocaleString("en-US")+" SF)",Math.round(5*sf)]);
+it.push(["Interior","Kitchen remodel",age<15?8000:15000]);
+it.push(["Interior","Bathroom remodel ("+full+" full"+(half?" + "+half+" half":"")+")",full*(age<15?5000:8000)+half*3000]);
+it.push(["Interior","Paint, full interior",Math.round(2.5*sf)]);
+it.push(["Exterior","Paint, full exterior",Math.round(2*sf)]);
+var sub=it.reduce(function(a,x){return a+x[2]},0),af=age>=45?.15:age>=25?.10:.05,adj=Math.round(sub*af),tot=sub+adj;
+it.push(["Age factor","Built "+(yb||"unknown")+" ("+Math.round(af*100)+"% of items above)",adj]);
+var bR=num(d.repairBudget),used=Math.max(bR,tot);d.repairBudget=String(used);
+var sec=doc.createElement("div");sec.className="sec";
+sec.innerHTML='<h2>Estimated Repairs (Level 1 Condition)</h2><p class="muted">No photos provided. Estimate is based on age, size and configuration to bring the property to Level 1 condition. HVAC, roof and foundation are assumed needed unless shown otherwise. The repair budget is finalized once interior and exterior photos are reviewed.</p><table><tr><th>Category</th><th>Item</th><th>Estimate</th></tr>'+it.map(function(x){return"<tr><td>"+x[0]+"</td><td>"+esc(x[1])+"</td><td>"+usd(x[2])+"</td></tr>"}).join("")+'<tr><td></td><td><b>Total ACP repair estimate</b></td><td><b>'+usd(tot)+'</b></td></tr></table><p class="muted" style="margin-top:8px">Borrower repair budget: '+(bR?usd(bR):"not provided")+'. Repairs used in this report: <b>'+usd(used)+'</b>'+(used>bR?' (ACP estimate)':' (borrower budget)')+'.</p>';
+var snap=null;secs(doc).forEach(function(s2){if(/^Property Snapshot/.test(s2.t))snap=s2.el;if(/^Deal Economics/.test(s2.t))s2.el.querySelectorAll("tr").forEach(function(tr){if(/^\s*Repairs/.test(tr.textContent)){tr.children[1].textContent=usd(used);tr.children[2].textContent=usd(used)}})});
+doc.querySelectorAll("table.kv tr").forEach(function(tr){if(tr.children[0]&&tr.children[0].textContent.trim()==="Repair Budget")tr.children[1].textContent=usd(used)+(used>bR?" (ACP estimate; borrower "+(bR?usd(bR):"none")+")":"")});
+if(snap)snap.parentNode.insertBefore(sec,snap.nextSibling);else doc.body.appendChild(sec);
+return "<!doctype html>"+doc.documentElement.outerHTML}
 function common(raw,d){var doc=new DOMParser().parseFromString(raw,"text/html");var x=nums(doc,d);
 secs(doc).forEach(function(s){
 if(/^Executive Summary/.test(s.t)){var b=[["After-repair value",x.arv?usd(x.arv)+(x.n?" ("+x.n+" closed comparables)":""):"not determined"],["Purchase price",usd(x.P)],["Cash required (closing costs and reserves included)",usd(x.c70)+" at 70% of ARV, "+usd(x.c75)+" at 75%"]];if(x.liq)b.push(["Borrower's available cash",usd(x.liq)]);
