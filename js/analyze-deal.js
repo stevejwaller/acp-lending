@@ -66,7 +66,15 @@ var snap=null;secs(doc).forEach(function(s2){if(/^Property Snapshot/.test(s2.t))
 doc.querySelectorAll("table.kv tr").forEach(function(tr){if(tr.children[0]&&tr.children[0].textContent.trim()==="Repair Budget")tr.children[1].textContent=usd(used)+(useB?" (borrower budget)":" (ACP estimate; borrower "+(bR?usd(bR):"none")+")")});
 if(snap)snap.parentNode.insertBefore(sec,snap.nextSibling);else doc.body.appendChild(sec);
 return "<!doctype html>"+doc.documentElement.outerHTML}
-function common(raw,d){var doc=new DOMParser().parseFromString(raw,"text/html");var x=nums(doc,d);doc.querySelectorAll("img").forEach(function(i){i.style.maxWidth="240px"});
+var ACPC='ACP Real Estate Lending &middot; Steve Waller &middot; <a href="tel:+19365228951" style="color:inherit">936-522-8951</a> &middot; <a href="mailto:steve@acp-lending.com" style="color:inherit">steve@acp-lending.com</a> &middot; <a href="https://acp-lending.com" style="color:inherit">acp-lending.com</a>';
+function brand(doc,d){var now=new Date().toLocaleString("en-US",{timeZone:"America/Chicago",month:"short",day:"numeric",year:"numeric",hour:"numeric",minute:"2-digit"})+" CT";
+doc.title="ACP Deal Executive Summary - "+d.propertyAddress+" (Confidential)";
+var hd=doc.querySelector(".hd");if(hd){var p=hd.querySelector("p");if(p)p.textContent=d.propertyAddress+", "+d.city+", "+d.state+" "+d.zip+" | "+now;
+var t=doc.createElement("p");t.style.cssText="margin:0 0 6px;font-size:12px;letter-spacing:.08em;text-transform:uppercase;font-weight:700;opacity:1";t.textContent="Prepared by ACP Real Estate Lending \u00b7 Confidential";hd.insertBefore(t,hd.firstChild);
+var c=doc.createElement("p");c.style.cssText="margin:8px 0 0;font-size:13px;opacity:1";c.innerHTML=ACPC;hd.appendChild(c)}
+var ft=doc.querySelector(".foot");var fh='<div style="font-size:13px;color:#333;margin-bottom:6px"><b>Confidential.</b> Prepared by ACP Real Estate Lending for the named borrower only. Do not distribute. Not a commitment to lend.</div><div style="font-size:13px;color:#333">'+ACPC+'</div>';
+if(ft)ft.innerHTML=fh;else{ft=doc.createElement("div");ft.className="foot";ft.innerHTML=fh;(doc.querySelector(".wrap")||doc.body).appendChild(ft)}}
+function common(raw,d){var doc=new DOMParser().parseFromString(raw,"text/html");var x=nums(doc,d);brand(doc,d);doc.querySelectorAll("img").forEach(function(i){i.style.maxWidth="190px"});
 secs(doc).forEach(function(s){
 if(/^Executive Summary/.test(s.t)){var b=[["After-repair value",x.arv?usd(x.arv)+(x.n?" ("+x.n+" closed comparables)":""):"not determined"],["Purchase price",usd(x.P)],["Cash required (closing costs and reserves included)",usd(x.c70)+" at 70% of ARV, "+usd(x.c75)+" at 75%"]];if(x.liq)b.push(["Borrower's available cash",usd(x.liq)]);
 s.el.innerHTML='<h2>Executive Summary</h2><p><b>'+esc(x.addr)+'</b></p><ul style="margin:6px 0 0 18px;line-height:1.7">'+b.map(function(r){return"<li><b>"+r[0]+":</b> "+r[1]+"</li>"}).join("")+'</ul>'}
