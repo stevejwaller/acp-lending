@@ -932,3 +932,48 @@ color: #5c6672;
 .related-guides li {
 margin-bottom: 8px;
 }
+
+/* Client Tools submenu (Financing Request > Investor / Commercial) */
+.main-nav li.has-sub {
+position: relative;
+}
+.main-nav li.has-sub > a::after {
+content: " \25BE";
+font-size: 11px;
+}
+.main-nav li.sub-active > a {
+color: var(--gold);
+}
+.main-nav ul.sub-menu {
+display: none;
+position: absolute;
+top: 100%;
+left: 0;
+z-index: 50;
+flex-direction: column;
+flex-wrap: nowrap;
+min-width: 170px;
+background: var(--navy-dark);
+border: 1px solid var(--gold);
+padding: 4px 0;
+}
+.main-nav li.has-sub:hover > ul.sub-menu,
+.main-nav li.has-sub:focus-within > ul.sub-menu {
+display: flex;
+}
+.main-nav ul.sub-menu li a {
+display: block;
+white-space: nowrap;
+}
+@media (max-width: 900px) {
+.main-nav ul.sub-menu {
+display: flex;
+position: static;
+border: none;
+padding: 0;
+background: transparent;
+}
+.main-nav ul.sub-menu li a {
+padding-left: 30px;
+}
+}
