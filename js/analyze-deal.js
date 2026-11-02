@@ -17,7 +17,7 @@ var d={propertyAddress:v("propertyAddress"),city:v("city"),state:v("state"),zip:
 try{var r=await fetch("/deal-analyzer/report",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(d)});if(!r.ok){var j=await r.json();throw new Error(j.error||"Report failed")}
 var raw=(await r.text()).replace(/\$-[\d,]+/g,function(){return "$0"});
 if(!OWNER){res.innerHTML=basic(raw,d);ld.style.display="none";f.style.display="block";res.scrollIntoView({behavior:"smooth",block:"start"});return}
-var lvl=document.getElementById("daLevel").value;raw=repairs(raw,d);raw=common(raw,d);var html=addBar(lvl==="full"?profit(offer(financing(raw,d),d),d):financing(summary(raw),d),d.borrowerEmail);
+var lvl=document.getElementById("daLevel").value;raw=repairs(raw,d);raw=common(raw,d);var html=addBar(lvl==="full"?profit(offer(financing(raw,Object.assign({},d,{__full:true})),d),d):financing(summary(raw),d),d.borrowerEmail);
 var w=window.open("","_blank");if(w){w.document.write(html);w.document.close()}else{document.open();document.write(html);document.close()}}
 catch(ex){er.innerHTML="<div class='da-err'>"+esc(ex.message)+"</div>"}ld.style.display="none";f.style.display="block"});
 function v(id){return document.getElementById(id).value}
@@ -136,6 +136,7 @@ var PROGS=[
 function financing(html,d){var doc=new DOMParser().parseFromString(html,"text/html");
 var P=num(d.purchasePrice),R=num(d.repairBudget),st=String(d.state||"").trim().toUpperCase().slice(0,2);
 var arv=0;secs(doc).forEach(function(s){if(/^ARV Analysis/.test(s.t)){var m=s.el.textContent.match(/\$[\d,]+/);if(m)arv=num(m[0])}});
+var FULL=!!d.__full;if(FULL&&arv)P=Math.max(0,Math.round(.70*arv-R));
 var f=num(document.getElementById("daFico").value),e=num(document.getElementById("daExp").value),adhoc=num(document.getElementById("daAdhoc").value),bo=num(document.getElementById("daOrig").value)/100,bc=num(document.getElementById("daBcf").value);
 var T=tax(doc,P);var ok=[],out=[];
 PROGS.forEach(function(p){var why="";
@@ -145,7 +146,7 @@ caps.sort(function(x,y){return x[1]-y[1]});var L=Math.max(0,Math.floor(caps[0][1
 if(!why&&L<p.min)why="loan below "+usd(p.min)+" minimum";
 if(why){out.push(p.c+" ("+why+")");return}
 var lc=(p.lfee?p.lfee(L):p.pts*L)+p.fixed,bf=bo*L+bc,tp=.015*L+adhoc,eq=P+R-L,rs=L*.11/2+T.t/2,cash=eq+lc+bf+tp+rs;
-var liq=L*.11/12*6+R/3;
+var liq=FULL?L*.11/2+T.t/2+R/3:L*.11/12*6+R/3;
 ok.push({c:p.c,L:L,bind:caps[0][0],eq:eq,lc:lc,bf:bf,tp:tp,rs:rs,cash:cash,liq:liq})});
 ok.sort(function(x,y){return x.cash-y.cash});var show=ok.slice(0,2);
 var sec=doc.createElement("div");sec.className="sec";
@@ -153,7 +154,7 @@ var h='<h2>Financing Options</h2><p><i>All figures are estimates, subject to len
 if(!show.length){h+='<p>None of the programs in the lender matrix fit this deal as submitted. ACP will review alternatives.</p>'}else{
 var lab=["Best fit","Alternative"];
 h+='<table><tr><th></th>'+show.map(function(o,i){return "<th>"+lab[i]+": "+o.c+"</th>"}).join("")+'</tr>'+
-[["Estimated loan",function(o){return usd(o.L)}],["Loan limited by",function(o){return o.bind}],["Purchase + repairs not covered by loan",function(o){return usd(o.eq)}],["Out-of-pocket lender costs (est.)",function(o){return usd(o.lc)}],["Broker fees ("+(bo*100)+"% + "+usd(bc)+")",function(o){return usd(o.bf)}],["Third-party fees (title 1.5% + ad hoc)",function(o){return usd(o.tp)}],["Reserves (6 mo. interest at ~11% + 1/2 of annual taxes "+usd(T.t)+(T.est?" est.":"")+")",function(o){return usd(o.rs)}],["<b>Estimated cash required</b>",function(o){return "<b>"+usd(o.cash)+"</b>"}],["Liquidity most lenders want to see (6 mo. payments at ~11% + 1/3 of repairs)",function(o){return usd(o.liq)}]].map(function(r){return "<tr><td>"+r[0]+"</td>"+show.map(function(o){return "<td>"+r[1](o)+"</td>"}).join("")+"</tr>"}).join("")+'</table>'}
+(FULL?[["Estimated loan",function(o){return usd(o.L)}],["Loan limited by",function(o){return o.bind}],["Repairs",function(){return usd(R)}],["Purchase Price (ACP recommended)",function(){return usd(P)}],["Purchase + repairs not covered by loan",function(o){return usd(Math.max(0,o.eq))}],["Lender Closing Costs (lender + broker; third-party costs such as appraisal, survey, feasibility study and title policy not included)",function(o){return usd(Math.round(o.lc+o.bf))}],["<b>Cash Due at Closing</b> (third-party costs additional)",function(o){return "<b>"+usd(Math.round(Math.max(0,o.eq)+o.lc+o.bf))+"</b>"}],["&nbsp;",function(){return ""}],["Liquidity to manage the project after closing (6 months of interest and 1/2 of annual taxes + 1/3 of repair costs)",function(o){return usd(Math.round(o.liq))}]]:[["Estimated loan",function(o){return usd(o.L)}],["Loan limited by",function(o){return o.bind}],["Purchase + repairs not covered by loan",function(o){return usd(o.eq)}],["Out-of-pocket lender costs (est.)",function(o){return usd(o.lc)}],["Broker fees ("+(bo*100)+"% + "+usd(bc)+")",function(o){return usd(o.bf)}],["Third-party fees (title 1.5% + ad hoc)",function(o){return usd(o.tp)}],["Reserves (6 mo. interest at ~11% + 1/2 of annual taxes "+usd(T.t)+(T.est?" est.":"")+")",function(o){return usd(o.rs)}],["<b>Estimated cash required</b>",function(o){return "<b>"+usd(o.cash)+"</b>"}],["Liquidity most lenders want to see (6 mo. payments at ~11% + 1/3 of repairs)",function(o){return usd(o.liq)}]]).map(function(r){return "<tr><td>"+r[0]+"</td>"+show.map(function(o){return "<td>"+r[1](o)+"</td>"}).join("")+"</tr>"}).join("")+'</table>'}
 if(out.length)h+='<p style="font-size:90%">Programs that do not fit as submitted: '+out.join("; ")+'.</p>';
 h+='<p style="font-size:90%">Estimates from published lender program terms'+(f?", credit score "+f:"")+(document.getElementById("daExp").value!==""?", "+e+" deals closed in 36 months":"")+'. Lender costs are estimated where a lender does not publish them. Final terms depend on lender review, appraisal and approval. Not a commitment to lend.</p>';
 sec.innerHTML=h;var all=secs(doc),after=null;all.forEach(function(s){if(/^Liquidity Check/.test(s.t))after=s.el});
