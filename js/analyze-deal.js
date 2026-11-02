@@ -101,7 +101,7 @@
       raw = common(raw, d);
       var html = addBar(tiers(lvl === "full" ? profit(offer(financing(raw, Object.assign({}, d, {
         __full: true
-      })), d), d) : financing(summary(raw), d), lvl), d.borrowerEmail);
+      })), d), d) : financing(summary(raw), d), lvl, d), d.borrowerEmail);
       var w = window.open("", "_blank");
       if (w) {
         w.document.write(html);
@@ -209,10 +209,6 @@
           if (/Google Maps/.test(a.textContent)) a.remove()
         })
       }
-    });
-    doc.querySelectorAll("img").forEach(function(i) {
-      var p = i.parentElement;
-      (p && !p.classList.contains("sec") && p.tagName === "DIV" ? p : i).remove()
     });
     return "<!doctype html>" + doc.documentElement.outerHTML
   }
@@ -890,27 +886,46 @@
 
   // Orders the report by level: what the free summary gives, what the $49.99 Deal Report adds,
   // and what the $149.99 Full Package adds. The Executive Summary stays first.
-  function tiers(html, lvl) {
+  function tiers(html, lvl, d) {
     var doc = new DOMParser().parseFromString(html, "text/html");
     var all = secs(doc);
     if (!all.length) return html;
+    // Part 1 opens with one plain-language paragraph: what ACP is prepared to provide.
+    var x = nums(doc, d),
+      kv = {};
+    doc.querySelectorAll("table.kv tr").forEach(function(tr) {
+      var c = tr.children;
+      if (c.length > 1 && !(c[0].textContent.trim() in kv)) kv[c[0].textContent.trim()] = c[1].textContent.trim()
+    });
+    var bb = (kv["Beds / Baths"] || "").split("/").map(function(z) {
+      return z.trim()
+    });
+    var desc = [bb[0] ? bb[0] + "-bedroom" : "", bb[1] ? bb[1] + "-bath" : "", kv["Sq Ft"] ? Number(num(kv["Sq Ft"])).toLocaleString("en-US") + " SF" : "", "home", kv["Year Built"] ? "built in " + kv["Year Built"] : "", kv["Subdivision"] ? "in " + kv["Subdivision"] : ""].filter(Boolean).join(" ").replace("-bath ", "-bath, ");
+    var L70 = Math.round(.70 * x.arv),
+      L75 = Math.round(.75 * x.arv);
+    var para = "ACP Real Estate Lending has reviewed " + esc(x.addr) + ", a " + desc + "." + (x.arv ? " Based on " + (x.n ? x.n + " closed comparable sales" : "comparable sales") + ", ACP estimates an after-repair value of " + usd(x.arv) + (x.R ? " with repairs of " + usd(x.R) : "") + ". ACP is prepared to provide financing of 70% to 75% of the after-repair value, an estimated loan of " + usd(L70) + " to " + usd(L75) + ", to cover the purchase and repairs, subject to final credit approval." : "") + " Lender and third-party closing costs are paid at closing and cannot be included in the loan. The property details follow, and the financing figures are laid out in the sections below.";
+    var ps = doc.createElement("div");
+    ps.className = "sec";
+    ps.innerHTML = "<h2>Summary</h2><p>" + para + "</p>";
+    var snapEl = null;
+    all.forEach(function(s) {
+      if (/^Property Snapshot/.test(s.t)) snapEl = s.el
+    });
+    if (snapEl) snapEl.parentNode.insertBefore(ps, snapEl);
+    all = secs(doc);
     var parent = all[0].el.parentNode;
     var groups = [
-      ["Part 1 &mdash; Basic Deal Summary (Free)", [/^Property Snapshot/, /^ARV Analysis/]],
-      ["Part 2 &mdash; Deal Report ($49.99)", [/^Repair Estimate|^Estimated Repairs/, /^Deal Economics/, /^Liquidity Check/, /^Financing Options/].concat(lvl === "full" ? [] : [/^Property Record/])],
+      ["Part 1 &mdash; Basic Deal Summary (Free)", [/^Summary$/, /^Property Snapshot/, /^ARV Analysis/]],
+      ["Part 2 &mdash; Deal Report ($49.99)", [/^Executive Summary/, /^Repair Estimate|^Estimated Repairs/, /^Deal Economics/, /^Liquidity Check/, /^Financing Options/].concat(lvl === "full" ? [] : [/^Property Record/])],
       ["Part 3 &mdash; Full Package ($149.99)", [/^Comparable Sales/, /^ACP Recommended Offer/, /^Profitability Estimate/, /^Property Record/, /^Pending Exhibits/]]
     ];
     if (lvl !== "full") groups.pop();
     var anchor = null;
-    all.forEach(function(s) {
-      if (/^Executive Summary/.test(s.t)) anchor = s.el
-    });
     var used = [];
     var foot = doc.querySelector(".foot");
     var put = function(node) {
       if (anchor) anchor.parentNode.insertBefore(node, anchor.nextSibling);
-      else if (foot && foot.parentNode === parent) parent.insertBefore(node, foot);
-      else parent.appendChild(node);
+      else parent.insertBefore(node, all[0].el);
       anchor = node
     };
     groups.forEach(function(g) {
