@@ -74,7 +74,7 @@ var t=doc.createElement("p");t.style.cssText="margin:0 0 6px;font-size:12px;lett
 var c=doc.createElement("p");c.style.cssText="margin:8px 0 0;font-size:13px;opacity:1";c.innerHTML=ACPC;hd.appendChild(c)}
 var ft=doc.querySelector(".foot");var fh='<div style="font-size:13px;color:#333;margin-bottom:6px"><b>Confidential.</b> Prepared by ACP Real Estate Lending for the named borrower only. Do not distribute. Not a commitment to lend.</div><div style="font-size:13px;color:#333">'+ACPC+'</div>';
 if(ft)ft.innerHTML=fh;else{ft=doc.createElement("div");ft.className="foot";ft.innerHTML=fh;(doc.querySelector(".wrap")||doc.body).appendChild(ft)}}
-function common(raw,d){var doc=new DOMParser().parseFromString(raw,"text/html");var x=nums(doc,d);brand(doc,d);doc.querySelectorAll("img").forEach(function(i){i.style.maxWidth="190px"});
+function common(raw,d){var doc=new DOMParser().parseFromString(raw,"text/html");var x=nums(doc,d);brand(doc,d);doc.querySelectorAll("img").forEach(function(i){i.style.maxWidth="460px"});
 secs(doc).forEach(function(s){
 if(/^Executive Summary/.test(s.t)){var b=[["After-repair value",x.arv?usd(x.arv)+(x.n?" ("+x.n+" closed comparables)":""):"not determined"],["Purchase price",usd(x.P)],["Cash required (closing costs and reserves included)",usd(x.c70)+" at 70% of ARV, "+usd(x.c75)+" at 75%"]];if(x.liq)b.push(["Borrower's available cash",usd(x.liq)]);
 s.el.innerHTML='<h2>Executive Summary</h2><p><b>'+esc(x.addr)+'</b></p><ul style="margin:6px 0 0 18px;line-height:1.7">'+b.map(function(r){return"<li><b>"+r[0]+":</b> "+r[1]+"</li>"}).join("")+'</ul>'}
