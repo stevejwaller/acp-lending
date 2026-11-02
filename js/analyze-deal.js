@@ -117,7 +117,7 @@ if(after)after.parentNode.insertBefore(sec,after.nextSibling);else doc.body.appe
 return "<!doctype html>"+doc.documentElement.outerHTML}
 function offer(html,d){var doc=new DOMParser().parseFromString(html,"text/html");var x=nums(doc,d);
 var bo=x.F.bo,bc=x.F.bc,adhoc=x.F.adhoc;
-var cc=function(L){return Math.round(.015*L+bo*L+bc)};var L70=.70*x.arv,L75=.75*x.arv,cc70=cc(L70),cc75=cc(L75);
+var cc=function(L){return Math.round((.015+bo)*L+bc)};var L70=.70*x.arv,L75=.75*x.arv,cc70=cc(L70),cc75=cc(L75);
 var rec=Math.max(0,Math.round(L70-x.R)),walk=Math.max(0,Math.round(L75-x.R));
 var sec=doc.createElement("div");sec.className="sec";
 sec.innerHTML='<h2>ACP Recommended Offer</h2><table class="kv"><tr><td>Recommended offer</td><td><b>'+usd(rec)+'</b></td></tr><tr><td>Walk-away price</td><td><b>'+usd(walk)+'</b></td></tr></table><p class="muted" style="margin-top:10px">Recommended offer = 70% of ARV ('+usd(L70)+') less repairs ('+usd(x.R)+'). Walk-away = 75% of ARV ('+usd(L75)+') less repairs. Lender closing costs (estimated '+usd(cc70)+' at 70%, '+usd(cc75)+' at 75%: lender points 1.5%, broker '+(bo*100)+'% + '+usd(bc)+') and third-party costs (appraisal, survey, feasibility study, title policy, etc.) are paid at closing and cannot be included in the loan.</p><p>Phone walkthrough: call or text 936-522-8951 to schedule.</p>';
