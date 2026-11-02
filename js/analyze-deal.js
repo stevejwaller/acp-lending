@@ -142,10 +142,10 @@ var T=tax(doc,P);var ok=[],out=[];
 PROGS.forEach(function(p){var why="";
 if(p.fico&&f&&f<p.fico)why="credit below "+p.fico;else if(p.no&&p.no.indexOf(st)>=0)why="not available in "+st;else if(p.only&&p.only.indexOf(st)<0)why="not available in "+st;
 var a=p.arv(f,e),caps=[["purchase/rehab advance",p.pp*P+p.rp*R],["loan-to-cost",p.ltc*(P+R)],[Math.round(a*100)+"% of ARV",a*arv],["program maximum",p.max]];
-caps.sort(function(x,y){return x[1]-y[1]});var L=Math.max(0,Math.floor(caps[0][1]));
+caps.sort(function(x,y){return x[1]-y[1]});var L=Math.max(0,Math.floor(caps[0][1]+1e-6));
 if(!why&&L<p.min)why="loan below "+usd(p.min)+" minimum";
 if(why){out.push(p.c+" ("+why+")");return}
-var lc=(p.lfee?p.lfee(L):p.pts*L)+p.fixed,bf=bo*L+bc,tp=.015*L+adhoc,eq=P+R-L,rs=L*.11/2+T.t/2,cash=eq+lc+bf+tp+rs;
+var lc=Math.round((p.lfee?p.lfee(L):p.pts*L)+p.fixed),bf=Math.round(bo*L+bc),tp=.015*L+adhoc,eq=P+R-L,rs=L*.11/2+T.t/2,cash=eq+lc+bf+tp+rs;
 var liq=FULL?L*.11/2+T.t/2+R/3:L*.11/12*6+R/3;
 ok.push({c:p.c,L:L,bind:caps[0][0],eq:eq,lc:lc,bf:bf,tp:tp,rs:rs,cash:cash,liq:liq})});
 ok.sort(function(x,y){return x.cash-y.cash});var show=ok.slice(0,2);
