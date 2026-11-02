@@ -277,6 +277,7 @@
       })
     });
     doc.querySelectorAll("table.kv tr").forEach(function(tr) {
+      if (tr.children[0] && tr.children[0].textContent.trim() === "Purchase Price") tr.children[0].textContent = "Purchase Price (as submitted)";
       if (tr.children[0] && tr.children[0].textContent.trim() === "Repair Budget") tr.children[1].textContent = usd(used) + (useB ? " (borrower budget)" : " (ACP estimate; borrower " + (bR ? usd(bR) : "none") + ")")
     });
     if (snap) snap.parentNode.insertBefore(sec, snap.nextSibling);
