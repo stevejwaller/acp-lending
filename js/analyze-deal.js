@@ -490,10 +490,16 @@
         ins = 3000,
         util = 200,
         mo = 6;
+      // Out of pocket = all closing costs (lender + third-party) + 6 months of holding costs
+      // + any purchase or repairs the loan does not cover. Repairs inside the loan come back
+      // through draws, so the 1/3-of-repairs liquidity reserve is not cash invested.
+      var tp = Math.round(.015 * L + x.F.adhoc),
+        ccAll = cc + tp,
+        gap = Math.max(0, Math.round(x.P + x.R - L));
       var hold = Math.round(L * .11 * mo / 12 + tx * mo / 12 + ins * mo / 12 + util * mo),
         sell = Math.round(.07 * x.arv);
-      var fp = Math.round(x.arv - sell - x.P - x.R - cc - hold),
-        fcash = Math.max(1, Math.round(x.P + x.R + cc + hold - L)),
+      var fp = Math.round(x.arv - sell - x.P - x.R - ccAll - hold),
+        fcash = Math.max(1, gap + ccAll + hold),
         froi = fp / fcash,
         fann = froi * 12 / mo,
         fmargin = fp / x.arv;
@@ -537,6 +543,9 @@
       return {
         L: L,
         cc: cc,
+        tp: tp,
+        ccAll: ccAll,
+        gap: gap,
         tx: tx,
         ins: ins,
         util: util,
@@ -576,6 +585,9 @@
       })));
     var L = A.L,
       cc = A.cc,
+      tp = A.tp,
+      ccAll = A.ccAll,
+      gap = A.gap,
       tx = A.tx,
       ins = A.ins,
       util = A.util,
@@ -618,9 +630,10 @@
     sec.innerHTML = '<h2>Profitability Estimate</h2><p style="margin:0 0 8px"><b>Based on the ACP recommended purchase price of ' + usd(recP) + '.</b></p><p style="margin:0 0 12px;padding:10px 12px;background:#eef6ee;border:1px solid #9cc79c;border-radius:6px"><b>ACP recommendation: ' + rec + '.</b> ' + why + '</p><table><tr><th></th><th>Flip</th><th>Rent (refinance and hold)</th></tr>' + [
       ["Sale price / after-repair value", usd(x.arv), usd(x.arv)],
       ["Selling costs (7% of sale)", usd(sell), "-"],
-      ["Holding costs, " + mo + " months (interest, taxes, insurance, utilities)", usd(hold), usd(hold)],
+      ["Closing costs paid at closing (lender " + usd(cc) + " + third-party, est. " + usd(tp) + ")", usd(ccAll), usd(ccAll)],
+      ["Holding costs, " + mo + " months (interest payments, taxes, insurance, utilities)", usd(hold), usd(hold)],
       ["Estimated profit", '<b>' + m(fp) + '</b>', "-"],
-      ["Cash invested", usd(fcash), usd(fcash)],
+      ["Cash invested (closing costs + holding costs" + (gap ? " + purchase and repairs not covered by the loan" : "") + "; repairs in the loan are reimbursed through draws)", usd(fcash), usd(fcash)],
       ["Refinance loan (75% of ARV)", "-", usd(refi)],
       ["Cash back at refinance (after payoff and 2% costs)", "-", m(cashOut)],
       ["Cash left in the deal", "-", left > 0 ? usd(left) : "None"],
@@ -632,7 +645,7 @@
       ["Annual cash-on-cash", "-", coc === null ? "Infinite, no cash left in" : pc(coc)]
     ].map(function(r) {
       return "<tr><td>" + r[0] + "</td><td>" + r[1] + "</td><td>" + r[2] + "</td></tr>"
-    }).join("") + '</table><p class="muted" style="margin-top:8px">Estimates use the repairs in this report (' + usd(x.R) + '), a loan of ' + usd(L) + ' (up to 75% of ARV, cut to need), ' + usd(cc) + ' of lender closing costs paid at closing, annual taxes of ' + usd(tx) + ', insurance of ' + usd(ins) + ' a year and ' + usd(util) + ' a month in utilities. Recommendation rule: flip when the sale clears a 10% margin on ARV; rent when the rent covers the refinance at a 1.20 DSCR; when both work, the one with the better return on cash. Not a commitment to lend.</p><p class="muted" style="margin-top:6px">At the seller&#39;s asking price of ' + usd(x0.P) + ': flip profit ' + m(S.fp) + ' (' + pc(S.fmargin) + ' margin on ARV, ' + usd(S.fcash) + ' cash invested); rental cash flow ' + m(Math.round(S.cf)) + ' a month (DSCR ' + (Math.round(S.dscr * 100) / 100).toFixed(2) + '), ' + (S.left > 0 ? usd(S.left) : 'no cash') + ' left in after refinancing. ACP recommendation at that price: ' + S.rec + '.</p>';
+    }).join("") + '</table><p class="muted" style="margin-top:8px">Estimates use the repairs in this report (' + usd(x.R) + '), a loan of ' + usd(L) + ' (up to 75% of ARV, cut to need), ' + usd(cc) + ' of lender closing costs and an estimated ' + usd(tp) + ' of third-party closing costs (title 1.5% + ad hoc) paid at closing, annual taxes of ' + usd(tx) + ', insurance of ' + usd(ins) + ' a year and ' + usd(util) + ' a month in utilities. Recommendation rule: flip when the sale clears a 10% margin on ARV; rent when the rent covers the refinance at a 1.20 DSCR; when both work, the one with the better return on cash. Not a commitment to lend.</p><p class="muted" style="margin-top:6px">At the seller&#39;s asking price of ' + usd(x0.P) + ': flip profit ' + m(S.fp) + ' (' + pc(S.fmargin) + ' margin on ARV, ' + usd(S.fcash) + ' cash invested); rental cash flow ' + m(Math.round(S.cf)) + ' a month (DSCR ' + (Math.round(S.dscr * 100) / 100).toFixed(2) + '), ' + (S.left > 0 ? usd(S.left) : 'no cash') + ' left in after refinancing. ACP recommendation at that price: ' + S.rec + '.</p>';
     var after = null;
     secs(doc).forEach(function(s2) {
       if (/^ACP Recommended Offer/.test(s2.t)) after = s2.el
