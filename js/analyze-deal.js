@@ -391,6 +391,10 @@
         if (/^\s*Max Offer/.test(tr.textContent)) tr.remove()
       })
     });
+    // No data-vendor names in client reports.
+    doc.querySelectorAll("h2,h3,p,td,th,span,div.muted").forEach(function(el) {
+      if (el.children.length === 0 && /PropertyReach/i.test(el.textContent)) el.textContent = el.textContent.replace(/\s*\(PropertyReach\)/gi, "").replace(/PropertyReach/gi, "public records")
+    });
     // Deal Report level: the chart at the asking price.
     applyChart(doc, x, deal(x, .70, x.P), deal(x, .75, x.P), false);
     return "<!doctype html>" + doc.documentElement.outerHTML
