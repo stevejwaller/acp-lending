@@ -176,19 +176,18 @@
     });
     var pay = ["PayPal: owner@acp-lending.com", "Zelle: 936-522-8951", "Card: call or text 936-522-8951 for a secure Chase payment link"];
     var credit = "Full credit: the report fee is credited back in full at closing if your loan closes with ACP.";
-    var rnote = RNOTE;
     var photos = "Photos required: interior and exterior photos of the property must be provided, either your own or from the listing site or a prior MLS listing.";
     var note = "Include the property address and the report you want with your payment. Reports are generally delivered within 30 to 60 minutes, 9 a.m. to 5 p.m. Central.";
     var body = "Basic Deal Summary\n\n" + rows.map(function(x) {
       return x[0] + ": " + x[1]
-    }).join("\n") + "\n\n$49.99 Deal Report: financing options, full cash to close at 70% and 75% of ARV, and a liquidity check.\n$149.99 Full Package: everything in the Deal Report plus comparable sales, street view, map, full property record, repair review, ACP's recommended offer and walk-away price, and a phone walkthrough.\n" + pay.join("\n") + "\n" + note + "\n" + credit + "\n" + photos + "\n" + rnote + "\n\nACP Real Estate Lending | 936-522-8951 | acp-lending.com";
+    }).join("\n") + "\n\n$49.99 Deal Report: financing options, full cash to close at 70% and 75% of ARV, and a liquidity check.\n$149.99 Full Package: everything in the Deal Report plus comparable sales, street view, map, full property record, repair review, ACP's recommended offer and walk-away price, and a phone walkthrough.\n" + pay.join("\n") + "\n" + note + "\n" + credit + "\n" + photos + "\n\nACP Real Estate Lending | 936-522-8951 | acp-lending.com";
     var href = "mailto:" + encodeURIComponent(d.borrowerEmail || "") + "?cc=steve%40acp-lending.com&subject=" + encodeURIComponent("Basic Deal Summary - " + addr) + "&body=" + encodeURIComponent(body);
     var td = "padding:8px 10px;border-bottom:1px solid #e6e8eb;text-align:left;vertical-align:top";
     return '<div style="margin:0 24px 8px;border:1px solid #e6e8eb;border-top:3px solid var(--gold);border-radius:8px;padding:18px 20px;background:#fff"><h3 style="margin:0 0 10px">Basic Deal Summary</h3><table style="width:100%;border-collapse:collapse">' + rows.map(function(x) {
       return '<tr><th style="' + td + ';width:38%">' + esc(x[0]) + '</th><td style="' + td + '">' + esc(x[1]) + '</td></tr>'
     }).join("") + '</table><p style="margin:14px 0"><a href="#" id="daMail" class="btn" data-href="' + esc(href) + '">Email This Summary</a></p><h4 style="margin:18px 0 6px">$49.99 Deal Report</h4><p style="margin:0 0 8px">Financing options, full cash to close at 70% and 75% of ARV, and a liquidity check.</p><h4 style="margin:14px 0 6px">$149.99 Full Package</h4><p style="margin:0 0 8px">Everything in the Deal Report plus comparable sales, street view, map, full property record, repair review, ACP&#39;s recommended offer and walk-away price, and a phone walkthrough.</p><p style="margin:0 0 6px"><b>Pay by:</b></p><ul style="margin:0 0 8px 18px">' + pay.map(function(p) {
       return "<li>" + esc(p) + "</li>"
-    }).join("") + '</ul><p style="margin:0 0 8px;font-size:14px">' + esc(note) + '</p><p style="margin:0 0 8px;font-size:14px"><b>' + esc(credit) + '</b></p><p style="margin:0 0 8px;font-size:14px"><b>' + esc(photos) + '</b></p><p style="margin:0;font-size:14px"><b>' + esc(rnote) + '</b></p></div>'
+    }).join("") + '</ul><p style="margin:0 0 8px;font-size:14px">' + esc(note) + '</p><p style="margin:0 0 8px;font-size:14px"><b>' + esc(credit) + '</b></p><p style="margin:0;font-size:14px"><b>' + esc(photos) + '</b></p></div>'
   }
 
   function summary(raw) {
