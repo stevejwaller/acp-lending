@@ -931,12 +931,46 @@
     if (snapEl) snapEl.parentNode.insertBefore(ps, snapEl);
     all = secs(doc);
     var parent = all[0].el.parentNode;
+    // Exhibits: comps, property record and photos sit at the end, each lettered.
+    var exList = lvl === "full" ? [[/^Comparable Sales/, "Comparable Sales (Last 12 Months)"], [/^Property Record/, "Property Record"], ["PHOTOS", "Photos"]] : [[/^Property Record/, "Property Record"]];
+    var letters = "ABCDEFG",
+      li = 0;
+    exList.forEach(function(e) {
+      var el = null;
+      if (e[0] === "PHOTOS") {
+        var img = doc.querySelector("img");
+        if (!img) return;
+        el = doc.createElement("div");
+        el.className = "sec";
+        var im = img.cloneNode(true);
+        im.style.maxWidth = "100%";
+        im.style.width = "100%";
+        el.innerHTML = "<h2></h2>";
+        var w = doc.createElement("div");
+        w.style.cssText = "text-align:center";
+        w.appendChild(im);
+        el.appendChild(w);
+        var cap = doc.createElement("p");
+        cap.className = "muted";
+        cap.textContent = "Street view of the property. Interior and exterior photos provided by the borrower are attached to this exhibit.";
+        el.appendChild(cap);
+        (all[all.length - 1].el).parentNode.insertBefore(el, all[all.length - 1].el.nextSibling)
+      } else {
+        secs(doc).forEach(function(s) {
+          if (!el && e[0].test(s.t)) el = s.el
+        })
+      }
+      if (!el) return;
+      el.querySelector("h2").textContent = "Exhibit " + letters[li++] + " \u2014 " + e[1];
+    });
+    all = secs(doc);
     var groups = [
       ["Part 1 &mdash; Basic Deal Summary (Free)", [/^Summary$/, /^Property Snapshot/, /^ARV Analysis/]],
-      ["Part 2 &mdash; Deal Report ($49.99)", [/^Executive Summary/, /^Repair Estimate|^Estimated Repairs/, /^Deal Economics/, /^Liquidity Check/, /^Financing Options/].concat(lvl === "full" ? [] : [/^Property Record/])],
-      ["Part 3 &mdash; Full Package ($149.99)", [/^Comparable Sales/, /^ACP Recommended Offer/, /^Profitability Estimate/, /^Property Record/, /^Pending Exhibits/]]
+      ["Part 2 &mdash; Deal Report ($49.99)", [/^Executive Summary/, /^Repair Estimate|^Estimated Repairs/, /^Deal Economics/, /^Liquidity Check/, /^Financing Options/]],
+      ["Part 3 &mdash; Full Package ($149.99)", [/^ACP Recommended Offer/, /^Profitability Estimate/]],
+      ["Exhibits", [/^Exhibit A/, /^Exhibit B/, /^Exhibit C/, /^Pending Exhibits/]]
     ];
-    if (lvl !== "full") groups.pop();
+    if (lvl !== "full") groups.splice(2, 1);
     var anchor = null;
     var used = [];
     var foot = doc.querySelector(".foot");
