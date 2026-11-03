@@ -189,14 +189,15 @@
             </select>
           </div>
           <div class="calc-field" id="hmlField" style="display:none">
-            <label for="hmlFunded">HML Advance <span class="hint">Texas only</span></label>
+            <label for="hmlFunded">Leverage Type</label>
             <select id="hmlFunded">
-              <option value="">No</option>
-              <option value="hml">Yes — HML funds this deal</option>
+              <option value="">Select&hellip;</option>
+              <option value="hml">HML &mdash; ARV only</option>
+              <option value="hybrid">Hybrid &mdash; lower of LTC or ARV</option>
             </select>
           </div>
         </div>
-        <p class="footnote" id="calc-state-note" style="display:none">HML Advance (Texas): the maximum loan is based on ARV alone, typically 70–75%. The 90% of cost test is not applied. Estimates only, not a commitment to lend.</p>
+        <p class="footnote" id="calc-state-note" style="display:none">HML Advance (Texas): the maximum loan is based on ARV alone, typically 70–75%. The LTC test (90% of purchase + 100% of renovation) is not applied. Estimates only, not a commitment to lend.</p>
         
         <div class="calc-field-row">
           <div class="calc-field">
@@ -210,9 +211,6 @@
         <div class="calc-field">
             <label for="originationPct">Estimated Lender Origination Fee (%) <span class="hint">Varies by deal — enter a figure to model, or leave blank</span></label>
             <input type="text" id="originationPct" placeholder="Example: 2" inputmode="decimal">
-          </div><div class="calc-field">
-            <label for="dailyInterest">Prepaid Interest <span class="hint">First month of interest, collected at closing. The carry below runs one month shorter</span></label>
-            <input type="text" id="dailyInterest" placeholder="Example: 1525.81" inputmode="numeric" value="$1,525.81">
           </div></div>
         
         
@@ -228,7 +226,11 @@
           
           <div class="calc-field">
             <label for="processingFee">Processing Fee <span class="hint">Flat lender fee; edit if your quote differs</span></label>
-            <input type="text" id="processingFee" placeholder="Example: 595" inputmode="numeric" value="$595.00">
+            <input type="text" id="processingFee" placeholder="Example: 1499" inputmode="numeric" value="$1,499.00">
+          </div>
+          <div class="calc-field">
+            <label for="underwritingFee">Underwriting Fee <span class="hint">Flat lender fee; edit if your quote differs</span></label>
+            <input type="text" id="underwritingFee" placeholder="Example: 500" inputmode="numeric" value="$500.00">
           </div>
           
           <div class="calc-field">
@@ -243,6 +245,10 @@
           <div class="calc-field">
             <label for="annualInsurance">Hazard Insurance <span class="hint">One-year premium, prepaid at closing and collected by the lender. Also used as the annual premium on the rental comparison below</span></label>
             <input type="text" id="annualInsurance" placeholder="Example: 3000" inputmode="numeric" value="$3,000.00">
+          </div>
+          <div class="calc-field">
+            <label for="annualFlood">Flood Insurance (if applicable) <span class="hint">One-year premium, prepaid at closing. Enter 0 if none</span></label>
+            <input type="text" id="annualFlood" placeholder="Enter 0 if none" inputmode="numeric" value="$0.00">
           </div>
           <div class="calc-field">
             <label for="titleInsurance">Title Insurance <span class="hint">Third-party cost, typically rolled into the financing request</span></label>
@@ -299,7 +305,7 @@
     </div>
     <div class="calc-results">
       <h2 style="margin-top:0;border:none;padding:0;font-size:1.2rem;">Preliminary Calculations</h2>
-      <div class="result-row" id="row-ltc"><span>90% LTC Limit</span><span class="val" id="r-ltc">—</span></div>
+      <div class="result-row" id="row-ltc"><span>LTC Limit <span class="hint">90% of purchase + 100% of renovation</span></span><span class="val" id="r-ltc">—</span></div>
       <div class="result-row" id="row-arvApplied"><span>ARV Applied <span class="hint" id="r-arvAppliedNote"></span></span><span class="val" id="r-arvApplied">—</span></div>
       <div class="result-row strong"><span id="r-maxLoanLabel">Estimated Maximum Loan with No Surplus</span><span class="val" id="r-maxLoan">—</span></div>
       <div id="tx-compare" style="display:none">
@@ -309,10 +315,12 @@
       </div>
       <div class="result-row"><span>Lender Origination Fee <span class="hint" id="r-origPctNote"></span></span><span class="val" id="r-originationFee">—</span></div>
       <div class="result-row"><span>Processing Fee</span><span class="val" id="r-processingFee">—</span></div>
+      <div class="result-row"><span>Underwriting Fee</span><span class="val" id="r-underwritingFee">—</span></div>
       <div class="result-row"><span>Prepaid Interest <span class="hint" id="r-dailyIntNote"></span><span class="hint-note">Collected at closing, so the monthly carry below runs one month shorter. Total interest over the hold is unchanged.</span></span><span class="val" id="r-dailyInterest">—</span></div>
       <div class="result-row"><span>Appraisal Fee</span><span class="val" id="r-appraisalFee">—</span></div>
       <div class="result-row"><span>Credit Report Fee</span><span class="val" id="r-creditReportFee">—</span></div>
       <div class="result-row"><span>Hazard Insurance <span class="hint-note">One-year premium prepaid at closing and collected by the lender. Counted here only — it is not also charged in the monthly carry.</span></span><span class="val" id="r-hazardInsurance">—</span></div>
+      <div class="result-row"><span>Flood Insurance (if applicable)</span><span class="val" id="r-floodInsurance">—</span></div>
       <div class="result-row"><span>Title Insurance <span class="hint-note">Not a lender fee — included here because title costs are typically rolled into the financing request.</span></span><span class="val" id="r-titleInsurance">—</span></div>
       <div class="result-row"><span>Escrow Fee</span><span class="val" id="r-escrowFee">—</span></div>
       <div class="result-row"><span>Recording Fee</span><span class="val" id="r-recordingFee">—</span></div>
@@ -341,6 +349,28 @@
         <span class="calc-badge calc-group">Borrower &amp; property &mdash; required to submit</span>
         <div class="calc-field-row">
           <div class="calc-field">
+            <label for="creditScore">Est. Credit Score</label>
+            <select id="creditScore">
+              <option value="">Select&hellip;</option>
+              <option value="760+">760+</option>
+              <option value="720-759">720&ndash;759</option>
+              <option value="680-719">680&ndash;719</option>
+              <option value="640-679">640&ndash;679</option>
+              <option value="Under 640">Under 640</option>
+            </select>
+          </div>
+          <div class="calc-field">
+            <label for="experience">Flips/Rentals, Last 36 Months</label>
+            <select id="experience">
+              <option value="">Select&hellip;</option>
+              <option value="None yet">None yet</option>
+              <option value="1-2">1&ndash;2</option>
+              <option value="3-4">3&ndash;4</option>
+              <option value="5-9">5&ndash;9</option>
+              <option value="10 or more">10 or more</option>
+            </select>
+          </div>
+          <div class="calc-field">
             <label for="dealAddress">Property Address</label>
             <input type="text" id="dealAddress" placeholder="Street, city, state, ZIP" autocomplete="off">
           </div>
@@ -357,30 +387,8 @@
             <input type="tel" id="dealPhone" placeholder="(713) 555-0123" autocomplete="tel">
           </div>
           <div class="calc-field">
-            <label for="creditScore">Est. Credit Score</label>
-            <select id="creditScore">
-              <option value="">Select&hellip;</option>
-              <option value="760+">760+</option>
-              <option value="720-759">720&ndash;759</option>
-              <option value="680-719">680&ndash;719</option>
-              <option value="640-679">640&ndash;679</option>
-              <option value="Under 640">Under 640</option>
-            </select>
-          </div>
-          <div class="calc-field">
             <label for="liquidity">Est. Liquid Funds</label>
             <input type="text" id="liquidity" placeholder="Cash plus reserves" inputmode="numeric">
-          </div>
-          <div class="calc-field">
-            <label for="experience">Flips/Rentals, Last 36 Months</label>
-            <select id="experience">
-              <option value="">Select&hellip;</option>
-              <option value="None yet">None yet</option>
-              <option value="1-2">1&ndash;2</option>
-              <option value="3-4">3&ndash;4</option>
-              <option value="5-9">5&ndash;9</option>
-              <option value="10 or more">10 or more</option>
-            </select>
           </div>
         </div>
       </div>
@@ -496,9 +504,9 @@
   </div>
 </footer>
 <script src="/js/fix-or-rent.js?v=34" defer></script>
-<script src="/js/validate.js?v=34" defer></script>
-  <script src="/js/calculator.js?v=37"></script>
-  <script src="/js/calc-gate.js?v=37"></script>
+<script src="/js/validate.js?v=35" defer></script>
+  <script src="/js/calculator.js?v=42"></script>
+  <script src="/js/calc-gate.js?v=45"></script>
 <script src="/js/calc-ui.js?v=34"></script>
 <script src="/js/handoff.js?v=34" defer></script>
 <script src="/js/nav.js?v=34" defer></script>
