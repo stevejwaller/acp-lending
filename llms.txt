@@ -22,7 +22,9 @@ Service area: United States, with Texas-specific programs
   cash flow rather than personal income. 30-year fixed, 5/1 ARM and 7/1 ARM, with
   interest-only structures. Purchase, rate-and-term refinance and cash-out refinance.
   Leverage up to 80% LTV on purchase and rate-and-term; cash-out refinances are typically
-  capped lower, generally around 75%. DSCR requirements as low as 0.80x on certain programs.
+  capped lower, generally around 75%. DSCR requirements as low as 0.80x on certain programs. A Flexible Credit DSCR program
+  (30-year fixed, $75,000-$2,000,000) has no minimum credit score and no minimum DSCR, up to 75% LTV
+  on purchases (70% for first-time investors); refinances 75% LTV at 675+, 70% at 650-674, 65% at 600-649, 60% under 600; vacant properties qualify on market rent.
 - [Ground-Up Construction Loans](https://acp-lending.com/ground-up-construction-loans): Loan
   amounts generally $100,000 to $10 million. Interest-only on funds actually drawn.
   Milestone-based draws verified by inspection. Up to 85% of total project cost and up to
@@ -30,7 +32,7 @@ Service area: United States, with Texas-specific programs
   certain 2-4 unit residential projects.
 - [Multifamily Loans](https://acp-lending.com/multifamily-loans): 5+ units. Short-term bridge
   from $250,000 to $2,000,000 on 12-18 month terms with extensions available, up to 75% LTV
-  purchase / 70% refinance / 65% cash-out, with a value-add variant to 80% of purchase price
+  purchase (70% for first-time investors) / 70% refinance / 65% cash-out, with a value-add variant to 80% of purchase price
   plus 100% of rehab for experienced sponsors. Long-term financing for stabilized 5-9 unit
   properties from $150,000 to $1,500,000 on a 30-year term, up to 70% LTV purchase and
   refinance, 65% cash-out, with a higher minimum credit score.
@@ -39,7 +41,10 @@ Service area: United States, with Texas-specific programs
   unit rentals and 5-9 unit multifamily in a single facility. Up to 70% LTV tiered by credit
   score. 5, 7 or 10-year terms with 30-year amortization or interest-only. Non-recourse
   structure available. Portfolios generally need to be at least 90% leased.
-- [Commercial Real Estate Loans](https://acp-lending.com/commercial-real-estate-loans): Financing for commercial property for investors and owner-users.
+- [Commercial Real Estate Loans](https://acp-lending.com/commercial-real-estate-loans): 30-year fixed, no balloon,
+  for assisted living homes (1-4 units, $75,000-$2,000,000 up to 75% LTV on purchases (70% for first-time investors); up to $10,000,000 at 65% LTV with 600+ credit for
+  experienced investors in major metros), 5+ unit and mixed-use from $100,000 up to 75% LTV on purchases (70% for first-time investors). Property types include office, retail, warehouse, self-storage and automotive. No minimum
+  credit score on certain programs.
 
 ## Tools and resources
 
@@ -51,16 +56,14 @@ Service area: United States, with Texas-specific programs
   PITIA) and a stricter NOI-based DSCR, plus monthly cash flow.
 - [Pre-Approval Request](https://acp-lending.com/pre-approval): Conditional pre-approval
   letter for use with offers.
-- [Request for Information](https://acp-lending.com/request-for-information): Submit a deal
+- [Request for Information](https://acp-lending.com/request-financing): Submit a deal
   for review or ask about a program.
-- [Request Financing](https://acp-lending.com/request-financing): Submit a deal and request financing.
-- [Deal Executive Summary Analyzer](https://acp-lending.com/analyze-deal): Enter a property and get a deal executive summary with ARV, financing at 70% and 75% of ARV, and cash due at closing.
-- [Case Studies](https://acp-lending.com/case-studies): Real investor deals worked through the numbers.
 - [Loan Forms](https://acp-lending.com/loan-documents): Every form needed to prepare and return a financing request
 - [Investor Guidance](https://acp-lending.com/investor-resources): How ARV, leverage, DSCR and borrower contribution are evaluated
 - [ACP Investor Brief](https://acp-lending.com/investor-brief/): Investor guides on DSCR
 - [Choosing Your Strategy and Your Market](https://acp-lending.com/investor-brief/choosing-your-strategy-and-market): Sep 2026 guide — three investor strategies ranked by current data, running a deal from both a lending and a profitability position, the six costs that decide every project, lender structure that preserves liquidity, and Texas vs. out-of-state market conditions.
 - [Why Are More Homes Sitting on the Market?](https://acp-lending.com/investor-brief/why-homes-are-sitting-on-the-market): Sep 2026 guide — why inventory is rising on slower absorption rather than more listings, and where investor deals come from.
+- [Whose Repair Number? Borrower Budget vs. Third-Party Estimate](https://acp-lending.com/investor-brief/repair-estimate-case-study): Oct 2026 fix-and-flip case study — a borrower repair budget of $70,000 against a $98,500 third-party-priced estimate from the same photos; how the gap moves cash required, liquidity and the supportable offer, why lenders size repairs at third-party cost, and how unused repair funds are returned at payoff.
 - [Four Doors, One Hidden Coverage Problem](https://acp-lending.com/investor-brief/dscr-four-condo-case-study): Sep 2026 DSCR case study — a four-condo package where HOA dues and taxes consume 43% of stabilized rent, producing a 0.81 DSCR at current occupancy and 1.15 stabilized. Full PITIA and NOI math, coverage by down payment, and the condo-specific items to verify before financing. Two-page PDF at /investor-brief/acp-dscr-four-condo-case-study.pdf
 - [ACP Investor Brief — Daily](https://acp-lending.com/investor-brief/daily/): Auto-published market updates, Monday, Wednesday and Friday plus a Sunday recap. RSS at /investor-brief/daily/feed.xml
   versus bridge financing, how construction draws work, and how a deal is underwritten,
@@ -79,4 +82,3 @@ lender approval, appraisal or valuation, title, insurance, property eligibility 
 availability. Preliminary analyses are not commitments to lend. Advance rates vary by state;
 the 70% advance with zero out-of-pocket closing is specific to Texas. Rates are not published
 because they move with the market - contact ACP Lending for current pricing.
-- [Whose Repair Number?](https://acp-lending.com/investor-brief/repair-estimate-case-study): Oct 2026 case study - borrower repair budget vs. a third-party estimate and what the gap does to liquidity and the supportable offer.
