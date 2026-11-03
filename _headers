@@ -6,3 +6,8 @@
   Referrer-Policy: strict-origin-when-cross-origin
   Permissions-Policy: geolocation=(), microphone=(), camera=(), payment=(), usb=(), magnetometer=(), gyroscope=(), interest-cohort=()
   Cross-Origin-Opener-Policy: same-origin
+
+/analyze-deal
+  Cache-Control: no-cache
+/analyze-deal.html
+  Cache-Control: no-cache
