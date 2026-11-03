@@ -71,7 +71,8 @@ export async function onRequestPost({ request, env }) {
   const since = new Date(); since.setMonth(since.getMonth() - WINDOWS[WINDOWS.length - 1]);
   const fBase = { comparableSource: "Both", lastSaleDateMin: since.toISOString().slice(0, 10), propertyClassCode: ["R"] };
   if (sf0) { fBase.squareFeetMin = Math.round(sf0 * 0.8); fBase.squareFeetMax = Math.round(sf0 * 1.2); }
-  const call = f => fetch("https://api.propertyreach.com/v1/comparables", { method: "POST", headers: { "x-api-key": key, "Content-Type": "application/json" }, body: JSON.stringify({ target: tgt, filter: f }) }).then(r => r.ok ? r.json() : null).catch(() => null);
+  const dbg = [];
+  const call = f => fetch("https://api.propertyreach.com/v1/comparables", { method: "POST", headers: { "x-api-key": key, "Content-Type": "application/json" }, body: JSON.stringify({ target: tgt, filter: f }) }).then(async r => { if (r.ok) return r.json(); dbg.push(r.status + " " + (await r.text()).slice(0, 300)); return null; }).catch(e => { dbg.push("err " + e.message); return null; });
   const reqs = [call(Object.assign({}, fBase, { distanceFromSubject: 5 }))];
   if (sub0) reqs.unshift(call(Object.assign({}, fBase, { subdivision: [sub0], distanceFromSubject: 10 })));
   const outs = await Promise.all(reqs);
@@ -80,7 +81,7 @@ export async function onRequestPost({ request, env }) {
   const cr = { comparables: raw };
   const rec = pr ? findRec(pr) : null;
   const all = cr ? findArr(cr).map(mapComp) : [];
-  if (!all.length) return j({ success: false, error: "No comparables returned", subdivision: sub0 || null });
+  if (!all.length) return j({ success: false, error: "No comparables returned", subdivision: sub0 || null, propFound: !!rec0, recKeys: rec0 ? Object.keys(rec0).slice(0, 60) : (pr ? Object.keys(pr) : null), dbg });
   let sub = rec ? pick(rec, ["subdivision", "subdivisionName", "subdivision_name", "developmentName", "community", "neighborhood"]) : null;
   if (!sub) { const c = {}; all.forEach(x => { if (x.subdivision) c[x.subdivision] = (c[x.subdivision] || 0) + 1; }); sub = Object.keys(c).sort((a, z) => c[z] - c[a])[0] || null; }
   const sf = rec ? n(pick(rec, ["livingSquareFeet", "livingArea", "living_square_feet", "gla", "buildingSquareFeet", "squareFeet"])) : null;
