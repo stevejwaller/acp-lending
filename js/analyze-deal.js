@@ -22,9 +22,14 @@
     sb.parentNode.insertBefore(lv, sb);
     var fx = document.createElement("div");
     fx.id = "daFin";
-    fx.innerHTML = '<div class="calc-field-row da-three"><div class="calc-field"><label for="daFico">Credit Score</label><input id="daFico" type="number" placeholder="700"></div><div class="calc-field"><label for="daExp">Deals Closed (36 mo)</label><input id="daExp" type="number" placeholder="3"></div><div class="calc-field"><label for="daAdhoc">Title Ad Hoc Fees</label><span class="da-money"><input id="daAdhoc" type="number" value="1000"></span></div></div><div class="calc-field-row"><div class="calc-field"><label for="daOrig">Broker Origination</label><select id="daOrig"><option value="0">0%</option><option value="1">1%</option><option value="2" selected>2%</option></select></div><div class="calc-field"><label for="daBcf">Broker Closing Fee</label><select id="daBcf"><option>500</option><option>750</option><option selected>1000</option></select></div></div><div class="calc-field-row"><div class="calc-field"><label for="daRent">Estimated Monthly Rent</label><span class="da-money"><input id="daRent" type="number" placeholder="blank = 0.8% of ARV"></span></div><div class="calc-field"><label for="daRefi">Rental Refinance Rate (%)</label><input id="daRefi" type="number" step="0.125" value="7.5"></div></div><div class="calc-field"><label><input id="daPhotos" type="checkbox" style="width:auto;display:inline-block;margin:0 6px 0 0;vertical-align:middle"> Interior and exterior photos available</label></div><div class="calc-field"><label for="daAcpRep">ACP Repair Estimate from Photos</label><span class="da-money"><input id="daAcpRep" type="number" placeholder="from the photo repair chart"></span></div><div class="calc-field"><label><input id="daUseBor" type="checkbox" style="width:auto;display:inline-block;margin:0 6px 0 0;vertical-align:middle"> Borrower showed why their repair number is better &mdash; use it</label></div><div class="calc-field"><label>Shown not needed (from photos or records):</label> <label><input id="daNoHvac" type="checkbox" style="width:auto;display:inline-block;margin:0 6px 0 0;vertical-align:middle"> HVAC</label> &nbsp; <label><input id="daNoRoof" type="checkbox" style="width:auto;display:inline-block;margin:0 6px 0 0;vertical-align:middle"> Roof</label> &nbsp; <label><input id="daNoFdn" type="checkbox" style="width:auto;display:inline-block;margin:0 6px 0 0;vertical-align:middle"> Foundation</label></div>';
+    fx.innerHTML = '<div class="calc-field-row da-three"><div class="calc-field"><label for="daFico">Credit Score</label><input id="daFico" type="number" placeholder="700"></div><div class="calc-field"><label for="daExp">Deals Closed (36 mo)</label><input id="daExp" type="number" placeholder="3"></div><div class="calc-field"><label for="daTp">Third-Party Closing (% of loan)</label><input id="daTp" type="number" step="0.1" value="2.0"></div></div><div class="calc-field-row"><div class="calc-field"><label for="daLtcP">Approved LTC: % of Purchase</label><input id="daLtcP" type="number" step="1" value="90"></div><div class="calc-field"><label for="daLtcR">Approved LTC: % of Repairs</label><input id="daLtcR" type="number" step="1" value="100"></div></div><div class="calc-field-row"><div class="calc-field"><label for="daOrig">Broker Origination</label><select id="daOrig"><option value="0">0%</option><option value="1">1%</option><option value="2" selected>2%</option></select></div><div class="calc-field"><label for="daBcf">Broker Closing Fee</label><select id="daBcf"><option>500</option><option>750</option><option selected>1000</option></select></div></div><div class="calc-field-row"><div class="calc-field"><label for="daRent">Estimated Monthly Rent</label><span class="da-money"><input id="daRent" type="number" placeholder="blank = 0.8% of ARV"></span></div><div class="calc-field"><label for="daRefi">Rental Refinance Rate (%)</label><input id="daRefi" type="number" step="0.125" value="7.5"></div></div><div class="calc-field"><label><input id="daPhotos" type="checkbox" style="width:auto;display:inline-block;margin:0 6px 0 0;vertical-align:middle"> Interior and exterior photos available</label></div><div class="calc-field"><label for="daAcpRep">ACP Repair Estimate from Photos</label><span class="da-money"><input id="daAcpRep" type="number" placeholder="from the photo repair chart"></span></div><div class="calc-field"><label><input id="daUseBor" type="checkbox" style="width:auto;display:inline-block;margin:0 6px 0 0;vertical-align:middle"> Borrower showed why their repair number is better &mdash; use it</label></div><div class="calc-field"><label>Shown not needed (from photos or records):</label> <label><input id="daNoHvac" type="checkbox" style="width:auto;display:inline-block;margin:0 6px 0 0;vertical-align:middle"> HVAC</label> &nbsp; <label><input id="daNoRoof" type="checkbox" style="width:auto;display:inline-block;margin:0 6px 0 0;vertical-align:middle"> Roof</label> &nbsp; <label><input id="daNoFdn" type="checkbox" style="width:auto;display:inline-block;margin:0 6px 0 0;vertical-align:middle"> Foundation</label></div>';
     sb.parentNode.insertBefore(fx, sb);
   }
+  // A mouse wheel over a focused number field silently changes its value; blur it instead.
+  document.addEventListener("wheel", function(e) {
+    var t = document.activeElement;
+    if (t && t.type === "number" && t === e.target) t.blur()
+  }, { passive: true });
   document.addEventListener("click", async function(e) {
     if (e.target.id === "daOut") {
       e.preventDefault();
@@ -180,12 +185,12 @@
     var note = "Include the property address and the report you want with your payment. Reports are generally delivered within 30 to 60 minutes, 9 a.m. to 5 p.m. Central.";
     var body = "Basic Deal Summary\n\n" + rows.map(function(x) {
       return x[0] + ": " + x[1]
-    }).join("\n") + "\n\n$49.99 Deal Report: financing options, full cash to close at 70% and 75% of ARV, and a liquidity check.\n$149.99 Full Package: everything in the Deal Report plus comparable sales, street view, map, full property record, repair review, ACP's recommended offer and walk-away price, and a phone walkthrough.\n" + pay.join("\n") + "\n" + note + "\n" + credit + "\n" + photos + "\n\nACP Real Estate Lending | 936-522-8951 | acp-lending.com";
+    }).join("\n") + "\n\n$49.99 Deal Report: financing options, full cash to close, and a liquidity check.\n$149.99 Full Package: everything in the Deal Report plus comparable sales, street view, map, full property record, repair review, ACP's recommended offer and walk-away price, and a phone walkthrough.\n" + pay.join("\n") + "\n" + note + "\n" + credit + "\n" + photos + "\n\nACP Real Estate Lending | 936-522-8951 | acp-lending.com";
     var href = "mailto:" + encodeURIComponent(d.borrowerEmail || "") + "?cc=steve%40acp-lending.com&subject=" + encodeURIComponent("Basic Deal Summary - " + addr) + "&body=" + encodeURIComponent(body);
     var td = "padding:8px 10px;border-bottom:1px solid #e6e8eb;text-align:left;vertical-align:top";
     return '<div style="margin:0 24px 8px;border:1px solid #e6e8eb;border-top:3px solid var(--gold);border-radius:8px;padding:18px 20px;background:#fff"><h3 style="margin:0 0 10px">Basic Deal Summary</h3><table style="width:100%;border-collapse:collapse">' + rows.map(function(x) {
       return '<tr><th style="' + td + ';width:38%">' + esc(x[0]) + '</th><td style="' + td + '">' + esc(x[1]) + '</td></tr>'
-    }).join("") + '</table><p style="margin:14px 0"><a href="#" id="daMail" class="btn" data-href="' + esc(href) + '">Email This Summary</a></p><h4 style="margin:18px 0 6px">$49.99 Deal Report</h4><p style="margin:0 0 8px">Financing options, full cash to close at 70% and 75% of ARV, and a liquidity check.</p><h4 style="margin:14px 0 6px">$149.99 Full Package</h4><p style="margin:0 0 8px">Everything in the Deal Report plus comparable sales, street view, map, full property record, repair review, ACP&#39;s recommended offer and walk-away price, and a phone walkthrough.</p><p style="margin:0 0 6px"><b>Pay by:</b></p><ul style="margin:0 0 8px 18px">' + pay.map(function(p) {
+    }).join("") + '</table><p style="margin:14px 0"><a href="#" id="daMail" class="btn" data-href="' + esc(href) + '">Email This Summary</a></p><h4 style="margin:18px 0 6px">$49.99 Deal Report</h4><p style="margin:0 0 8px">Financing options, full cash to close, and a liquidity check.</p><h4 style="margin:14px 0 6px">$149.99 Full Package</h4><p style="margin:0 0 8px">Everything in the Deal Report plus comparable sales, street view, map, full property record, repair review, ACP&#39;s recommended offer and walk-away price, and a phone walkthrough.</p><p style="margin:0 0 6px"><b>Pay by:</b></p><ul style="margin:0 0 8px 18px">' + pay.map(function(p) {
       return "<li>" + esc(p) + "</li>"
     }).join("") + '</ul><p style="margin:0 0 8px;font-size:14px">' + esc(note) + '</p><p style="margin:0 0 8px;font-size:14px"><b>' + esc(credit) + '</b></p><p style="margin:0;font-size:14px"><b>' + esc(photos) + '</b></p></div>'
   }
@@ -317,49 +322,59 @@
   }
 
   // One deal calculation used by every section and every report level.
-  // Loan = 70% or 75% of ARV.
-  // Lender closing costs (lender 1.5% + broker) are paid at closing, never in the loan.
-  // Cash due at closing = purchase + repairs not covered by the loan + lender closing costs.
+  // Loan = the lower of the approved loan-to-cost (default 90% of purchase + 100% of repairs)
+  // and 75% of ARV.
+  // Lender closing costs (lender 1.5% + broker) and third-party closing costs (estimated as a
+  // percentage of the loan) are paid at closing, never in the loan.
+  // Cash due at closing = purchase + repairs not covered by the loan + lender + third-party costs.
   // Liquidity after closing = 6 months interest (~11%) + 1/2 annual taxes + 1/3 of repairs.
-  function deal(x, a, P) {
-    var L = Math.round(a * x.arv);
+  function deal(x, P) {
+    var La = Math.round(.75 * x.arv),
+      Lc = Math.round(x.F.lp * P + x.F.lr * x.R);
+    var L = Math.min(La, Lc),
+      bind = Lc < La ? "loan-to-cost" : "75% of ARV";
     var cc = Math.round((.015 + x.F.bo) * L + x.F.bc);
-    var due = Math.max(0, Math.round(P + x.R - L)) + cc;
+    var tp = Math.round(x.F.tpp * L);
+    var gap = Math.max(0, Math.round(P + x.R - L));
+    var due = gap + cc + tp;
     var liq = Math.round(L * .11 / 2 + x.T.t / 2 + x.R / 3);
-    return { a: a, P: P, L: L, cc: cc, due: due, liq: liq, tot: due + liq }
+    return { P: P, L: L, La: La, Lc: Lc, bind: bind, cc: cc, tp: tp, gap: gap, due: due, liq: liq, tot: due + liq }
   }
 
-  function recPrices(x) {
-    return {
-      p70: Math.max(0, Math.round(.70 * x.arv - x.R)),
-      p75: Math.max(0, Math.round(.75 * x.arv - x.R))
-    }
+  function recPrice(x) {
+    return Math.max(0, Math.round(.75 * x.arv - x.R))
   }
 
-  function chartRows(x, A, B, recd) {
+  function ltcLabel(x) {
+    return Math.round(x.F.lp * 100) + "% of purchase + " + Math.round(x.F.lr * 100) + "% of repairs"
+  }
+
+  function chartRows(x, A, recd) {
     var arvV = x.arv ? usd(x.arv) : "not determined";
     return [
-      ["ARV" + (x.arv && x.n ? " (" + x.n + " closed comparables)" : ""), arvV, arvV],
-      ["Loan Amount", usd(A.L), usd(B.L)],
-      ["Repairs", usd(x.R), usd(x.R)],
-      ["Lender Closing Costs (third-party costs such as appraisal, survey, feasibility study and title policy not included)", usd(A.cc), usd(B.cc)],
-      [recd ? "Purchase Price (ACP recommended)" : "Purchase Price", usd(A.P), usd(B.P)],
-      ["Cash Due at Closing (lender and third-party closing costs are paid at closing and cannot be included in the loan; third-party costs additional)", usd(A.due), usd(B.due)],
-      ["&nbsp;", "", ""],
-      ["Liquidity to manage the project after closing (6 months of interest and 1/2 of annual taxes + 1/3 of repair costs)", usd(A.liq), usd(B.liq)]
+      ["ARV" + (x.arv && x.n ? " (" + x.n + " closed comparables)" : ""), arvV],
+      ["Loan Amount (lower of loan-to-cost, " + ltcLabel(x) + " = " + usd(A.Lc) + ", and 75% of ARV = " + usd(A.La) + "; limited by " + A.bind + ")", usd(A.L)],
+      ["Repairs", usd(x.R)],
+      [recd ? "Purchase Price (ACP recommended)" : "Purchase Price", usd(A.P)],
+      ["Purchase + repairs not covered by the loan", usd(A.gap)],
+      ["Lender Closing Costs (lender points 1.5% + broker " + Math.round(x.F.bo * 100) + "% + " + usd(x.F.bc) + ")", usd(A.cc)],
+      ["Third-Party Closing Costs (estimated at " + (x.F.tpp * 100).toFixed(1) + "% of the loan: title, escrow, appraisal, survey and recording)", usd(A.tp)],
+      ["<b>Cash Due at Closing</b> (closing costs are paid at closing and cannot be included in the loan)", "<b>" + usd(A.due) + "</b>"],
+      ["&nbsp;", ""],
+      ["Liquidity to manage the project after closing (6 months of interest and 1/2 of annual taxes + 1/3 of repair costs)", usd(A.liq)]
     ]
   }
 
   function chartTable(rows) {
     var R = 'style="text-align:right;white-space:nowrap"';
-    return '<table><thead><tr><th></th><th style="text-align:right">70%</th><th style="text-align:right">75%</th></tr></thead><tbody>' + rows.map(function(r) {
-      return "<tr><td><b>" + r[0] + "</b></td><td " + R + ">" + r[1] + "</td><td " + R + ">" + r[2] + "</td></tr>"
+    return '<table><thead><tr><th></th><th style="text-align:right">Estimate</th></tr></thead><tbody>' + rows.map(function(r) {
+      return "<tr><td><b>" + r[0] + "</b></td><td " + R + ">" + r[1] + "</td></tr>"
     }).join("") + '</tbody></table><p style="margin-top:6px;font-size:12px;font-style:italic">Amount is estimated and subject to final credit approval.</p>'
   }
 
   // Writes the same chart into the Executive Summary, Deal Economics and Liquidity Check.
-  function applyChart(doc, x, A, B, recd) {
-    var tbl = chartTable(chartRows(x, A, B, recd));
+  function applyChart(doc, x, A, recd) {
+    var tbl = chartTable(chartRows(x, A, recd));
     var note = '';
     secs(doc).forEach(function(s) {
       if (/^Executive Summary/.test(s.t)) s.el.innerHTML = '<h2>Executive Summary</h2><p><b>' + esc(x.addr) + '</b></p>' + tbl + note;
@@ -369,11 +384,11 @@
           return x.liq ? (v <= x.liq ? ' <span class="pos">OK</span>' : ' <span class="neg">SHORT</span>') : ""
         };
         var R = 'style="text-align:right;white-space:nowrap"';
-        s.el.innerHTML = '<h2>Liquidity Check</h2><table><thead><tr><th></th><th style="text-align:right">70%</th><th style="text-align:right">75%</th></tr></thead><tbody>' +
-          (x.liq ? '<tr><td><b>Borrower Liquidity</b></td><td ' + R + '>' + usd(x.liq) + '</td><td ' + R + '>' + usd(x.liq) + '</td></tr>' : '') +
-          '<tr><td>Cash Due at Closing</td><td ' + R + '>' + usd(A.due) + '</td><td ' + R + '>' + usd(B.due) + '</td></tr>' +
-          '<tr><td>Liquidity to manage the project after closing</td><td ' + R + '>' + usd(A.liq) + '</td><td ' + R + '>' + usd(B.liq) + '</td></tr>' +
-          '<tr><td><b>Total Cash Required</b> (cash due at closing + liquidity to manage the project)</td><td ' + R + '><b>' + usd(A.tot) + '</b>' + ok(A.tot) + '</td><td ' + R + '><b>' + usd(B.tot) + '</b>' + ok(B.tot) + '</td></tr></tbody></table>' +
+        s.el.innerHTML = '<h2>Liquidity Check</h2><table><thead><tr><th></th><th style="text-align:right">Estimate</th></tr></thead><tbody>' +
+          (x.liq ? '<tr><td><b>Borrower Liquidity</b></td><td ' + R + '>' + usd(x.liq) + '</td></tr>' : '') +
+          '<tr><td>Cash Due at Closing</td><td ' + R + '>' + usd(A.due) + '</td></tr>' +
+          '<tr><td>Liquidity to manage the project after closing</td><td ' + R + '>' + usd(A.liq) + '</td></tr>' +
+          '<tr><td><b>Total Cash Required</b> (cash due at closing + liquidity to manage the project)</td><td ' + R + '><b>' + usd(A.tot) + '</b>' + ok(A.tot) + '</td></tr></tbody></table>' +
           (x.liq ? '' : '<p class="muted">Borrower liquidity not provided.</p>')
       }
     })
@@ -396,7 +411,7 @@
       if (el.children.length === 0 && /PropertyReach/i.test(el.textContent)) el.textContent = el.textContent.replace(/\s*\(PropertyReach\)/gi, "").replace(/PropertyReach/gi, "public records")
     });
     // Deal Report level: the chart at the asking price.
-    applyChart(doc, x, deal(x, .70, x.P), deal(x, .75, x.P), false);
+    applyChart(doc, x, deal(x, x.P), false);
     return "<!doctype html>" + doc.documentElement.outerHTML
   }
 
@@ -408,7 +423,9 @@
     return {
       bo: g("daOrig", 2) / 100,
       bc: g("daBcf", 1000),
-      adhoc: g("daAdhoc", 1000)
+      tpp: g("daTp", 2) / 100,
+      lp: g("daLtcP", 90) / 100,
+      lr: g("daLtcR", 100) / 100
     }
   }
 
@@ -440,24 +457,8 @@
     });
     var P = num(d.purchasePrice),
       R = num(d.repairBudget),
-      F = fees(),
-      k = .015 + F.bo,
-      fx = F.bc;
+      F = fees();
     var T = tax(doc, P);
-    var sz = function(a) {
-      var L = Math.round(a * arv);
-      var cc = Math.round(k * L + fx);
-      var rs = Math.round(L * .11 / 2 + T.t / 2);
-      return {
-        L: L,
-        cc: cc,
-        rs: rs,
-        close: Math.max(0, Math.round(P + R + cc - L)),
-        cash: Math.max(0, Math.round(P + R + cc - L)) + rs
-      }
-    };
-    var s70 = sz(.70),
-      s75 = sz(.75);
     return {
       arv: arv,
       n: n,
@@ -465,16 +466,6 @@
       R: R,
       F: F,
       T: T,
-      l70: s70.L,
-      l75: s75.L,
-      cc70: s70.cc,
-      cc75: s75.cc,
-      rs70: s70.rs,
-      rs75: s75.rs,
-      c70: s70.cash,
-      c75: s75.cash,
-      k70: s70.close,
-      k75: s75.close,
       liq: num(d.borrowerLiquidity),
       addr: d.propertyAddress + ", " + d.city + ", " + d.state + " " + d.zip
     }
@@ -485,11 +476,12 @@
     var x = nums(doc, d);
     if (!x.arv) return html;
     var x0 = x,
-      recP = Math.max(0, Math.round(.70 * x.arv - x.R));
+      recP = recPrice(x);
 
     function calc(x) {
-      var L = x.l75,
-        cc = x.cc75,
+      var D = deal(x, x.P),
+        L = D.L,
+        cc = D.cc,
         tx = x.T.t,
         ins = 3000,
         util = 200,
@@ -497,9 +489,9 @@
       // Out of pocket = all closing costs (lender + third-party) + 6 months of holding costs
       // + any purchase or repairs the loan does not cover. Repairs inside the loan come back
       // through draws, so the 1/3-of-repairs liquidity reserve is not cash invested.
-      var tp = Math.round(.015 * L + x.F.adhoc),
+      var tp = D.tp,
         ccAll = cc + tp,
-        gap = Math.max(0, Math.round(x.P + x.R - L));
+        gap = D.gap;
       var hold = Math.round(L * .11 * mo / 12 + tx * mo / 12 + ins * mo / 12 + util * mo),
         sell = Math.round(.07 * x.arv);
       var fp = Math.round(x.arv - sell - x.P - x.R - ccAll - hold),
@@ -649,7 +641,7 @@
       ["Annual cash-on-cash", "-", coc === null ? "Infinite, no cash left in" : pc(coc)]
     ].map(function(r) {
       return "<tr><td>" + r[0] + "</td><td>" + r[1] + "</td><td>" + r[2] + "</td></tr>"
-    }).join("") + '</table><p class="muted" style="margin-top:8px">Estimates use the repairs in this report (' + usd(x.R) + '), a loan of ' + usd(L) + ' (' + Math.round(L / x.arv * 100) + '% of ARV), ' + usd(cc) + ' of lender closing costs and an estimated ' + usd(tp) + ' of third-party closing costs (title 1.5% + ad hoc) paid at closing, annual taxes of ' + usd(tx) + ', insurance of ' + usd(ins) + ' a year and ' + usd(util) + ' a month in utilities. Recommendation rule: flip when the sale clears a 10% margin on ARV; rent when the rent covers the refinance at a 1.20 DSCR; when both work, the one with the better return on cash. Not a commitment to lend.</p><p class="muted" style="margin-top:6px">At the seller&#39;s asking price of ' + usd(x0.P) + ': flip profit ' + m(S.fp) + ' (' + pc(S.fmargin) + ' margin on ARV, ' + usd(S.fcash) + ' cash invested); rental cash flow ' + m(Math.round(S.cf)) + ' a month (DSCR ' + (Math.round(S.dscr * 100) / 100).toFixed(2) + '), ' + (S.left > 0 ? usd(S.left) : 'no cash') + ' left in after refinancing. ACP recommendation at that price: ' + S.rec + '.</p>';
+    }).join("") + '</table><p class="muted" style="margin-top:8px">Estimates use the repairs in this report (' + usd(x.R) + '), a loan of ' + usd(L) + ' (the lower of loan-to-cost and 75% of ARV), ' + usd(cc) + ' of lender closing costs and an estimated ' + usd(tp) + ' of third-party closing costs (' + (x.F.tpp * 100).toFixed(1) + '% of the loan) paid at closing, annual taxes of ' + usd(tx) + ', insurance of ' + usd(ins) + ' a year and ' + usd(util) + ' a month in utilities. Recommendation rule: flip when the sale clears a 10% margin on ARV; rent when the rent covers the refinance at a 1.20 DSCR; when both work, the one with the better return on cash. Not a commitment to lend.</p><p class="muted" style="margin-top:6px">At the seller&#39;s asking price of ' + usd(x0.P) + ': flip profit ' + m(S.fp) + ' (' + pc(S.fmargin) + ' margin on ARV, ' + usd(S.fcash) + ' cash invested); rental cash flow ' + m(Math.round(S.cf)) + ' a month (DSCR ' + (Math.round(S.dscr * 100) / 100).toFixed(2) + '), ' + (S.left > 0 ? usd(S.left) : 'no cash') + ' left in after refinancing. ACP recommendation at that price: ' + S.rec + '.</p>';
     var after = null;
     secs(doc).forEach(function(s2) {
       if (/^ACP Recommended Offer/.test(s2.t)) after = s2.el
@@ -662,22 +654,12 @@
   function offer(html, d) {
     var doc = new DOMParser().parseFromString(html, "text/html");
     var x = nums(doc, d);
-    var bo = x.F.bo,
-      bc = x.F.bc,
-      adhoc = x.F.adhoc;
-    var rp = recPrices(x),
-      rec = rp.p70,
-      walk = rp.p75;
-    var D70 = deal(x, .70, rec),
-      D75 = deal(x, .75, walk),
-      L70 = D70.L,
-      L75 = D75.L,
-      cc70 = D70.cc,
-      cc75 = D75.cc;
+    var rec = recPrice(x),
+      D = deal(x, rec);
     var sec = doc.createElement("div");
     sec.className = "sec";
-    sec.innerHTML = '<h2>ACP Recommended Offer</h2><table class="kv"><tr><td>Recommended offer</td><td><b>' + usd(rec) + '</b></td></tr><tr><td>Walk-away price</td><td><b>' + usd(walk) + '</b></td></tr></table><p class="muted" style="margin-top:10px">Recommended offer = 70% of ARV (' + usd(L70) + ') less repairs (' + usd(x.R) + '). Walk-away = 75% of ARV (' + usd(L75) + ') less repairs. Lender closing costs (estimated ' + usd(cc70) + ' at 70%, ' + usd(cc75) + ' at 75%: lender points 1.5%, broker ' + (bo * 100) + '% + ' + usd(bc) + ') and third-party costs (appraisal, survey, feasibility study, title policy, etc.) are paid at closing and cannot be included in the loan.</p><p>Phone walkthrough: call or text 936-522-8951 to schedule.</p>';
-    applyChart(doc, x, deal(x, .70, rec), deal(x, .75, walk), true);
+    sec.innerHTML = '<h2>ACP Recommended Offer</h2><table class="kv"><tr><td>Recommended offer</td><td><b>' + usd(rec) + '</b></td></tr></table><p class="muted" style="margin-top:10px">Recommended offer = 75% of ARV (' + usd(D.La) + ') less repairs (' + usd(x.R) + '). The loan is the lower of the approved loan-to-cost (' + ltcLabel(x) + ', ' + usd(D.Lc) + ') and 75% of ARV, so at this price the loan is ' + usd(D.L) + ' and ' + usd(D.gap) + ' of purchase and repairs is paid at closing. Lender closing costs (estimated ' + usd(D.cc) + ') and third-party closing costs (estimated ' + usd(D.tp) + ') are paid at closing and cannot be included in the loan.</p><p>Phone walkthrough: call or text 936-522-8951 to schedule.</p>';
+    applyChart(doc, x, D, true);
     var after = null;
     secs(doc).forEach(function(s) {
       if (/^Deal Economics/.test(s.t)) after = s.el
@@ -787,10 +769,10 @@
       }
     });
     var FULL = !!d.__full;
-    if (FULL && arv) P = Math.max(0, Math.round(.70 * arv - R));
+    if (FULL && arv) P = Math.max(0, Math.round(.75 * arv - R));
     var f = num(document.getElementById("daFico").value),
       e = num(document.getElementById("daExp").value),
-      adhoc = num(document.getElementById("daAdhoc").value),
+      tpp = fees().tpp,
       bo = num(document.getElementById("daOrig").value) / 100,
       bc = num(document.getElementById("daBcf").value);
     var T = tax(doc, P);
@@ -804,7 +786,8 @@
       var a = p.arv(f, e),
         caps = [
           [Math.round(Math.min(a, .75) * 100) + "% of ARV", Math.min(a, .75) * arv],
-          ["program maximum", p.max]
+          ["program maximum", p.max],
+          ["loan-to-cost", Math.min(p.pp * P + p.rp * R, p.ltc * (P + R))]
         ];
       caps.sort(function(x, y) {
         return x[1] - y[1]
@@ -817,12 +800,12 @@
       }
       var lc = Math.round((p.lfee ? p.lfee(L) : p.pts * L) + p.fixed),
         bf = Math.round(bo * L + bc),
-        tp = .015 * L + adhoc,
+        tp = Math.round(tpp * L),
         eq = P + R - L,
         rs = L * .11 / 2 + T.t / 2,
         cash = eq + lc + bf + tp + rs;
       var liq = Math.round(L * .11 / 2 + T.t / 2 + R / 3);
-      var due = Math.max(0, Math.round(eq)) + lc + bf;
+      var due = Math.max(0, Math.round(eq)) + lc + bf + tp;
       cash = due + liq;
       ok.push({
         c: p.c,
@@ -868,10 +851,13 @@
           ["Purchase + repairs not covered by loan", function(o) {
             return usd(Math.max(0, o.eq))
           }],
-          ["Lender Closing Costs (lender + broker; third-party costs such as appraisal, survey, feasibility study and title policy not included)", function(o) {
+          ["Lender Closing Costs (lender + broker)", function(o) {
             return usd(o.lc + o.bf)
           }],
-          ["<b>Cash Due at Closing</b> (third-party costs additional)", function(o) {
+          ["Third-Party Closing Costs (estimated at " + (tpp * 100).toFixed(1) + "% of the loan)", function(o) {
+            return usd(o.tp)
+          }],
+          ["<b>Cash Due at Closing</b>", function(o) {
             return "<b>" + usd(o.due) + "</b>"
           }],
           ["&nbsp;", function() {
@@ -916,9 +902,8 @@
       return z.trim()
     });
     var desc = [bb[0] ? bb[0] + "-bedroom" : "", bb[1] ? bb[1] + "-bath" : "", kv["Sq Ft"] ? Number(num(kv["Sq Ft"])).toLocaleString("en-US") + " SF" : "", "home", kv["Year Built"] ? "built in " + kv["Year Built"] : "", kv["Subdivision"] ? "in " + kv["Subdivision"] : ""].filter(Boolean).join(" ").replace("-bath ", "-bath, ");
-    var L70 = Math.round(.70 * x.arv),
-      L75 = Math.round(.75 * x.arv);
-    var para = "ACP Real Estate Lending has reviewed " + esc(x.addr) + ", a " + desc + "." + (x.arv ? " Based on " + (x.n ? x.n + " closed comparable sales" : "comparable sales") + ", ACP estimates an after-repair value of " + usd(x.arv) + (x.R ? " with repairs of " + usd(x.R) : "") + ". ACP is prepared to provide financing of 70% to 75% of the after-repair value, an estimated loan of " + usd(L70) + " to " + usd(L75) + ", to cover the purchase and repairs, subject to final credit approval." : "") + " Lender and third-party closing costs are paid at closing and cannot be included in the loan. The property details follow, and the financing figures are laid out in the sections below.";
+    var D0 = deal(x, lvl === "full" ? recPrice(x) : x.P);
+    var para = "ACP Real Estate Lending has reviewed " + esc(x.addr) + ", a " + desc + "." + (x.arv ? " Based on " + (x.n ? x.n + " closed comparable sales" : "comparable sales") + ", ACP estimates an after-repair value of " + usd(x.arv) + (x.R ? " with repairs of " + usd(x.R) : "") + ". ACP is prepared to provide an estimated loan of " + usd(D0.L) + ", the lower of the approved loan-to-cost (" + ltcLabel(x) + ") and 75% of the after-repair value, toward the purchase and repairs, subject to final credit approval." : "") + " Lender and third-party closing costs are paid at closing and cannot be included in the loan. The property details follow, and the financing figures are laid out in the sections below.";
     var ps = doc.createElement("div");
     ps.className = "sec";
     ps.innerHTML = "<h2>Summary</h2><p>" + para + "</p>";

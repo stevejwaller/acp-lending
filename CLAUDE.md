@@ -27,9 +27,13 @@ follow the request and update this file in the same commit.
 ## 3. Locked items — change only with Steve's explicit OK
 - Deal Executive Summary report format served by `/deal-analyzer/report`
   (sections: Executive Summary, Property Snapshot, ARV Analysis, Comparable
-  Sales Exhibit A, Deal Economics 70%/75%, Liquidity Check, Property Record,
+  Sales Exhibit A, Deal Economics (75%), Liquidity Check, Property Record,
   Pending Exhibits). Do not change its format or route.
-- Analyzer loan amount is 70% or 75% of ARV only — no LTC, no cost cap.
+- Analyzer loan amount (3 Nov 2026, Steve): 75% only — the lower of the approved
+  loan-to-cost (default 90% of purchase + 100% of repairs, owner fields) and 75% of
+  ARV. No 70% column. Lender and third-party closing costs (third-party estimated
+  at 2.0% of the loan, owner field) sit after the purchase price and are paid at
+  closing, never in the loan.
 - Header menu (same on every page):
   - Client Tools: Pre-Approval, Deal Executive Summary Analyzer (/analyze-deal),
     DSCR Calculator, Request Financing (/request-financing), Forms, Investor
