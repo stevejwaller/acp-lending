@@ -776,20 +776,42 @@
     var labels = ["Purchase price", "Sale price / after-repair value", "Loan (lower of loan-to-cost and 75% of ARV)", "Selling costs (7% of sale)", "Lender closing costs, paid at closing", "Third-party closing costs, est., paid at closing", "Holding costs, 6 months (interest payments, taxes, insurance, utilities)", "Estimated profit", "Cash invested (closing costs + holding costs + purchase and repairs not covered by the loan; repairs in the loan are reimbursed through draws)", "Refinance loan (lower of 75% of ARV and a 1.20 DSCR)", "Cash back at refinance (after payoff and 2% costs)", "Cash left in the deal", "Monthly rent" + (A.rIn ? "" : " (0.8% of ARV, verify with rent comps)"), "Net operating income / month (5% vacancy, 8% maintenance, 8% management)", "Principal and interest / month (" + (A.rr * 100) + "%, 30 years)", "Cash flow / month", "DSCR (NOI / P&amp;I)", "Annual cash-on-cash"];
     var cA = col(A, recP),
       cS = col(S, x0.P);
-    var card = function() {
-      return '<p style="margin:0 0 6px;padding:10px 12px;background:#eef6ee;border:1px solid #9cc79c;border-radius:6px"><b>At the ACP recommended price (' + usd(recP) + '): ' + A.rec + '.</b> ' + A.why + '<br><b>At the price as submitted (' + usd(x0.P) + '): ' + S.rec + '.</b> ' + S.why + '</p><table><tr><th rowspan="2"></th><th colspan="2">ACP recommended price</th><th colspan="2">Price as submitted</th></tr><tr><th>Flip</th><th>Rent (refinance and hold)</th><th>Flip</th><th>Rent (refinance and hold)</th></tr>' + labels.map(function(l, i) {
+    var chart = function() {
+      return '<table><tr><th rowspan="2"></th><th colspan="2">ACP recommended price</th><th colspan="2">Price as submitted</th></tr><tr><th>Flip</th><th>Rent (refinance and hold)</th><th>Flip</th><th>Rent (refinance and hold)</th></tr>' + labels.map(function(l, i) {
         return "<tr><td>" + l + "</td><td>" + cA[i][0] + "</td><td>" + cA[i][1] + "</td><td>" + cS[i][0] + "</td><td>" + cS[i][1] + "</td></tr>"
       }).join("") + '</table>'
     };
+    // Replaces the ACP Recommended Offer table (its figures are in this chart): intro, chart,
+    // conclusion, negotiation strategy (Steve, 3 Nov 2026).
+    var PX = prices(x0),
+      due = function(Z) {
+        return Z.gap + Z.cc + Z.tp
+      },
+      ceil = recP,
+      sub = CM && CM.subdivision ? CM.subdivision : "the subdivision";
+    var intro = '<p>The chart below runs the same property at two prices, ACP\'s recommended price of ' + usd(recP) + ' and the submitted price of ' + usd(x0.P) + ', each as a flip (sell at the after-repair value) and as a rental (refinance and hold). ' + (recP ? 'The recommended price is the highest price that leaves a working exit: the 75% rule price is ' + usd(PX.rule75) + ', the highest price that works as a flip is ' + (PX.flip === null ? 'none' : usd(PX.flip)) + ' and the highest that works as a rental is ' + (PX.rent === null ? 'none' : usd(PX.rent)) + '.' : 'No purchase price makes this deal work as a flip or a rental at this ARV, rent and repair budget.') + '</p>';
+    var exitTxt = function(Z) {
+      return Z.rec === "Flip" ? "works as a flip earning about " + m(Z.fp) + " (" + pc(Z.fmargin) + " of ARV)" : Z.rec === "Rent" ? "works as a rental with " + m(Math.round(Z.cf)) + " a month in cash flow" : "does not work: the flip shows " + m(Z.fp) + " and the rental a " + (Z.coc === null ? "n/a" : pc(Z.coc)) + " cash-on-cash return"
+    };
+    var concl = '<p><b>Conclusion.</b> At the submitted ' + usd(x0.P) + ' the deal ' + exitTxt(S) + ', with ' + usd(due(S)) + ' due at closing. ' + (recP ? 'At ACP\'s recommended ' + usd(recP) + ' it ' + exitTxt(A) + ', with ' + usd(due(A)) + ' due at closing and ' + usd(A.fcash) + ' invested in all. ACP recommends ' + (A.rec === "Rent" ? 'buying to rent' : 'buying to flip') + ' at ' + usd(recP) + ' or less' + (S.flipOK || S.rentOK ? '.' : '; the deal does not work at the submitted price.') : 'ACP does not recommend this deal at any price on these numbers.') + '</p>';
+    var neg = "";
+    if (recP && x0.P > recP) {
+      var walk = Math.max(0, x0.P - x.R);
+      neg = '<h3 style="margin:14px 0 6px">Recommended Negotiation Strategy</h3><ul><li>Open at ' + usd(recP) + '. The asking price of ' + usd(x0.P) + ' reflects recent sales in ' + esc(sub) + ' of similar size and age that were already updated; this home still needs ' + usd(x.R) + ' of work.</li><li>Walk the seller down from the asking price by the line-item repairs (' + usd(x0.P) + ' less ' + usd(x.R) + ' = ' + usd(walk) + '). Repairs are normally done by the homeowner, and a buyer cannot pay for repairs and improvements that were not done.</li><li>Walk away above ' + usd(ceil) + '. Above that price ' + (A.rec === "Rent" ? 'the rental no longer clears a 1.20 DSCR and a 10% cash-on-cash return' : 'the flip falls under a 10% margin and the rental does not work') + '.</li></ul>';
+    } else if (recP) {
+      neg = '<h3 style="margin:14px 0 6px">Recommended Negotiation Strategy</h3><ul><li>The submitted price of ' + usd(x0.P) + ' is at or below ACP\'s recommended price, so the deal works as submitted.</li><li>Ask for a repair credit or seller-paid closing costs against the ' + usd(x.R) + ' repair budget rather than a lower price.</li><li>Walk away above ' + usd(ceil) + '.</li></ul>';
+    }
     var sec = doc.createElement("div");
     sec.className = "sec";
-    sec.innerHTML = '<h2>Profitability Estimate</h2>' + card() + '<p class="muted" style="margin-top:8px">Both use the repairs in this report (' + usd(x.R) + '), a loan equal to the lower of loan-to-cost (' + ltcLabel(x) + ') and 75% of ARV, lender closing costs and estimated third-party closing costs (' + (x.F.tpp * 100).toFixed(1) + '% of the loan) paid at closing, annual taxes of ' + usd(A.tx) + ', insurance of ' + usd(A.ins) + ' a year and ' + usd(A.util) + ' a month in utilities. Recommendation rule: flip when the sale clears a 10% margin on ARV; rent when the rent supports a refinance at a 1.20 DSCR with positive cash flow and at least a 10% cash-on-cash return on cash left in; when both work, the one with the better return on cash. Not a commitment to lend.</p>';
+    sec.innerHTML = '<h2>Profitability Estimate</h2>' + intro + chart() + concl + neg + '<p class="muted" style="margin-top:8px">Both prices use the repairs in this report (' + usd(x.R) + '), a loan equal to the lower of loan-to-cost (' + ltcLabel(x) + ') and 75% of ARV, lender closing costs and estimated third-party closing costs (' + (x.F.tpp * 100).toFixed(1) + '% of the loan) paid at closing, annual taxes of ' + usd(A.tx) + ', insurance of ' + usd(A.ins) + ' a year and ' + usd(A.util) + ' a month in utilities. Recommendation rule: flip when the sale clears a 10% margin on ARV; rent when the rent supports a refinance at a 1.20 DSCR with positive cash flow and at least a 10% cash-on-cash return on cash left in; when both work, the one with the better return on cash. Not a commitment to lend.</p><p>Phone walkthrough: call or text 936-522-8951 to schedule.</p>';
     var after = null;
     secs(doc).forEach(function(s2) {
       if (/^ACP Recommended Offer/.test(s2.t)) after = s2.el
     });
-    if (after) after.parentNode.insertBefore(sec, after.nextSibling);
-    else doc.body.appendChild(sec);
+    if (after) {
+      after.parentNode.insertBefore(sec, after);
+      after.parentNode.removeChild(after)
+    } else doc.body.appendChild(sec);
     return "<!doctype html>" + doc.documentElement.outerHTML
   }
 
