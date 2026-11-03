@@ -132,9 +132,9 @@
       var lvl = document.getElementById("daLevel").value;
       raw = repairs(raw, d);
       raw = common(raw, d);
-      var html = addBar(tiers(lvl === "full" ? profit(offer(financing(raw, Object.assign({}, d, {
+      var html = addBar(dropArv(tiers(lvl === "full" ? profit(offer(financing(raw, Object.assign({}, d, {
         __full: true
-      })), d), d) : financing(summary(raw), d), lvl, d), d.borrowerEmail);
+      })), d), d) : financing(summary(raw), d), lvl, d)), d.borrowerEmail);
       var w = window.open("", "_blank");
       if (w) {
         w.document.write(html);
@@ -1188,6 +1188,16 @@
       h.innerHTML = g[0];
       put(h);
       hits.forEach(put)
+    });
+    return "<!doctype html>" + doc.documentElement.outerHTML
+  }
+
+  // The ARV Analysis block is used for the math but not shown; the ARV is in the Summary,
+  // the Executive Summary and the Comparable Sales Summary (Steve, 3 Nov 2026).
+  function dropArv(html) {
+    var doc = new DOMParser().parseFromString(html, "text/html");
+    secs(doc).forEach(function(s) {
+      if (/^ARV Analysis/.test(s.t)) s.el.parentNode.removeChild(s.el)
     });
     return "<!doctype html>" + doc.documentElement.outerHTML
   }
