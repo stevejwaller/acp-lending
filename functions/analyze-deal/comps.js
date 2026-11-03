@@ -85,6 +85,11 @@ export async function onRequestPost({ request, env }) {
     if (comps.length >= MIN) break;
   }
   comps.sort((a, z) => new Date(z.saleDate) - new Date(a.saleDate));
+  // When 20 are not found, report the window the found sales actually cover, not the widest tried.
+  if (comps.length < MIN && comps.length) {
+    const oldest = new Date(comps[comps.length - 1].saleDate);
+    for (const w of WINDOWS) { const cut = new Date(); cut.setMonth(cut.getMonth() - w); if (oldest >= cut) { months = w; break; } }
+  }
   const mps = med(comps.map(c => c.ppsf));
   const arv = sf && mps ? Math.round(mps * sf / 1000) * 1000 : Math.round(med(comps.map(c => c.salePrice)) / 1000) * 1000;
   return j({
