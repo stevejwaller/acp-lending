@@ -750,32 +750,40 @@
       m = function(z) {
         return z < 0 ? "-" + usd(-z) : usd(z)
       };
-    // The same flip-or-rent test run at both prices.
-    var card = function(Z, P, title) {
-      return '<h3 style="margin:14px 0 6px">' + title + ' (' + usd(P) + ')</h3><p style="margin:0 0 10px;padding:10px 12px;background:#eef6ee;border:1px solid #9cc79c;border-radius:6px"><b>ACP recommendation: ' + Z.rec + '.</b> ' + Z.why + '</p><table><tr><th></th><th>Flip</th><th>Rent (refinance and hold)</th></tr>' + [
-        ["Sale price / after-repair value", usd(x.arv), usd(x.arv)],
-        ["Loan (lower of loan-to-cost and 75% of ARV)", usd(Z.L), usd(Z.L)],
-        ["Selling costs (7% of sale)", usd(Z.sell), "-"],
-        ["Closing costs paid at closing (lender " + usd(Z.cc) + " + third-party, est. " + usd(Z.tp) + ")", usd(Z.ccAll), usd(Z.ccAll)],
-        ["Holding costs, " + Z.mo + " months (interest payments, taxes, insurance, utilities)", usd(Z.hold), usd(Z.hold)],
-        ["Estimated profit", '<b>' + m(Z.fp) + '</b> (' + pc(Z.fmargin) + ' of ARV)', "-"],
-        ["Cash invested (closing costs + holding costs" + (Z.gap ? " + purchase and repairs not covered by the loan" : "") + "; repairs in the loan are reimbursed through draws)", usd(Z.fcash), usd(Z.fcash)],
-        ["Refinance loan (lower of 75% of ARV and a 1.20 DSCR; set by " + Z.refiBind + ")", "-", usd(Z.refi)],
-        ["Cash back at refinance (after payoff and 2% costs)", "-", m(Z.cashOut)],
-        ["Cash left in the deal", "-", Z.left > 0 ? usd(Z.left) : "None"],
-        ["Monthly rent" + (Z.rIn ? "" : " (0.8% of ARV, verify with rent comps)"), "-", usd(Z.rent)],
-        ["Net operating income / month (5% vacancy, 8% maintenance, 8% management)", "-", m(Math.round(Z.noi))],
-        ["Principal and interest / month (" + (Z.rr * 100) + "%, 30 years)", "-", usd(Math.round(Z.pi))],
-        ["Cash flow / month", "-", '<b>' + m(Math.round(Z.cf)) + '</b>'],
-        ["DSCR (NOI / P&amp;I)", "-", (Math.round(Z.dscr * 100) / 100).toFixed(2)],
-        ["Annual cash-on-cash", "-", Z.coc === null ? "Infinite, no cash left in" : pc(Z.coc)]
-      ].map(function(r) {
-        return "<tr><td>" + r[0] + "</td><td>" + r[1] + "</td><td>" + r[2] + "</td></tr>"
+    // The same flip-or-rent test run at both prices, in one chart (Steve, 3 Nov 2026).
+    var col = function(Z, P) {
+      return [
+        [usd(P), usd(P)],
+        [usd(x.arv), usd(x.arv)],
+        [usd(Z.L), usd(Z.L)],
+        [usd(Z.sell), "-"],
+        [usd(Z.cc), usd(Z.cc)],
+        [usd(Z.tp), usd(Z.tp)],
+        [usd(Z.hold), usd(Z.hold)],
+        ['<b>' + m(Z.fp) + '</b> (' + pc(Z.fmargin) + ' of ARV)', "-"],
+        [usd(Z.fcash), usd(Z.fcash)],
+        ["-", usd(Z.refi) + " (" + Z.refiBind + ")"],
+        ["-", m(Z.cashOut)],
+        ["-", Z.left > 0 ? usd(Z.left) : "None"],
+        ["-", usd(Z.rent)],
+        ["-", m(Math.round(Z.noi))],
+        ["-", usd(Math.round(Z.pi))],
+        ["-", '<b>' + m(Math.round(Z.cf)) + '</b>'],
+        ["-", (Math.round(Z.dscr * 100) / 100).toFixed(2)],
+        ["-", Z.coc === null ? "Infinite, no cash left in" : pc(Z.coc)]
+      ]
+    };
+    var labels = ["Purchase price", "Sale price / after-repair value", "Loan (lower of loan-to-cost and 75% of ARV)", "Selling costs (7% of sale)", "Lender closing costs, paid at closing", "Third-party closing costs, est., paid at closing", "Holding costs, 6 months (interest payments, taxes, insurance, utilities)", "Estimated profit", "Cash invested (closing costs + holding costs + purchase and repairs not covered by the loan; repairs in the loan are reimbursed through draws)", "Refinance loan (lower of 75% of ARV and a 1.20 DSCR)", "Cash back at refinance (after payoff and 2% costs)", "Cash left in the deal", "Monthly rent" + (A.rIn ? "" : " (0.8% of ARV, verify with rent comps)"), "Net operating income / month (5% vacancy, 8% maintenance, 8% management)", "Principal and interest / month (" + (A.rr * 100) + "%, 30 years)", "Cash flow / month", "DSCR (NOI / P&amp;I)", "Annual cash-on-cash"];
+    var cA = col(A, recP),
+      cS = col(S, x0.P);
+    var card = function() {
+      return '<p style="margin:0 0 6px;padding:10px 12px;background:#eef6ee;border:1px solid #9cc79c;border-radius:6px"><b>At the ACP recommended price (' + usd(recP) + '): ' + A.rec + '.</b> ' + A.why + '<br><b>At the price as submitted (' + usd(x0.P) + '): ' + S.rec + '.</b> ' + S.why + '</p><table><tr><th rowspan="2"></th><th colspan="2">ACP recommended price</th><th colspan="2">Price as submitted</th></tr><tr><th>Flip</th><th>Rent (refinance and hold)</th><th>Flip</th><th>Rent (refinance and hold)</th></tr>' + labels.map(function(l, i) {
+        return "<tr><td>" + l + "</td><td>" + cA[i][0] + "</td><td>" + cA[i][1] + "</td><td>" + cS[i][0] + "</td><td>" + cS[i][1] + "</td></tr>"
       }).join("") + '</table>'
     };
     var sec = doc.createElement("div");
     sec.className = "sec";
-    sec.innerHTML = '<h2>Profitability Estimate</h2>' + card(A, recP, "At the ACP recommended purchase price") + card(S, x0.P, "At the purchase price as submitted") + '<p class="muted" style="margin-top:8px">Both use the repairs in this report (' + usd(x.R) + '), a loan equal to the lower of loan-to-cost (' + ltcLabel(x) + ') and 75% of ARV, lender closing costs and estimated third-party closing costs (' + (x.F.tpp * 100).toFixed(1) + '% of the loan) paid at closing, annual taxes of ' + usd(A.tx) + ', insurance of ' + usd(A.ins) + ' a year and ' + usd(A.util) + ' a month in utilities. Recommendation rule: flip when the sale clears a 10% margin on ARV; rent when the rent supports a refinance at a 1.20 DSCR with positive cash flow and at least a 10% cash-on-cash return on cash left in; when both work, the one with the better return on cash. Not a commitment to lend.</p>';
+    sec.innerHTML = '<h2>Profitability Estimate</h2>' + card() + '<p class="muted" style="margin-top:8px">Both use the repairs in this report (' + usd(x.R) + '), a loan equal to the lower of loan-to-cost (' + ltcLabel(x) + ') and 75% of ARV, lender closing costs and estimated third-party closing costs (' + (x.F.tpp * 100).toFixed(1) + '% of the loan) paid at closing, annual taxes of ' + usd(A.tx) + ', insurance of ' + usd(A.ins) + ' a year and ' + usd(A.util) + ' a month in utilities. Recommendation rule: flip when the sale clears a 10% margin on ARV; rent when the rent supports a refinance at a 1.20 DSCR with positive cash flow and at least a 10% cash-on-cash return on cash left in; when both work, the one with the better return on cash. Not a commitment to lend.</p>';
     var after = null;
     secs(doc).forEach(function(s2) {
       if (/^ACP Recommended Offer/.test(s2.t)) after = s2.el
