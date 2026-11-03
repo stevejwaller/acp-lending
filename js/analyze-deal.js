@@ -1100,8 +1100,9 @@
       }
       el.querySelector("h2").textContent = "Exhibit " + L + " — " + e[1];
     });
+    // One chart only: Deal Economics repeated the Executive Summary chart, so it is dropped.
     secs(doc).forEach(function(s) {
-      if (/^Pending Exhibits/.test(s.t)) s.el.remove()
+      if (/^Pending Exhibits/.test(s.t) || /^Deal Economics/.test(s.t)) s.el.remove()
     });
     all = secs(doc);
     var groups = [
