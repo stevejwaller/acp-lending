@@ -264,9 +264,9 @@
     d.repairBudget = String(used);
     var sec = doc.createElement("div");
     sec.className = "sec";
-    sec.innerHTML = '<h2>' + (ph ? 'Repair Estimate (From Borrower Photos)' : 'Estimated Repairs (Level 1 Condition)') + '</h2><p class="muted">' + (ph ? 'ACP reviewed the interior and exterior photos provided and priced the work at third-party contractor rates.' : 'No photos provided. Estimate is based on age, size and configuration to bring the property to Level 1 condition. HVAC, roof and foundation are assumed needed unless shown otherwise. The repair budget is finalized once interior and exterior photos are reviewed.') + '</p><table><tr><th>Category</th><th>Item</th><th>Estimate</th></tr>' + it.map(function(x) {
+    sec.innerHTML = '<h2>' + (ph ? 'Repair Estimate (From Borrower Photos)' : 'Estimated Repairs (Level 1 Condition)') + '</h2><p class="muted">' + (ph ? 'ACP reviewed the interior and exterior photos provided and priced the work at third-party contractor rates.' : 'No photos provided. Estimate is based on age, size and configuration to bring the property to Level 1 condition. HVAC, roof and foundation are assumed needed unless shown otherwise. The repair budget is finalized once interior and exterior photos are reviewed.') + '</p><table><tr><th>Category</th><th>Item</th><th>Estimate</th></tr>' + (document.getElementById("daLevel").value === "full" ? it.map(function(x) {
       return "<tr><td>" + x[0] + "</td><td>" + esc(x[1]) + "</td><td>" + usd(x[2]) + "</td></tr>"
-    }).join("") + '</table>';
+    }).join("") : "<tr><td>Total</td><td>Repair budget used in this report (line items included in the Full Package)</td><td>" + usd(used) + "</td></tr>") + '</table>';
     var snap = null;
     secs(doc).forEach(function(s2) {
       if (/^Property Snapshot/.test(s2.t)) snap = s2.el;
@@ -887,10 +887,43 @@
     if (snapEl) snapEl.parentNode.insertBefore(ps, snapEl);
     all = secs(doc);
     var parent = all[0].el.parentNode;
-    // Exhibits: comps, property record and photos sit at the end, each lettered.
-    var exList = lvl === "full" ? [[/^Comparable Sales/, "Comparable Sales (Last 12 Months)"], [/^Property Record/, "Property Record"], ["PHOTOS", "Photos"]] : [[/^Property Record/, "Property Record"]];
+    // Exhibits sit at the end, each lettered; each keeps a short summary in the body.
+    // Order: comps, property record, repair estimate (Full Package), photos (Full Package),
+    // and Financing Options always last. No exhibits in the free version.
+    var exList = [[/^Comparable Sales/, "Comparable Sales (Last 12 Months)", "comps"], [/^Property Record/, "Property Record", "record"]];
+    if (lvl === "full") exList.push([/^Repair Estimate|^Estimated Repairs/, "Repair Estimate", "repairs"], ["PHOTOS", "Photos", ""]);
+    exList.push([/^Financing Options/, "Financing Options", "fin"]);
     var letters = "ABCDEFG",
       li = 0;
+    var rowv = function(el, re, col) {
+      var out = "";
+      el.querySelectorAll("tr").forEach(function(tr) {
+        if (!out && tr.children.length > col && re.test(tr.children[0].textContent.trim())) out = tr.children[col].textContent.trim()
+      });
+      return out
+    };
+    var sumText = function(kind, el, L) {
+      var t = el.textContent;
+      if (kind === "comps") {
+        var n = el.querySelectorAll("tr").length - 1;
+        var m = t.match(/Median:\s*(\$[\d,]+)/), a = t.match(/Avg \$\/SF:\s*(\$[\d,.]+)/);
+        return (n > 0 ? n + " closed sales" : "Closed sales") + (kv["Subdivision"] ? " in " + esc(kv["Subdivision"]) : "") + " over the last 12 months support the after-repair value of " + usd(x.arv) + "." + (m ? " The median sale price is " + m[1] + (a ? " and the average is " + a[1] + " per square foot" : "") + "." : "") + " Each sale is listed with price, $/SF, size and date in Exhibit " + L + "."
+      }
+      if (kind === "record") {
+        var occ = rowv(el, /^Occupancy/, 1), mv = rowv(el, /^Market Value/, 1), tx = rowv(el, /^Tax$/, 1), fz = rowv(el, /^Flood Zone/, 1), ln = rowv(el, /^Open Loans/, 1), dl = rowv(el, /^Tax Delinquent/, 1);
+        return "Public records show the property as " + (occ ? occ.toLowerCase() : "on record") + (mv ? " with a county market value of " + mv : "") + (tx ? " and annual taxes of " + tx : "") + "." + (fz ? " Flood zone: " + fz + "." : "") + (ln ? " Open loans / liens: " + ln + "." : "") + (/yes/i.test(dl) ? " Taxes are shown as delinquent; confirm the payoff at title." : "") + " The full ownership and value record is Exhibit " + L + "."
+      }
+      if (kind === "repairs") {
+        var ph = /Borrower Photos/.test(el.querySelector("h2").textContent);
+        return "ACP's repair budget is " + usd(x.R) + (ph ? ", priced at third-party contractor rates from the interior and exterior photos provided" : ", estimated from the property's age, size and configuration to bring it to Level 1 condition; HVAC, roof and foundation are assumed needed unless shown otherwise") + ". This is the figure used in every calculation in this report. The line-item estimate is Exhibit " + L + "."
+      }
+      if (kind === "fin") {
+        var hd = el.querySelector("tr"), best = hd && hd.children[1] ? hd.children[1].textContent.replace(/^Best fit:\s*/, "").trim() : "";
+        var ln2 = rowv(el, /^Estimated loan/, 1), cd = rowv(el, /^Cash Due at Closing/, 1);
+        return best ? "The best-fit program for this deal is " + esc(best) + ", with an estimated loan of " + ln2 + " and estimated cash due at closing of " + cd + ". All figures are estimates, subject to lender review. The programs reviewed and their terms are Exhibit " + L + "." : "None of the programs in the lender matrix fit this deal as submitted; ACP will review alternatives. The programs reviewed are Exhibit " + L + "."
+      }
+      return ""
+    };
     exList.forEach(function(e) {
       var el = null;
       if (e[0] === "PHOTOS") {
@@ -917,14 +950,21 @@
         })
       }
       if (!el) return;
-      el.querySelector("h2").textContent = "Exhibit " + letters[li++] + " \u2014 " + e[1];
+      var L = letters[li++];
+      if (e[2]) {
+        var sm = doc.createElement("div");
+        sm.className = "sec";
+        sm.innerHTML = "<h2>" + e[1].replace(/ \(.*\)$/, "") + " Summary</h2><p>" + sumText(e[2], el, L) + "</p>";
+        el.parentNode.insertBefore(sm, el)
+      }
+      el.querySelector("h2").textContent = "Exhibit " + L + " — " + e[1];
     });
     all = secs(doc);
     var groups = [
       ["Part 1 &mdash; Basic Deal Summary (Free)", [/^Summary$/, /^Property Snapshot/, /^ARV Analysis/]],
-      ["Part 2 &mdash; Deal Report ($49.99)", [/^Executive Summary/, /^Repair Estimate|^Estimated Repairs/, /^Deal Economics/, /^Liquidity Check/, /^Financing Options/]],
+      ["Part 2 &mdash; Deal Report ($49.99)", [/^Executive Summary/, /^Repair Estimate|^Estimated Repairs/, /^Deal Economics/, /^Liquidity Check/, /^Comparable Sales Summary/, /^Property Record Summary/, /^Financing Options/]],
       ["Part 3 &mdash; Full Package ($149.99)", [/^ACP Recommended Offer/, /^Profitability Estimate/]],
-      ["Exhibits", [/^Exhibit A/, /^Exhibit B/, /^Exhibit C/, /^Pending Exhibits/]]
+      ["Exhibits", [/^Exhibit A/, /^Exhibit B/, /^Exhibit C/, /^Exhibit D/, /^Exhibit E/, /^Exhibit F/, /^Pending Exhibits/]]
     ];
     if (lvl !== "full") groups.splice(2, 1);
     var anchor = null;
