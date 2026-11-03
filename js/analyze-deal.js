@@ -349,32 +349,36 @@
     return Math.round(x.F.lp * 100) + "% of purchase + " + Math.round(x.F.lr * 100) + "% of repairs"
   }
 
-  function chartRows(x, A, recd) {
+  // Two columns: the ACP recommended purchase price and the purchase price as submitted.
+  function chartRows(x, A, B) {
     var arvV = x.arv ? usd(x.arv) : "not determined";
     return [
-      ["ARV" + (x.arv && x.n ? " (" + x.n + " closed comparables)" : ""), arvV],
-      ["Loan Amount (lower of loan-to-cost, " + ltcLabel(x) + " = " + usd(A.Lc) + ", and 75% of ARV = " + usd(A.La) + "; limited by " + A.bind + ")", usd(A.L)],
-      ["Repairs", usd(x.R)],
-      [recd ? "Purchase Price (ACP recommended)" : "Purchase Price", usd(A.P)],
-      ["Purchase + repairs not covered by the loan", usd(A.gap)],
-      ["Lender Closing Costs (lender points 1.5% + broker " + Math.round(x.F.bo * 100) + "% + " + usd(x.F.bc) + ")", usd(A.cc)],
-      ["Third-Party Closing Costs (estimated at " + (x.F.tpp * 100).toFixed(1) + "% of the loan: title, escrow, appraisal, survey and recording)", usd(A.tp)],
-      ["<b>Cash Due at Closing</b> (closing costs are paid at closing and cannot be included in the loan)", "<b>" + usd(A.due) + "</b>"],
-      ["&nbsp;", ""],
-      ["Liquidity to manage the project after closing (6 months of interest and 1/2 of annual taxes + 1/3 of repair costs)", usd(A.liq)]
+      ["ARV" + (x.arv && x.n ? " (" + x.n + " closed comparables)" : ""), arvV, arvV],
+      ["Purchase Price", usd(A.P), usd(B.P)],
+      ["Loan Amount (lower of loan-to-cost, " + ltcLabel(x) + ", and 75% of ARV)", usd(A.L), usd(B.L)],
+      ["Loan limited by", A.bind, B.bind],
+      ["Repairs", usd(x.R), usd(x.R)],
+      ["Purchase + repairs not covered by the loan", usd(A.gap), usd(B.gap)],
+      ["Lender Closing Costs (lender points 1.5% + broker " + Math.round(x.F.bo * 100) + "% + " + usd(x.F.bc) + ")", usd(A.cc), usd(B.cc)],
+      ["Third-Party Closing Costs (estimated at " + (x.F.tpp * 100).toFixed(1) + "% of the loan: title, escrow, appraisal, survey and recording)", usd(A.tp), usd(B.tp)],
+      ["<b>Cash Due at Closing</b> (closing costs are paid at closing and cannot be included in the loan)", "<b>" + usd(A.due) + "</b>", "<b>" + usd(B.due) + "</b>"],
+      ["&nbsp;", "", ""],
+      ["Liquidity to manage the project after closing (6 months of interest and 1/2 of annual taxes + 1/3 of repair costs)", usd(A.liq), usd(B.liq)]
     ]
   }
 
+  var COLS = '<th style="text-align:right">ACP Recommended Price</th><th style="text-align:right">Purchase Price as Submitted</th>';
+
   function chartTable(rows) {
     var R = 'style="text-align:right;white-space:nowrap"';
-    return '<table><thead><tr><th></th><th style="text-align:right">Estimate</th></tr></thead><tbody>' + rows.map(function(r) {
-      return "<tr><td><b>" + r[0] + "</b></td><td " + R + ">" + r[1] + "</td></tr>"
+    return '<table><thead><tr><th></th>' + COLS + '</tr></thead><tbody>' + rows.map(function(r) {
+      return "<tr><td><b>" + r[0] + "</b></td><td " + R + ">" + r[1] + "</td><td " + R + ">" + r[2] + "</td></tr>"
     }).join("") + '</tbody></table><p style="margin-top:6px;font-size:12px;font-style:italic">Amount is estimated and subject to final credit approval.</p>'
   }
 
   // Writes the same chart into the Executive Summary, Deal Economics and Liquidity Check.
-  function applyChart(doc, x, A, recd) {
-    var tbl = chartTable(chartRows(x, A, recd));
+  function applyChart(doc, x, A, B) {
+    var tbl = chartTable(chartRows(x, A, B));
     var note = '';
     secs(doc).forEach(function(s) {
       if (/^Executive Summary/.test(s.t)) s.el.innerHTML = '<h2>Executive Summary</h2><p><b>' + esc(x.addr) + '</b></p>' + tbl + note;
@@ -384,11 +388,11 @@
           return x.liq ? (v <= x.liq ? ' <span class="pos">OK</span>' : ' <span class="neg">SHORT</span>') : ""
         };
         var R = 'style="text-align:right;white-space:nowrap"';
-        s.el.innerHTML = '<h2>Liquidity Check</h2><table><thead><tr><th></th><th style="text-align:right">Estimate</th></tr></thead><tbody>' +
-          (x.liq ? '<tr><td><b>Borrower Liquidity</b></td><td ' + R + '>' + usd(x.liq) + '</td></tr>' : '') +
-          '<tr><td>Cash Due at Closing</td><td ' + R + '>' + usd(A.due) + '</td></tr>' +
-          '<tr><td>Liquidity to manage the project after closing</td><td ' + R + '>' + usd(A.liq) + '</td></tr>' +
-          '<tr><td><b>Total Cash Required</b> (cash due at closing + liquidity to manage the project)</td><td ' + R + '><b>' + usd(A.tot) + '</b>' + ok(A.tot) + '</td></tr></tbody></table>' +
+        s.el.innerHTML = '<h2>Liquidity Check</h2><table><thead><tr><th></th>' + COLS + '</tr></thead><tbody>' +
+          (x.liq ? '<tr><td><b>Borrower Liquidity</b></td><td ' + R + '>' + usd(x.liq) + '</td><td ' + R + '>' + usd(x.liq) + '</td></tr>' : '') +
+          '<tr><td>Cash Due at Closing</td><td ' + R + '>' + usd(A.due) + '</td><td ' + R + '>' + usd(B.due) + '</td></tr>' +
+          '<tr><td>Liquidity to manage the project after closing</td><td ' + R + '>' + usd(A.liq) + '</td><td ' + R + '>' + usd(B.liq) + '</td></tr>' +
+          '<tr><td><b>Total Cash Required</b> (cash due at closing + liquidity to manage the project)</td><td ' + R + '><b>' + usd(A.tot) + '</b>' + ok(A.tot) + '</td><td ' + R + '><b>' + usd(B.tot) + '</b>' + ok(B.tot) + '</td></tr></tbody></table>' +
           (x.liq ? '' : '<p class="muted">Borrower liquidity not provided.</p>')
       }
     })
@@ -411,7 +415,7 @@
       if (el.children.length === 0 && /PropertyReach/i.test(el.textContent)) el.textContent = el.textContent.replace(/\s*\(PropertyReach\)/gi, "").replace(/PropertyReach/gi, "public records")
     });
     // Deal Report level: the chart at the asking price.
-    applyChart(doc, x, deal(x, x.P), false);
+    applyChart(doc, x, deal(x, recPrice(x)), deal(x, x.P));
     return "<!doctype html>" + doc.documentElement.outerHTML
   }
 
@@ -579,69 +583,38 @@
       A = calc(nums(doc, Object.assign({}, d, {
         purchasePrice: String(recP)
       })), true);
-    var L = A.L,
-      cc = A.cc,
-      tp = A.tp,
-      ccAll = A.ccAll,
-      gap = A.gap,
-      tx = A.tx,
-      ins = A.ins,
-      util = A.util,
-      mo = A.mo,
-      hold = A.hold,
-      sell = A.sell,
-      fp = A.fp,
-      fcash = A.fcash,
-      froi = A.froi,
-      fann = A.fann,
-      fmargin = A.fmargin,
-      rIn = A.rIn,
-      rent = A.rent,
-      rr = A.rr,
-      refi = A.refi,
-      rcost = A.rcost,
-      cashOut = A.cashOut,
-      left = A.left,
-      egi = A.egi,
-      opex = A.opex,
-      noi = A.noi,
-      r = A.r,
-      n = A.n,
-      pi = A.pi,
-      cf = A.cf,
-      dscr = A.dscr,
-      coc = A.coc,
-      flipOK = A.flipOK,
-      rentOK = A.rentOK,
-      rec = A.rec,
-      why = A.why;
     var pc = function(z) {
         return (Math.round(z * 1000) / 10).toFixed(1) + "%"
       },
       m = function(z) {
         return z < 0 ? "-" + usd(-z) : usd(z)
       };
+    // The same flip-or-rent test run at both prices.
+    var card = function(Z, P, title) {
+      return '<h3 style="margin:14px 0 6px">' + title + ' (' + usd(P) + ')</h3><p style="margin:0 0 10px;padding:10px 12px;background:#eef6ee;border:1px solid #9cc79c;border-radius:6px"><b>ACP recommendation: ' + Z.rec + '.</b> ' + Z.why + '</p><table><tr><th></th><th>Flip</th><th>Rent (refinance and hold)</th></tr>' + [
+        ["Sale price / after-repair value", usd(x.arv), usd(x.arv)],
+        ["Loan (lower of loan-to-cost and 75% of ARV)", usd(Z.L), usd(Z.L)],
+        ["Selling costs (7% of sale)", usd(Z.sell), "-"],
+        ["Closing costs paid at closing (lender " + usd(Z.cc) + " + third-party, est. " + usd(Z.tp) + ")", usd(Z.ccAll), usd(Z.ccAll)],
+        ["Holding costs, " + Z.mo + " months (interest payments, taxes, insurance, utilities)", usd(Z.hold), usd(Z.hold)],
+        ["Estimated profit", '<b>' + m(Z.fp) + '</b> (' + pc(Z.fmargin) + ' of ARV)', "-"],
+        ["Cash invested (closing costs + holding costs" + (Z.gap ? " + purchase and repairs not covered by the loan" : "") + "; repairs in the loan are reimbursed through draws)", usd(Z.fcash), usd(Z.fcash)],
+        ["Refinance loan (75% of ARV)", "-", usd(Z.refi)],
+        ["Cash back at refinance (after payoff and 2% costs)", "-", m(Z.cashOut)],
+        ["Cash left in the deal", "-", Z.left > 0 ? usd(Z.left) : "None"],
+        ["Monthly rent" + (Z.rIn ? "" : " (0.8% of ARV, verify with rent comps)"), "-", usd(Z.rent)],
+        ["Net operating income / month (5% vacancy, 8% maintenance, 8% management)", "-", m(Math.round(Z.noi))],
+        ["Principal and interest / month (" + (Z.rr * 100) + "%, 30 years)", "-", usd(Math.round(Z.pi))],
+        ["Cash flow / month", "-", '<b>' + m(Math.round(Z.cf)) + '</b>'],
+        ["DSCR (NOI / P&amp;I)", "-", (Math.round(Z.dscr * 100) / 100).toFixed(2)],
+        ["Annual cash-on-cash", "-", Z.coc === null ? "Infinite, no cash left in" : pc(Z.coc)]
+      ].map(function(r) {
+        return "<tr><td>" + r[0] + "</td><td>" + r[1] + "</td><td>" + r[2] + "</td></tr>"
+      }).join("") + '</table>'
+    };
     var sec = doc.createElement("div");
     sec.className = "sec";
-    sec.innerHTML = '<h2>Profitability Estimate</h2><p style="margin:0 0 8px"><b>Based on the ACP recommended purchase price of ' + usd(recP) + '.</b></p><p style="margin:0 0 12px;padding:10px 12px;background:#eef6ee;border:1px solid #9cc79c;border-radius:6px"><b>ACP recommendation: ' + rec + '.</b> ' + why + '</p><table><tr><th></th><th>Flip</th><th>Rent (refinance and hold)</th></tr>' + [
-      ["Sale price / after-repair value", usd(x.arv), usd(x.arv)],
-      ["Selling costs (7% of sale)", usd(sell), "-"],
-      ["Closing costs paid at closing (lender " + usd(cc) + " + third-party, est. " + usd(tp) + ")", usd(ccAll), usd(ccAll)],
-      ["Holding costs, " + mo + " months (interest payments, taxes, insurance, utilities)", usd(hold), usd(hold)],
-      ["Estimated profit", '<b>' + m(fp) + '</b>', "-"],
-      ["Cash invested (closing costs + holding costs" + (gap ? " + purchase and repairs not covered by the loan" : "") + "; repairs in the loan are reimbursed through draws)", usd(fcash), usd(fcash)],
-      ["Refinance loan (75% of ARV)", "-", usd(refi)],
-      ["Cash back at refinance (after payoff and 2% costs)", "-", m(cashOut)],
-      ["Cash left in the deal", "-", left > 0 ? usd(left) : "None"],
-      ["Monthly rent" + (rIn ? "" : " (0.8% of ARV, verify with rent comps)"), "-", usd(rent)],
-      ["Net operating income / month (5% vacancy, 8% maintenance, 8% management)", "-", m(Math.round(noi))],
-      ["Principal and interest / month (" + (rr * 100) + "%, 30 years)", "-", usd(Math.round(pi))],
-      ["Cash flow / month", "-", '<b>' + m(Math.round(cf)) + '</b>'],
-      ["DSCR (NOI / P&amp;I)", "-", (Math.round(dscr * 100) / 100).toFixed(2)],
-      ["Annual cash-on-cash", "-", coc === null ? "Infinite, no cash left in" : pc(coc)]
-    ].map(function(r) {
-      return "<tr><td>" + r[0] + "</td><td>" + r[1] + "</td><td>" + r[2] + "</td></tr>"
-    }).join("") + '</table><p class="muted" style="margin-top:8px">Estimates use the repairs in this report (' + usd(x.R) + '), a loan of ' + usd(L) + ' (the lower of loan-to-cost and 75% of ARV), ' + usd(cc) + ' of lender closing costs and an estimated ' + usd(tp) + ' of third-party closing costs (' + (x.F.tpp * 100).toFixed(1) + '% of the loan) paid at closing, annual taxes of ' + usd(tx) + ', insurance of ' + usd(ins) + ' a year and ' + usd(util) + ' a month in utilities. Recommendation rule: flip when the sale clears a 10% margin on ARV; rent when the rent covers the refinance at a 1.20 DSCR; when both work, the one with the better return on cash. Not a commitment to lend.</p><p class="muted" style="margin-top:6px">At the seller&#39;s asking price of ' + usd(x0.P) + ': flip profit ' + m(S.fp) + ' (' + pc(S.fmargin) + ' margin on ARV, ' + usd(S.fcash) + ' cash invested); rental cash flow ' + m(Math.round(S.cf)) + ' a month (DSCR ' + (Math.round(S.dscr * 100) / 100).toFixed(2) + '), ' + (S.left > 0 ? usd(S.left) : 'no cash') + ' left in after refinancing. ACP recommendation at that price: ' + S.rec + '.</p>';
+    sec.innerHTML = '<h2>Profitability Estimate</h2>' + card(A, recP, "At the ACP recommended purchase price") + card(S, x0.P, "At the purchase price as submitted") + '<p class="muted" style="margin-top:8px">Both use the repairs in this report (' + usd(x.R) + '), a loan equal to the lower of loan-to-cost (' + ltcLabel(x) + ') and 75% of ARV, lender closing costs and estimated third-party closing costs (' + (x.F.tpp * 100).toFixed(1) + '% of the loan) paid at closing, annual taxes of ' + usd(A.tx) + ', insurance of ' + usd(A.ins) + ' a year and ' + usd(A.util) + ' a month in utilities. Recommendation rule: flip when the sale clears a 10% margin on ARV; rent when the rent covers the refinance at a 1.20 DSCR; when both work, the one with the better return on cash. Not a commitment to lend.</p>';
     var after = null;
     secs(doc).forEach(function(s2) {
       if (/^ACP Recommended Offer/.test(s2.t)) after = s2.el
@@ -659,7 +632,7 @@
     var sec = doc.createElement("div");
     sec.className = "sec";
     sec.innerHTML = '<h2>ACP Recommended Offer</h2><table class="kv"><tr><td>Recommended offer</td><td><b>' + usd(rec) + '</b></td></tr></table><p class="muted" style="margin-top:10px">Recommended offer = 75% of ARV (' + usd(D.La) + ') less repairs (' + usd(x.R) + '). The loan is the lower of the approved loan-to-cost (' + ltcLabel(x) + ', ' + usd(D.Lc) + ') and 75% of ARV, so at this price the loan is ' + usd(D.L) + ' and ' + usd(D.gap) + ' of purchase and repairs is paid at closing. Lender closing costs (estimated ' + usd(D.cc) + ') and third-party closing costs (estimated ' + usd(D.tp) + ') are paid at closing and cannot be included in the loan.</p><p>Phone walkthrough: call or text 936-522-8951 to schedule.</p>';
-    applyChart(doc, x, D, true);
+    applyChart(doc, x, D, deal(x, x.P));
     var after = null;
     secs(doc).forEach(function(s) {
       if (/^Deal Economics/.test(s.t)) after = s.el

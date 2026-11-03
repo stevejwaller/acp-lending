@@ -33,7 +33,9 @@ follow the request and update this file in the same commit.
   loan-to-cost (default 90% of purchase + 100% of repairs, owner fields) and 75% of
   ARV. No 70% column. Lender and third-party closing costs (third-party estimated
   at 2.0% of the loan, owner field) sit after the purchase price and are paid at
-  closing, never in the loan.
+  closing, never in the loan. Every chart and the profitability test are calculated
+  at both the ACP recommended purchase price (75% of ARV less repairs) and the
+  purchase price as submitted, side by side.
 - Header menu (same on every page):
   - Client Tools: Pre-Approval, Deal Executive Summary Analyzer (/analyze-deal),
     DSCR Calculator, Request Financing (/request-financing), Forms, Investor
