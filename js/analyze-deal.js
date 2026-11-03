@@ -179,7 +179,7 @@
     secs(doc).forEach(function(s) {
       if (/^ARV Analysis/.test(s.t)) {
         var src = "Source: " + CM.count + " closed comparables in " + esc(CM.subdivision || "the subdivision") + ", last " + CM.months + " months; ARV = " + CM.method + (CM.subjectSqft ? " ($" + CM.medianPpsf.toFixed(2) + " x " + Number(CM.subjectSqft).toLocaleString("en-US") + " SF)" : "");
-        s.el.innerHTML = '<h2>ARV Analysis</h2><p class="big">' + usd(CM.arv) + '</p><p class="muted">' + src + ' | ' + CM.count + ' comparables</p><p class="muted">Filters: same subdivision, ' + esc(CM.sqftRange) + ' SF, date range widened to ' + CM.months + ' months to reach at least 20 closed sales | ' + CM.rawCount + ' raw -> ' + CM.count + ' comps</p>' + (CM.met ? "" : '<p class="muted"><b>Only ' + CM.count + ' closed sales in the subdivision were available from public records, all within the last ' + CM.months + ' months. Public records return only the most recent nearby sales, so the ARV rests on fewer than the 20 sales ACP requires and will be confirmed against the MLS comp set.</b></p>') + (CM.entered && Math.abs(CM.entered - CM.arv) >= 1000 ? '<p class="muted">The entered ARV estimate of ' + usd(CM.entered) + ' is not used; the comparable sales support ' + usd(CM.arv) + '.</p>' : "")
+        s.el.innerHTML = '<h2>ARV Analysis</h2><p class="big">' + usd(CM.arv) + '</p><p class="muted">' + src + ' | ' + CM.count + ' comparables</p><p class="muted">Filters: same subdivision, ' + esc(CM.sqftRange) + ' SF, ' + (CM.met ? 'date range widened to ' + CM.months + ' months to reach at least 20 closed sales' : 'all available closed sales searched') + ' | ' + CM.rawCount + ' raw -> ' + CM.count + ' comps</p>' + (CM.met ? "" : '<p class="muted"><b>Only ' + CM.count + ' closed sales in the subdivision were available from public records, all within the last ' + CM.months + ' months. Public records return only the most recent nearby sales, so the ARV rests on fewer than the 20 sales ACP requires and will be confirmed against the MLS comp set.</b></p>') + (CM.entered && Math.abs(CM.entered - CM.arv) >= 1000 ? '<p class="muted">The entered ARV estimate of ' + usd(CM.entered) + ' is not used; the comparable sales support ' + usd(CM.arv) + '.</p>' : "")
       }
       if (/^Comparable Sales/.test(s.t)) {
         var ps = CM.comps.map(function(c) {
@@ -1029,7 +1029,7 @@
         el.appendChild(w);
         var cap = doc.createElement("p");
         cap.className = "muted";
-        cap.textContent = "Street view of the property. Interior and exterior photos provided by the borrower are attached to this exhibit.";
+        cap.textContent = "Street view of the property." + (ck("daPhotos") ? " Interior and exterior photos provided are attached to this exhibit." : " No interior photos were available; the repair estimate uses this curbside view.");
         el.appendChild(cap);
         (all[all.length - 1].el).parentNode.insertBefore(el, all[all.length - 1].el.nextSibling)
       } else {
@@ -1046,6 +1046,9 @@
         el.parentNode.insertBefore(sm, el)
       }
       el.querySelector("h2").textContent = "Exhibit " + L + " — " + e[1];
+    });
+    secs(doc).forEach(function(s) {
+      if (/^Pending Exhibits/.test(s.t)) s.el.remove()
     });
     all = secs(doc);
     var groups = [
