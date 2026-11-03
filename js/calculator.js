@@ -27,8 +27,6 @@ var arvPct = num('arvPct');
 var rate = num('interestRate');
 var taxes = num('annualTaxes');
 var insurance = num('annualInsurance');
-// Steve, 26 Sep 2026: flood insurance, if applicable - one-year premium prepaid at closing.
-var flood = num('annualFlood');
 var hoa = num('annualHoa');
 var originationPct = num('originationPct');
 // Steve, 2 Sep 2026: the closing costs are now itemised the way the lender's own fee
@@ -36,11 +34,7 @@ var originationPct = num('originationPct');
 // dollar figure the borrower can override. The earnest-money line is a CREDIT and is
 // subtracted. The old closingFeeFlat / lenderLegalFlat / titleFeePct inputs are gone.
 var processingFee = num('processingFee');
-// Steve, 26 Sep 2026: underwriting fee, flat lender fee, default $500.
-var underwritingFee = num('underwritingFee');
-// Steve, 26 Sep 2026: prepaid interest is no longer an input. It is one month of
-// interest on the loan, computed below and shown only in the results column.
-var dailyInterest = 0;
+var dailyInterest = num('dailyInterest');
 var appraisalFee = num('appraisalFee');
 var creditReportFee = num('creditReportFee');
 var titleInsurance = num('titleInsurance');
@@ -57,8 +51,7 @@ var monthsToSell = num('monthsToSell');
 var sellingCostsPct = num('sellingCostsPct');
 
 var totalProjectCost = purchase + repairs;
-// Steve, 26 Sep 2026: the cost test is 90% of purchase plus 100% of renovation.
-var ltcLimit = 0.90 * purchase + repairs;
+var ltcLimit = 0.90 * totalProjectCost;
 var arvLimit = (arvPct / 100) * arv;
 var stEl = document.getElementById('propertyState');
 var hmEl = document.getElementById('hmlFunded');
@@ -78,12 +71,11 @@ if (!(approvedAdvance > 0)) approvedAdvance = 0;
 // so it belongs in this settlement total. It is NOT added anywhere else - see the note on
 // allInCost below. flatSettlement is the gross of every flat line; netFlatSettlement is
 // what actually comes off the loan proceeds after the borrower's credit.
-var flatSettlement = processingFee + underwritingFee + insurance + flood + appraisalFee +
+var flatSettlement = processingFee + dailyInterest + insurance + appraisalFee +
   creditReportFee + titleInsurance + escrowFee + recordingFee + hoaTransferFee +
   surveyFee + misc1Fee + misc2Fee;
 var netFlatSettlement = flatSettlement - earnestCredit;
-// One month of prepaid interest is a percentage of the loan, like origination.
-var pctFees = originationPct / 100 + rate / 1200;
+var pctFees = originationPct / 100;
 var flatFees = netFlatSettlement;
 var loanNeeded = (pctFees < 1) ? (totalProjectCost + flatFees) / (1 - pctFees) : approvedAdvance;
 if (!(loanNeeded > 0)) loanNeeded = 0;
@@ -94,13 +86,8 @@ var maxLoan = Math.min(approvedAdvance, loanNeeded);
 // section still resells at the ARV the user entered, which is the market figure.
 // A surplus can only ever arise on an HML deal: on a standard deal the 90% cost test
 // holds the loan below cost, which is always below what the deal needs.
-dailyInterest = maxLoan * rate / 1200;
-flatSettlement += dailyInterest;
-netFlatSettlement += dailyInterest;
 var arvAdjusted = (approvedAdvance - maxLoan) > 0.5;
-// Steve, 26 Sep 2026: ARV Applied always equals the ARV entered. A surplus is removed by
-// reducing the loan advance (shown as the % on the maximum-loan line), never the ARV.
-var arvApplied = arv;
+var arvApplied = (arvAdjusted && arvPct > 0) ? (maxLoan / (arvPct / 100)) : arv;
 
 var originationFee = maxLoan * (originationPct / 100);
 var brokerOrigFee = maxLoan * (brokerOrigPct / 100);
@@ -139,7 +126,7 @@ setText('ph-address', textVal('dealAddress') || dash);
 setText('ph-borrower', textVal('borrowerName') || dash);
 setText('ph-arv', arv > 0 ? fmt.format(arv) : dash);
 var cphApplied = document.getElementById('cph-arvApplied');
-if (cphApplied) cphApplied.style.display = 'none';
+if (cphApplied) cphApplied.style.display = arvAdjusted ? '' : 'none';
 setText('ph-arvApplied', arvAdjusted ? fmt.format(arvApplied) : dash);
 setText('ph-arvPct', arvPct > 0 ? (arvPct + '%') : dash);
 setText('ph-purchase', purchase > 0 ? fmt.format(purchase) : dash);
@@ -148,14 +135,14 @@ setText('ph-rate', rate > 0 ? (rate + '%') : dash);
 setText('ph-date', new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }));
 
 var ltcRow = document.getElementById('row-ltc');
-// Steve, 26 Sep 2026: show only the resulting loan amount, not the LTC test line.
-if (ltcRow) ltcRow.style.display = 'none';
+if (ltcRow) ltcRow.style.display = txHml ? 'none' : '';
 setText('r-ltc', hasInput ? fmt.format(ltcLimit) : dash);
 
 // Steve, 1 Sep 2026: this row stays on screen at all times, adjusted or not, so the
 // ARV the loan is actually sized on is always stated rather than inferred.
 setText('r-arvApplied', hasInput && arv > 0 ? fmt.format(arvApplied) : dash);
-setText('r-arvAppliedNote', !hasInput || arv <= 0 ? '' : 'As entered');
+setText('r-arvAppliedNote', !hasInput || arv <= 0 ? ''
+  : arvAdjusted ? 'Adjusted \u2014 no surplus' : 'As entered');
 
 // Steve, 1 Sep 2026: one line, no explanation. A paragraph about why the advance was
 // reduced reads as money withheld and invites a request for the difference as extra
@@ -163,11 +150,9 @@ setText('r-arvAppliedNote', !hasInput || arv <= 0 ? '' : 'As entered');
 // and stops there.
 var effPct = (arv > 0) ? (maxLoan / arv) * 100 : 0;
 var effTxt = String(Math.round(effPct * 10) / 10) + '%';
-setText('r-maxLoanLabel', !txHml
-  ? 'Estimated Maximum Loan (lower of LTC or ARV)'
-  : (hasInput && arv > 0 && maxLoan > 0)
-    ? 'Estimated Maximum Loan with No Surplus (' + effTxt + ')'
-    : 'Estimated Maximum Loan with No Surplus');
+setText('r-maxLoanLabel', (hasInput && arv > 0 && maxLoan > 0)
+  ? 'Estimated Maximum Loan with No Surplus (' + effTxt + ')'
+  : 'Estimated Maximum Loan with No Surplus');
 setText('r-maxLoan', hasInput ? fmt.format(maxLoan) : dash);
 
 // --- Texas: show both branches side by side (display only, no maths duplicated) ---
@@ -175,9 +160,7 @@ var stdLoan = Math.min(ltcLimit, arvLimit);
 var hmlLoan = arvLimit;
 var isTX = !!(stEl && stEl.value === 'TX');
 var cmpEl = document.getElementById('tx-compare');
-// Steve, 26 Sep 2026: the borrower picks HML or Hybrid, so the side-by-side comparison
-// is no longer shown - it read as a second answer.
-if (cmpEl) cmpEl.style.display = 'none';
+if (cmpEl) cmpEl.style.display = (isTX && hasInput && !txHml) ? '' : 'none';
 if (isTX && hasInput && !txHml) {
   setText('r-stdLoan', fmt.format(stdLoan) + '  \u2190 shown above');
   setText('r-hmlLoan', fmt.format(hmlLoan));
@@ -187,9 +170,9 @@ if (isTX && hasInput && !txHml) {
     var msg;
     if (diff > 0.5) {
       msg = 'On this deal the HML advance is worth ' + fmt.format(diff) +
-            ' more, because 70-75 percent of ARV comes in above 90 percent of purchase plus 100 percent of repairs.';
+            ' more, because 70-75 percent of ARV comes in above 90 percent of cost.';
     } else {
-      var needArv = (arvPct > 0) ? ltcLimit / (arvPct / 100) : 0;
+      var needArv = (arvPct > 0) ? (0.90 * totalProjectCost) / (arvPct / 100) : 0;
       msg = 'Identical on this deal. The ARV limit is already the binding constraint, so the HML advance adds nothing here. ' +
             'It only starts to help once ARV clears about ' + fmt.format(needArv) +
             ' at a ' + arvPct + ' percent advance.';
@@ -201,13 +184,15 @@ setText('r-originationFee', hasInput ? fmt.format(originationFee) : dash);
 // Steve, 1 Sep 2026: disclose the rate a percentage fee is charged at, not only the dollars.
 setText('r-origPctNote', originationPct > 0 ? originationPct + '% of the loan amount' : '');
 setText('r-processingFee', hasInput ? fmt.format(processingFee) : dash);
-setText('r-underwritingFee', hasInput ? fmt.format(underwritingFee) : dash);
 setText('r-dailyInterest', hasInput ? fmt.format(dailyInterest) : dash);
-setText('r-dailyIntNote', (hasInput && rate > 0) ? 'One month at ' + rate + '% on the loan' : '');
+// Steve, 2 Sep 2026: the prepaid-interest default is one month at a particular rate on a
+// particular loan size. State what one month actually costs on THIS deal so the figure
+// cannot drift out of date unnoticed; the field itself stays the borrower's to override.
+setText('r-dailyIntNote', (hasInput && monthlyInterest > 0)
+  ? 'One month at ' + rate + '% on this loan is ' + fmt.format(monthlyInterest) : '');
 setText('r-appraisalFee', hasInput ? fmt.format(appraisalFee) : dash);
 setText('r-creditReportFee', hasInput ? fmt.format(creditReportFee) : dash);
 setText('r-hazardInsurance', hasInput ? fmt.format(insurance) : dash);
-setText('r-floodInsurance', hasInput ? fmt.format(flood) : dash);
 setText('r-titleInsurance', hasInput ? fmt.format(titleInsurance) : dash);
 setText('r-escrowFee', hasInput ? fmt.format(escrowFee) : dash);
 setText('r-recordingFee', hasInput ? fmt.format(recordingFee) : dash);
@@ -307,7 +292,7 @@ calc();
 if (_stSel) _stSel.addEventListener('change', syncTexas);
 if (_hmSel) _hmSel.addEventListener('change', syncTexas);
 syncTexas();
-var ids = ['purchasePrice', 'repairsBudget', 'arvEstimate', 'arvPct', 'propertyState', 'interestRate', 'annualTaxes', 'annualInsurance', 'annualFlood', 'annualHoa', 'originationPct', 'processingFee', 'underwritingFee', 'dailyInterest', 'appraisalFee', 'creditReportFee', 'titleInsurance', 'escrowFee', 'recordingFee', 'hoaTransferFee', 'surveyFee', 'misc1Fee', 'misc2Fee', 'earnestCredit', 'brokerOrigPct', 'brokerClosingFlat', 'monthsToSell', 'sellingCostsPct'];
+var ids = ['purchasePrice', 'repairsBudget', 'arvEstimate', 'arvPct', 'propertyState', 'interestRate', 'annualTaxes', 'annualInsurance', 'annualHoa', 'originationPct', 'processingFee', 'dailyInterest', 'appraisalFee', 'creditReportFee', 'titleInsurance', 'escrowFee', 'recordingFee', 'hoaTransferFee', 'surveyFee', 'misc1Fee', 'misc2Fee', 'earnestCredit', 'brokerOrigPct', 'brokerClosingFlat', 'monthsToSell', 'sellingCostsPct'];
 ids.forEach(function (id) {
 var el = document.getElementById(id);
 if (el) el.addEventListener('input', calc);
@@ -333,7 +318,7 @@ setTimeout(function () { recalcBtn.classList.remove('calc-flash'); }, 350);
 // validate.js all strip non-numeric characters before parsing, so no symbol reaches a
 // calculation. A field left blank stays blank, so the required-field guard still fires.
 var MONEY_INPUTS = ['purchasePrice', 'repairsBudget', 'arvEstimate', 'annualTaxes',
-  'annualInsurance', 'annualFlood', 'annualHoa', 'processingFee', 'underwritingFee', 'dailyInterest', 'appraisalFee',
+  'annualInsurance', 'annualHoa', 'processingFee', 'dailyInterest', 'appraisalFee',
   'creditReportFee', 'titleInsurance', 'escrowFee', 'recordingFee', 'hoaTransferFee',
   'surveyFee', 'misc1Fee', 'misc2Fee', 'earnestCredit', 'brokerClosingFlat',
   'fr-rent', 'fr-refiCost', 'fr-other', 'liquidity'];
@@ -384,8 +369,8 @@ window.print();
 //     the name and any email they choose to give leave this page.
 var QUOTE_FLIP_IDS = ['dealAddress', 'borrowerName', 'dealEmail', 'purchasePrice', 'repairsBudget',
   'arvEstimate', 'arvPct', 'interestRate', 'propertyState', 'hmlFunded', 'annualTaxes',
-  'annualHoa', 'originationPct', 'processingFee', 'underwritingFee', 'dailyInterest', 'appraisalFee',
-  'creditReportFee', 'annualInsurance', 'annualFlood', 'titleInsurance', 'escrowFee', 'recordingFee',
+  'annualHoa', 'originationPct', 'processingFee', 'dailyInterest', 'appraisalFee',
+  'creditReportFee', 'annualInsurance', 'titleInsurance', 'escrowFee', 'recordingFee',
   'hoaTransferFee', 'surveyFee', 'misc1Fee', 'misc2Fee', 'earnestCredit', 'brokerOrigPct',
   'brokerClosingFlat', 'monthsToSell', 'sellingCostsPct'];
 var QUOTE_RENT_IDS = ['fr-rent', 'fr-months', 'fr-ltv', 'fr-rate', 'fr-term', 'fr-refiCost',
@@ -397,8 +382,8 @@ var QUOTE_EMAIL_RE = /^[^@\s]+@[^@\s.]+\.[^@\s]{2,}$/;
 var QUOTE_SIG_IDS = ['purchasePrice', 'repairsBudget', 'arvEstimate', 'arvPct',
   'interestRate', 'propertyState', 'hmlFunded', 'monthsToSell', 'sellingCostsPct'];
 var QUOTE_RESULT_IDS = ['r-arvApplied', 'r-ltc', 'r-maxLoan', 'r-stdLoan', 'r-hmlLoan',
-  'r-originationFee', 'r-processingFee', 'r-underwritingFee', 'r-dailyInterest', 'r-appraisalFee',
-  'r-creditReportFee', 'r-hazardInsurance', 'r-floodInsurance', 'r-titleInsurance', 'r-escrowFee',
+  'r-originationFee', 'r-processingFee', 'r-dailyInterest', 'r-appraisalFee',
+  'r-creditReportFee', 'r-hazardInsurance', 'r-titleInsurance', 'r-escrowFee',
   'r-recordingFee', 'r-hoaTransferFee', 'r-surveyFee', 'r-misc1Fee', 'r-misc2Fee',
   'r-earnestCredit', 'r-closingCosts', 'r-availPurchase', 'r-purchasePriceOut',
   'r-cashAtClosing', 'r-brokerOrigFee', 'r-brokerClosing', 'r-brokerFees',
