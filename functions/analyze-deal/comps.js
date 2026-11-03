@@ -72,10 +72,21 @@ export async function onRequestPost({ request, env }) {
   const fBase = { comparableSource: "Both", lastSaleDateMin: since.toISOString().slice(0, 10), propertyClassCode: ["R"] };
   if (sf0) { fBase.squareFeetMin = Math.round(sf0 * 0.8); fBase.squareFeetMax = Math.round(sf0 * 1.2); }
   const dbg = [];
+  const dbg = [];
   const call = f => fetch("https://api.propertyreach.com/v1/comparables", { method: "POST", headers: { "x-api-key": key, "Content-Type": "application/json" }, body: JSON.stringify({ target: tgt, filter: f }) }).then(async r => { if (r.ok) return r.json(); dbg.push(r.status + " " + (await r.text()).slice(0, 300)); return null; }).catch(e => { dbg.push("err " + e.message); return null; });
-  const reqs = [call(Object.assign({}, fBase, { distanceFromSubject: 5 }))];
-  if (sub0) reqs.unshift(call(Object.assign({}, fBase, { subdivision: [sub0], distanceFromSubject: 10 })));
-  const outs = await Promise.all(reqs);
+  // Fixed variants, widest-yielding kept; each one's count is reported so the filter can be tuned.
+  const variants = [
+    ["none", null],
+    ["both", { comparableSource: "Both" }],
+    ["both+1mi", { comparableSource: "Both", distanceFromSubject: 1 }],
+    ["both+3mi+date", { comparableSource: "Both", distanceFromSubject: 3, lastSaleDateMin: fBase.lastSaleDateMin }],
+    ["mls+3mi", { comparableSource: "MLS", distanceFromSubject: 3 }],
+    ["full", Object.assign({}, fBase, { distanceFromSubject: 5 })]
+  ];
+  if (sub0) variants.push(["full+sub", Object.assign({}, fBase, { subdivision: [sub0], distanceFromSubject: 10 })]);
+  const callV = f => fetch("https://api.propertyreach.com/v1/comparables", { method: "POST", headers: { "x-api-key": key, "Content-Type": "application/json" }, body: JSON.stringify(f ? { target: tgt, filter: f } : { target: tgt }) }).then(async r => { if (r.ok) return r.json(); dbg.push(r.status + " " + (await r.text()).slice(0, 200)); return null; }).catch(e => { dbg.push("err " + e.message); return null; });
+  const outs = await Promise.all(variants.map(v => callV(v[1])));
+  const tally = variants.map((v, i) => v[0] + ":" + (outs[i] ? findArr(outs[i]).length : "x"));
   const raw = [].concat.apply([], outs.map(o => o ? findArr(o) : []));
   const sample = raw.length ? Object.keys(raw[0]).slice(0, 40) : null;
   const cr = { comparables: raw };
@@ -115,6 +126,6 @@ export async function onRequestPost({ request, env }) {
     success: true, subdivision: sub ? String(sub).replace(/\s+(sec|section)\s*\d+.*$/i, "") : null, subjectSqft: sf, sqftRange: sf ? lo + "-" + hi : "any",
     months, count: comps.length, met: comps.length >= MIN, rawCount: all.length,
     medianPpsf: Math.round(mps * 100) / 100, medianPrice: med(comps.map(c => c.salePrice)), arv,
-    method: sf && mps ? "median $/SF x subject SF" : "median sale price", sampleKeys: sample, comps
+    method: sf && mps ? "median $/SF x subject SF" : "median sale price", sampleKeys: sample, tally, comps
   });
 }
