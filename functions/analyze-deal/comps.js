@@ -72,7 +72,6 @@ export async function onRequestPost({ request, env }) {
   const fBase = { comparableSource: "Both", lastSaleDateMin: since.toISOString().slice(0, 10), propertyClassCode: ["R"] };
   if (sf0) { fBase.squareFeetMin = Math.round(sf0 * 0.8); fBase.squareFeetMax = Math.round(sf0 * 1.2); }
   const dbg = [];
-  const dbg = [];
   const call = f => fetch("https://api.propertyreach.com/v1/comparables", { method: "POST", headers: { "x-api-key": key, "Content-Type": "application/json" }, body: JSON.stringify({ target: tgt, filter: f }) }).then(async r => { if (r.ok) return r.json(); dbg.push(r.status + " " + (await r.text()).slice(0, 300)); return null; }).catch(e => { dbg.push("err " + e.message); return null; });
   // Fixed variants, widest-yielding kept; each one's count is reported so the filter can be tuned.
   const variants = [
