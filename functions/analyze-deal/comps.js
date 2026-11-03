@@ -73,25 +73,18 @@ export async function onRequestPost({ request, env }) {
   if (sf0) { fBase.squareFeetMin = Math.round(sf0 * 0.8); fBase.squareFeetMax = Math.round(sf0 * 1.2); }
   const dbg = [];
   const call = f => fetch("https://api.propertyreach.com/v1/comparables", { method: "POST", headers: { "x-api-key": key, "Content-Type": "application/json" }, body: JSON.stringify({ target: tgt, filter: f }) }).then(async r => { if (r.ok) return r.json(); dbg.push(r.status + " " + (await r.text()).slice(0, 300)); return null; }).catch(e => { dbg.push("err " + e.message); return null; });
-  // Fixed variants, widest-yielding kept; each one's count is reported so the filter can be tuned.
-  const variants = [
-    ["none", null],
-    ["both", { comparableSource: "Both" }],
-    ["both+1mi", { comparableSource: "Both", distanceFromSubject: 1 }],
-    ["both+3mi+date", { comparableSource: "Both", distanceFromSubject: 3, lastSaleDateMin: fBase.lastSaleDateMin }],
-    ["mls+3mi", { comparableSource: "MLS", distanceFromSubject: 3 }],
-    ["full", Object.assign({}, fBase, { distanceFromSubject: 5 })]
-  ];
-  if (sub0) variants.push(["full+sub", Object.assign({}, fBase, { subdivision: [sub0], distanceFromSubject: 10 })]);
-  const callV = f => fetch("https://api.propertyreach.com/v1/comparables", { method: "POST", headers: { "x-api-key": key, "Content-Type": "application/json" }, body: JSON.stringify(f ? { target: tgt, filter: f } : { target: tgt }) }).then(async r => { if (r.ok) return r.json(); dbg.push(r.status + " " + (await r.text()).slice(0, 200)); return null; }).catch(e => { dbg.push("err " + e.message); return null; });
-  const outs = await Promise.all(variants.map(v => callV(v[1])));
-  const tally = variants.map((v, i) => v[0] + ":" + (outs[i] ? findArr(outs[i]).length : "x"));
+  // One filtered call: the subject's own subdivision when known (wide radius so the whole
+  // subdivision is in range), otherwise a 3-mile ring post-filtered to the subdivision below.
+  const f1 = sub0 ? Object.assign({}, fBase, { subdivision: [sub0], distanceFromSubject: 10 }) : Object.assign({}, fBase, { distanceFromSubject: 3 });
+  const outs = [await call(f1)];
+  const tally = [(sub0 ? "subdivision" : "3mi") + ":" + (outs[0] ? findArr(outs[0]).length : "x")];
   const raw = [].concat.apply([], outs.map(o => o ? findArr(o) : []));
   const sample = raw.length ? Object.keys(raw[0]).slice(0, 40) : null;
   const cr = { comparables: raw };
   const rec = pr ? findRec(pr) : null;
   const all = cr ? findArr(cr).map(mapComp) : [];
-  if (!all.length) return j({ success: false, error: "No comparables returned", subdivision: sub0 || null, propFound: !!rec0, tally, dbg, propMeta: pr && pr.meta ? pr.meta : null, compMeta: outs[0] && outs[0].meta ? outs[0].meta : (outs[0] ? Object.keys(outs[0]) : null) });
+  const prMsg = (pr && pr.meta && pr.meta.status >= 400 && pr.meta.message) || (outs[0] && outs[0].meta && outs[0].meta.status >= 400 && outs[0].meta.message) || "";
+  if (!all.length) return j({ success: false, error: prMsg ? "Comps provider: " + prMsg : "No comparables returned", subdivision: sub0 || null, propFound: !!rec0, tally, dbg, propMeta: pr && pr.meta ? pr.meta : null, compMeta: outs[0] && outs[0].meta ? outs[0].meta : (outs[0] ? Object.keys(outs[0]) : null) });
   let sub = rec ? pick(rec, ["subdivision", "subdivisionName", "subdivision_name", "developmentName", "community", "neighborhood"]) : null;
   if (!sub) { const c = {}; all.forEach(x => { if (x.subdivision) c[x.subdivision] = (c[x.subdivision] || 0) + 1; }); sub = Object.keys(c).sort((a, z) => c[z] - c[a])[0] || null; }
   const sf = rec ? n(pick(rec, ["livingSquareFeet", "livingArea", "living_square_feet", "gla", "buildingSquareFeet", "squareFeet"])) : null;
