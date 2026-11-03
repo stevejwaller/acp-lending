@@ -39,6 +39,7 @@ Service area: United States, with Texas-specific programs
   unit rentals and 5-9 unit multifamily in a single facility. Up to 70% LTV tiered by credit
   score. 5, 7 or 10-year terms with 30-year amortization or interest-only. Non-recourse
   structure available. Portfolios generally need to be at least 90% leased.
+- [Commercial Real Estate Loans](https://acp-lending.com/commercial-real-estate-loans): Financing for commercial property for investors and owner-users.
 
 ## Tools and resources
 
@@ -52,6 +53,9 @@ Service area: United States, with Texas-specific programs
   letter for use with offers.
 - [Request for Information](https://acp-lending.com/request-for-information): Submit a deal
   for review or ask about a program.
+- [Request Financing](https://acp-lending.com/request-financing): Submit a deal and request financing.
+- [Deal Executive Summary Analyzer](https://acp-lending.com/analyze-deal): Enter a property and get a deal executive summary with ARV, financing at 70% and 75% of ARV, and cash due at closing.
+- [Case Studies](https://acp-lending.com/case-studies): Real investor deals worked through the numbers.
 - [Loan Forms](https://acp-lending.com/loan-documents): Every form needed to prepare and return a financing request
 - [Investor Guidance](https://acp-lending.com/investor-resources): How ARV, leverage, DSCR and borrower contribution are evaluated
 - [ACP Investor Brief](https://acp-lending.com/investor-brief/): Investor guides on DSCR
@@ -75,3 +79,4 @@ lender approval, appraisal or valuation, title, insurance, property eligibility 
 availability. Preliminary analyses are not commitments to lend. Advance rates vary by state;
 the 70% advance with zero out-of-pocket closing is specific to Texas. Rates are not published
 because they move with the market - contact ACP Lending for current pricing.
+- [Whose Repair Number?](https://acp-lending.com/investor-brief/repair-estimate-case-study): Oct 2026 case study - borrower repair budget vs. a third-party estimate and what the gap does to liquidity and the supportable offer.
