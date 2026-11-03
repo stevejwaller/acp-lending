@@ -79,6 +79,7 @@
     try {
       // Subdivision comps, widened in time until 20 closed sales; ARV = what the comps justify.
       CM = null;
+      CMERR = "";
       try {
         var cq = await fetch("/analyze-deal/comps", {
           method: "POST",
@@ -97,8 +98,12 @@
           CM = cj;
           CM.entered = num(d.arvEstimate);
           d.arvEstimate = String(cj.arv)
+        } else {
+          CMERR = (cj && cj.error) || ("lookup returned " + cq.status)
         }
-      } catch (ce) {}
+      } catch (ce) {
+        CMERR = "lookup failed"
+      }
       var r = await fetch("/deal-analyzer/report", {
         method: "POST",
         headers: {
@@ -167,14 +172,29 @@
     }).join("")
   }
 
-  var CM = null;
+  var CM = null,
+    CMERR = "";
   function cmMonths() {
     return CM ? CM.months : 12
   }
 
   // Replaces the report's ARV and comp table with the widened subdivision comp set.
   function injectComps(raw) {
-    if (!CM) return raw;
+    if (!CM) {
+      var dd = new DOMParser().parseFromString(raw, "text/html"),
+        ent = num(f.querySelector("#arvEstimate") ? f.querySelector("#arvEstimate").value : "");
+      secs(dd).forEach(function(s) {
+        if (/^ARV Analysis/.test(s.t)) {
+          var b = s.el.querySelector(".big");
+          if (b && !num(b.textContent) && ent) b.textContent = usd(ent);
+          var p = dd.createElement("p");
+          p.className = "muted";
+          p.innerHTML = "<b>Subdivision comps unavailable" + (CMERR ? " (" + esc(CMERR) + ")" : "") + ". " + (ent ? "The ARV shown is the entered estimate and must be confirmed against the MLS comp set." : "No ARV estimate was entered, so the deal math cannot be completed. Enter an ARV estimate or check the address and run again.") + "</b>";
+          s.el.appendChild(p)
+        }
+      });
+      return dd.documentElement.outerHTML
+    }
     var doc = new DOMParser().parseFromString(raw, "text/html");
     secs(doc).forEach(function(s) {
       if (/^ARV Analysis/.test(s.t)) {
@@ -692,6 +712,7 @@
       if (/^ARV Analysis/.test(s.t)) {
         var b = s.el.querySelector(".big");
         arv = num(b ? b.textContent : "");
+        if (!arv) arv = num(d.arvEstimate);
         var m = s.el.textContent.match(/(\d+) comparables/);
         if (m) n = +m[1]
       }
