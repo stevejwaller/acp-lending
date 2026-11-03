@@ -92,7 +92,7 @@ export async function onRequestPost({ request, env }) {
   const cr = { comparables: raw };
   const rec = pr ? findRec(pr) : null;
   const all = cr ? findArr(cr).map(mapComp) : [];
-  if (!all.length) return j({ success: false, error: "No comparables returned", subdivision: sub0 || null, propFound: !!rec0, recKeys: rec0 ? Object.keys(rec0).slice(0, 60) : (pr ? Object.keys(pr) : null), dbg });
+  if (!all.length) return j({ success: false, error: "No comparables returned", subdivision: sub0 || null, propFound: !!rec0, tally, dbg });
   let sub = rec ? pick(rec, ["subdivision", "subdivisionName", "subdivision_name", "developmentName", "community", "neighborhood"]) : null;
   if (!sub) { const c = {}; all.forEach(x => { if (x.subdivision) c[x.subdivision] = (c[x.subdivision] || 0) + 1; }); sub = Object.keys(c).sort((a, z) => c[z] - c[a])[0] || null; }
   const sf = rec ? n(pick(rec, ["livingSquareFeet", "livingArea", "living_square_feet", "gla", "buildingSquareFeet", "squareFeet"])) : null;
