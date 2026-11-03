@@ -77,6 +77,28 @@
       borrowerPhone: v("borrowerPhone")
     };
     try {
+      // Subdivision comps, widened in time until 20 closed sales; ARV = what the comps justify.
+      CM = null;
+      try {
+        var cq = await fetch("/analyze-deal/comps", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            address: d.propertyAddress,
+            city: d.city,
+            state: d.state,
+            zip: d.zip
+          })
+        });
+        var cj = cq.ok ? await cq.json() : null;
+        if (cj && cj.success && cj.arv > 0) {
+          CM = cj;
+          CM.entered = num(d.arvEstimate);
+          d.arvEstimate = String(cj.arv)
+        }
+      } catch (ce) {}
       var r = await fetch("/deal-analyzer/report", {
         method: "POST",
         headers: {
@@ -91,6 +113,7 @@
       var raw = (await r.text()).replace(/\$-[\d,]+/g, function() {
         return "$0"
       });
+      raw = injectComps(raw);
       if (!OWNER) {
         res.innerHTML = basic(raw, d);
         ld.style.display = "none";
@@ -142,6 +165,47 @@
     return Array.from(new Uint8Array(b)).map(function(x) {
       return x.toString(16).padStart(2, "0")
     }).join("")
+  }
+
+  var CM = null;
+  function cmMonths() {
+    return CM ? CM.months : 12
+  }
+
+  // Replaces the report's ARV and comp table with the widened subdivision comp set.
+  function injectComps(raw) {
+    if (!CM) return raw;
+    var doc = new DOMParser().parseFromString(raw, "text/html");
+    secs(doc).forEach(function(s) {
+      if (/^ARV Analysis/.test(s.t)) {
+        var src = "Source: " + CM.count + " closed comparables in " + esc(CM.subdivision || "the subdivision") + ", last " + CM.months + " months; ARV = " + CM.method + (CM.subjectSqft ? " ($" + CM.medianPpsf.toFixed(2) + " x " + Number(CM.subjectSqft).toLocaleString("en-US") + " SF)" : "");
+        s.el.innerHTML = '<h2>ARV Analysis</h2><p class="big">' + usd(CM.arv) + '</p><p class="muted">' + src + ' | ' + CM.count + ' comparables</p><p class="muted">Filters: same subdivision, ' + esc(CM.sqftRange) + ' SF, date range widened to ' + CM.months + ' months to reach at least 20 closed sales | ' + CM.rawCount + ' raw -> ' + CM.count + ' comps</p>' + (CM.met ? "" : '<p class="muted"><b>Only ' + CM.count + ' closed sales were found in the subdivision in ' + CM.months + ' months.</b></p>') + (CM.entered && Math.abs(CM.entered - CM.arv) >= 1000 ? '<p class="muted">The entered ARV estimate of ' + usd(CM.entered) + ' is not used; the comparable sales support ' + usd(CM.arv) + '.</p>' : "")
+      }
+      if (/^Comparable Sales/.test(s.t)) {
+        var ps = CM.comps.map(function(c) {
+            return c.salePrice || 0
+          }),
+          pp = CM.comps.map(function(c) {
+            return c.ppsf || 0
+          }).filter(function(z) {
+            return z > 0
+          });
+        var avg = ps.reduce(function(a, z) {
+          return a + z
+        }, 0) / (ps.length || 1);
+        s.el.innerHTML = '<h2>Comparable Sales (Exhibit A) - Last ' + CM.months + ' Months</h2><table><tr><th>Address</th><th>Sale Price</th><th>$/SF</th><th>Bd/Ba</th><th>Sq Ft</th><th>Yr Built</th><th>Subdivision</th><th>Date Sold</th></tr>' + CM.comps.map(function(c) {
+          var dt = new Date(c.saleDate);
+          return "<tr><td>" + esc(c.address || "-") + "</td><td>" + usd(c.salePrice) + "</td><td>" + (c.ppsf ? "$" + c.ppsf.toFixed(2) : "-") + "</td><td>" + esc(c.beds == null ? "-" : c.beds) + "/" + esc(c.baths == null ? "-" : c.baths) + "</td><td>" + esc(c.sqft || "-") + "</td><td>" + esc(c.yearBuilt || "-") + "</td><td>" + esc(c.subdivision || "-") + "</td><td>" + (isNaN(dt) ? "-" : dt.toLocaleDateString("en-US", {
+            year: "numeric",
+            month: "short",
+            day: "numeric"
+          })) + "</td></tr>"
+        }).join("") + '</table><p class="muted" style="margin-top:10px;">Median: ' + usd(CM.medianPrice) + ' | Average: ' + usd(avg) + ' | Median $/SF: $' + CM.medianPpsf.toFixed(2) + ' | Avg $/SF: $' + (pp.length ? (pp.reduce(function(a, z) {
+          return a + z
+        }, 0) / pp.length).toFixed(2) : "0") + '</p>'
+      }
+    });
+    return "<!doctype html>" + doc.documentElement.outerHTML
   }
 
   function secs(doc) {
@@ -890,7 +954,7 @@
     // Exhibits sit at the end, each lettered; each keeps a short summary in the body.
     // Order: comps, property record, repair estimate (Full Package), photos (Full Package),
     // and Financing Options always last. No exhibits in the free version.
-    var exList = [[/^Comparable Sales/, "Comparable Sales (Last 12 Months)", "comps"], [/^Property Record/, "Property Record", "record"]];
+    var exList = [[/^Comparable Sales/, "Comparable Sales (Last " + cmMonths() + " Months)", "comps"], [/^Property Record/, "Property Record", "record"]];
     if (lvl === "full") exList.push([/^Repair Estimate|^Estimated Repairs/, "Repair Estimate", "repairs"], ["PHOTOS", "Photos", ""]);
     exList.push([/^Financing Options/, "Financing Options", "fin"]);
     var letters = "ABCDEFG",
@@ -906,8 +970,8 @@
       var t = el.textContent;
       if (kind === "comps") {
         var n = el.querySelectorAll("tr").length - 1;
-        var m = t.match(/Median:\s*(\$[\d,]+)/), a = t.match(/Avg \$\/SF:\s*(\$[\d,.]+)/);
-        return (n > 0 ? n + " closed sales" : "Closed sales") + (kv["Subdivision"] ? " in " + esc(String(kv["Subdivision"]).replace(/\s+Sec(tion)?\s*\d+.*$/i, "")) : "") + " over the last 12 months support the after-repair value of " + usd(x.arv) + "." + (m ? " The median sale price is " + m[1] + (a ? " and the average is " + a[1] + " per square foot" : "") + "." : "") + " Each sale is listed with price, $/SF, size and date in Exhibit " + L + "."
+        var m = t.match(/Median:\s*(\$[\d,]+)/), a = t.match(/Median \$\/SF:\s*(\$[\d,.]+)/) || t.match(/Avg \$\/SF:\s*(\$[\d,.]+)/);
+        return (n > 0 ? n + " closed sales" : "Closed sales") + (kv["Subdivision"] ? " in " + esc(String(kv["Subdivision"]).replace(/\s+Sec(tion)?\s*\d+.*$/i, "")) : "") + " over the last " + cmMonths() + " months support the after-repair value of " + usd(x.arv) + "." + (m ? " The median sale price is " + m[1] + (a ? " and the " + (CM ? "median" : "average") + " is " + a[1] + " per square foot" : "") + "." : "") + " Each sale is listed with price, $/SF, size and date in Exhibit " + L + "."
       }
       if (kind === "record") {
         var occ = rowv(el, /^Occupancy/, 1), mv = rowv(el, /^Market Value/, 1), tx = rowv(el, /^Tax$/, 1), fz = rowv(el, /^Flood Zone/, 1), ln = rowv(el, /^Open Loans/, 1), dl = rowv(el, /^Tax Delinquent/, 1);
