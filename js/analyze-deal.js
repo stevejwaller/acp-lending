@@ -907,7 +907,7 @@
       if (kind === "comps") {
         var n = el.querySelectorAll("tr").length - 1;
         var m = t.match(/Median:\s*(\$[\d,]+)/), a = t.match(/Avg \$\/SF:\s*(\$[\d,.]+)/);
-        return (n > 0 ? n + " closed sales" : "Closed sales") + (kv["Subdivision"] ? " in " + esc(kv["Subdivision"]) : "") + " over the last 12 months support the after-repair value of " + usd(x.arv) + "." + (m ? " The median sale price is " + m[1] + (a ? " and the average is " + a[1] + " per square foot" : "") + "." : "") + " Each sale is listed with price, $/SF, size and date in Exhibit " + L + "."
+        return (n > 0 ? n + " closed sales" : "Closed sales") + (kv["Subdivision"] ? " in " + esc(String(kv["Subdivision"]).replace(/\s+Sec(tion)?\s*\d+.*$/i, "")) : "") + " over the last 12 months support the after-repair value of " + usd(x.arv) + "." + (m ? " The median sale price is " + m[1] + (a ? " and the average is " + a[1] + " per square foot" : "") + "." : "") + " Each sale is listed with price, $/SF, size and date in Exhibit " + L + "."
       }
       if (kind === "record") {
         var occ = rowv(el, /^Occupancy/, 1), mv = rowv(el, /^Market Value/, 1), tx = rowv(el, /^Tax$/, 1), fz = rowv(el, /^Flood Zone/, 1), ln = rowv(el, /^Open Loans/, 1), dl = rowv(el, /^Tax Delinquent/, 1);
