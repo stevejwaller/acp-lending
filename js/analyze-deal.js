@@ -478,7 +478,7 @@
     var x0 = x,
       recP = recPrice(x);
 
-    function calc(x) {
+    function calc(x, atRec) {
       var D = deal(x, x.P),
         L = D.L,
         cc = D.cc,
@@ -534,7 +534,7 @@
         why = "The sale margin is under 10% of the after-repair value, but the rent covers the refinance payment at a 1.20 DSCR or better."
       } else {
         rec = "Neither at this price";
-        why = "At this purchase price the sale does not clear a 10% margin and the rent does not cover a refinance at a 1.20 DSCR. The deal needs a lower price, see the ACP Recommended Offer above."
+        why = atRec ? "At the ACP recommended purchase price the sale does not clear a 10% margin on the after-repair value and the rent does not cover a refinance at a 1.20 DSCR. At this ARV and repair budget the deal does not work as a flip or a rental." : "At this purchase price the sale does not clear a 10% margin and the rent does not cover a refinance at a 1.20 DSCR. The deal needs a lower price, see the ACP Recommended Offer above."
       }
       return {
         L: L,
@@ -578,7 +578,7 @@
     var S = calc(x0),
       A = calc(nums(doc, Object.assign({}, d, {
         purchasePrice: String(recP)
-      })));
+      })), true);
     var L = A.L,
       cc = A.cc,
       tp = A.tp,
