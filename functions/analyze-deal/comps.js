@@ -37,11 +37,11 @@ function findRec(d) {
 function base(s) { return String(s || "").replace(/\s+(sec|section|sec\.)\s*\d+.*$/i, "").replace(/\s+(ph|phase)\s*\d+.*$/i, "").replace(/\s+r\/p.*$/i, "").trim().toLowerCase(); }
 function med(a) { const s = a.filter(x => x > 0).sort((x, y) => x - y); if (!s.length) return 0; const m = Math.floor(s.length / 2); return s.length % 2 ? s[m] : (s[m - 1] + s[m]) / 2; }
 function mapComp(p) {
-  const sp = n(pick(p, ["sale_price", "salePrice", "lastSalePrice", "last_sale_price", "soldPrice", "sold_price", "closePrice", "lastSaleAmount", "price"]));
+  const sp = n(pick(p, ["sale_price", "salePrice", "lastSalePrice", "last_sale_price", "soldPrice", "sold_price", "closePrice", "lastSaleAmount", "saleAmount", "soldAmount", "closedPrice", "mlsSoldPrice", "price"]));
   const sq = n(pick(p, ["living_square_feet", "squareFeet", "square_feet", "livingArea", "gla", "grossLivingArea", "livingSquareFeet", "squareFootage"]));
   return {
     address: pick(p, ["full_address", "address", "streetAddress", "propertyAddress", "formattedAddress", "street_address"]) || null,
-    salePrice: sp, saleDate: pick(p, ["sale_date", "saleDate", "lastSaleDate", "last_sale_date", "soldDate", "closeDate", "date"]) || null,
+    salePrice: sp, saleDate: pick(p, ["sale_date", "saleDate", "lastSaleDate", "last_sale_date", "soldDate", "closeDate", "closedDate", "mlsSoldDate", "date"]) || null,
     beds: pick(p, ["bedrooms", "beds", "bedroomCount"]) ?? null, baths: pick(p, ["bathrooms", "baths", "bathroomCount"]) ?? null,
     sqft: sq, yearBuilt: pick(p, ["yearBuilt", "year_built"]) ?? null,
     subdivision: pick(p, ["subdivision", "subdivisionName", "subdivision_name", "developmentName", "community", "neighborhood"]) || null,
@@ -56,13 +56,31 @@ export async function onRequestPost({ request, env }) {
   if (!key) return j({ success: false, error: "comps key not configured" }, 500);
   const target = { streetAddress: b.address, city: b.city, state: b.state }; if (b.zip) target.zip = b.zip;
   const qs = new URLSearchParams(target);
-  const [pr, cr] = await Promise.all([
-    fetch("https://api.propertyreach.com/v1/property?" + qs, { headers: { "x-api-key": key } }).then(r => r.ok ? r.json() : null).catch(() => null),
-    fetch("https://api.propertyreach.com/v1/comparables", { method: "POST", headers: { "x-api-key": key, "Content-Type": "application/json" }, body: JSON.stringify({ target }) }).then(r => r.ok ? r.json() : null).catch(() => null)
-  ]);
+  // 1) Subject record first: its subdivision, size and PropertyReach id drive the comp filter.
+  const pr = await fetch("https://api.propertyreach.com/v1/property?" + qs, { headers: { "x-api-key": key } }).then(r => r.ok ? r.json() : null).catch(() => null);
+  const rec0 = pr ? findRec(pr) : null;
+  const sub0 = rec0 ? pick(rec0, ["subdivision", "subdivisionName", "subdivision_name", "developmentName", "community", "neighborhood"]) : null;
+  const sf0 = rec0 ? n(pick(rec0, ["livingSquareFeet", "livingArea", "living_square_feet", "gla", "buildingSquareFeet", "squareFeet"])) : null;
+  const pid = rec0 ? n(pick(rec0, ["propertyId", "id", "property_id"])) : null;
+  const tgt = pid ? Object.assign({ propertyId: pid }, target) : target;
+  // 2) Comparables WITH a filter (3 Nov 2026). Without one PropertyReach returns its defaults:
+  // 0.5-mile radius, no subdivision, no date range -> 0-6 sales. Ask for the subject's own
+  // subdivision, MLS + public-record sales (Texas public records carry no prices), 18 months back,
+  // +/-20% square feet, residential only. A second, subdivision-free pull over a wider radius is
+  // post-filtered to the same subdivision in case the name filter is stricter than the record.
+  const since = new Date(); since.setMonth(since.getMonth() - WINDOWS[WINDOWS.length - 1]);
+  const fBase = { comparableSource: "Both", lastSaleDateMin: since.toISOString().slice(0, 10), propertyClassCode: ["R"] };
+  if (sf0) { fBase.squareFeetMin = Math.round(sf0 * 0.8); fBase.squareFeetMax = Math.round(sf0 * 1.2); }
+  const call = f => fetch("https://api.propertyreach.com/v1/comparables", { method: "POST", headers: { "x-api-key": key, "Content-Type": "application/json" }, body: JSON.stringify({ target: tgt, filter: f }) }).then(r => r.ok ? r.json() : null).catch(() => null);
+  const reqs = [call(Object.assign({}, fBase, { distanceFromSubject: 5 }))];
+  if (sub0) reqs.unshift(call(Object.assign({}, fBase, { subdivision: [sub0], distanceFromSubject: 10 })));
+  const outs = await Promise.all(reqs);
+  const raw = [].concat.apply([], outs.map(o => o ? findArr(o) : []));
+  const sample = raw.length ? Object.keys(raw[0]).slice(0, 40) : null;
+  const cr = { comparables: raw };
   const rec = pr ? findRec(pr) : null;
   const all = cr ? findArr(cr).map(mapComp) : [];
-  if (!all.length) return j({ success: false, error: "No comparables returned" });
+  if (!all.length) return j({ success: false, error: "No comparables returned", subdivision: sub0 || null });
   let sub = rec ? pick(rec, ["subdivision", "subdivisionName", "subdivision_name", "developmentName", "community", "neighborhood"]) : null;
   if (!sub) { const c = {}; all.forEach(x => { if (x.subdivision) c[x.subdivision] = (c[x.subdivision] || 0) + 1; }); sub = Object.keys(c).sort((a, z) => c[z] - c[a])[0] || null; }
   const sf = rec ? n(pick(rec, ["livingSquareFeet", "livingArea", "living_square_feet", "gla", "buildingSquareFeet", "squareFeet"])) : null;
@@ -96,6 +114,6 @@ export async function onRequestPost({ request, env }) {
     success: true, subdivision: sub ? String(sub).replace(/\s+(sec|section)\s*\d+.*$/i, "") : null, subjectSqft: sf, sqftRange: sf ? lo + "-" + hi : "any",
     months, count: comps.length, met: comps.length >= MIN, rawCount: all.length,
     medianPpsf: Math.round(mps * 100) / 100, medianPrice: med(comps.map(c => c.salePrice)), arv,
-    method: sf && mps ? "median $/SF x subject SF" : "median sale price", comps
+    method: sf && mps ? "median $/SF x subject SF" : "median sale price", sampleKeys: sample, comps
   });
 }
