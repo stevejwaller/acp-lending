@@ -429,8 +429,157 @@
     return { P: P, L: L, La: La, Lc: Lc, bind: bind, cc: cc, tp: tp, gap: gap, due: due, liq: liq, tot: due + liq }
   }
 
-  function recPrice(x) {
+  function recPrice75(x) {
     return Math.max(0, Math.round(.75 * x.arv - x.R))
+  }
+
+  // ACP recommended price: the 75% rule price, lowered when needed to the highest price at
+  // which the deal works as a flip (10% margin) or a rental (1.20 DSCR refinance, positive
+  // cash flow, 10%+ cash-on-cash). Zero when no price works.
+  function recPrice(x) {
+    if (!x.arv) return recPrice75(x);
+    var p = prices(x);
+    return p.best === null ? 0 : p.best
+  }
+
+  function exitCalc(x, atRec) {
+    var D = deal(x, x.P),
+      L = D.L,
+      cc = D.cc,
+      tx = x.T.t,
+      ins = 3000,
+      util = 200,
+      mo = 6;
+    // Out of pocket = all closing costs (lender + third-party) + 6 months of holding costs
+    // + any purchase or repairs the loan does not cover. Repairs inside the loan come back
+    // through draws, so the 1/3-of-repairs liquidity reserve is not cash invested.
+    var tp = D.tp,
+      ccAll = cc + tp,
+      gap = D.gap;
+    var hold = Math.round(L * .11 * mo / 12 + tx * mo / 12 + ins * mo / 12 + util * mo),
+      sell = Math.round(.07 * x.arv);
+    var fp = Math.round(x.arv - sell - x.P - x.R - ccAll - hold),
+      fcash = Math.max(1, gap + ccAll + hold),
+      froi = fp / fcash,
+      fann = froi * 12 / mo,
+      fmargin = fp / x.arv;
+    var rIn = num(v("daRent")),
+      rent = rIn || Math.round(.008 * x.arv),
+      rr = (num(v("daRefi")) || 7.5) / 100;
+    var egi0 = rent * .95,
+      noi0 = egi0 - ((tx + ins) / 12 + rent * .08 + egi0 * .08),
+      r0 = rr / 12,
+      af0 = r0 / (1 - Math.pow(1 + r0, -360)),
+      dscrLoan = Math.max(0, Math.floor(noi0 / 1.20 / af0 / 100) * 100);
+    var refi = Math.min(Math.round(.75 * x.arv), dscrLoan),
+      refiBind = refi < Math.round(.75 * x.arv) ? "1.20 DSCR" : "75% of ARV",
+      rcost = Math.round(.02 * refi),
+      cashOut = refi - L - rcost,
+      left = fcash - cashOut;
+    var egi = rent * .95,
+      opex = (tx + ins) / 12 + rent * .08 + egi * .08,
+      noi = egi - opex,
+      r = rr / 12,
+      n = 360,
+      pi = refi * r / (1 - Math.pow(1 + r, -n)),
+      cf = noi - pi,
+      dscr = pi ? noi / pi : 0,
+      coc = left > 0 ? cf * 12 / left : null;
+    var flipOK = fmargin >= .10,
+      rentOK = cf > 0 && dscr >= 1.195 && (left <= 0 || coc >= .10),
+      rec, why;
+    if (flipOK && rentOK) {
+      if (left <= 0 || (coc !== null && coc >= fann)) {
+        rec = "Rent";
+        why = "Both strategies work. Refinancing returns most or all of the cash and the rent covers the new loan, so holding builds equity without leaving much money in the deal."
+      } else {
+        rec = "Flip";
+        why = "Both strategies work, but the sale returns more on the cash invested than the rental does on the cash left in after refinancing."
+      }
+    } else if (flipOK) {
+      rec = "Flip";
+      why = "The sale clears a 10% margin on the after-repair value. As a rental, the refinance the rent supports leaves too much cash in the deal (under a 10% cash-on-cash return)."
+    } else if (rentOK) {
+      rec = "Rent";
+      why = "The sale margin is under 10% of the after-repair value, but the rent supports a refinance at a 1.20 DSCR with positive cash flow and at least a 10% cash-on-cash return on the cash left in."
+    } else {
+      rec = "Neither at this price";
+      why = atRec ? "No purchase price makes this deal work as a flip or a rental at this ARV, rent and repair budget." : "At this purchase price the sale does not clear a 10% margin and the rental leaves too much cash in the deal. See the ACP Recommended Offer for the price that works."
+    }
+    return {
+      L: L,
+      cc: cc,
+      tp: tp,
+      ccAll: ccAll,
+      gap: gap,
+      tx: tx,
+      ins: ins,
+      util: util,
+      mo: mo,
+      hold: hold,
+      sell: sell,
+      fp: fp,
+      fcash: fcash,
+      froi: froi,
+      fann: fann,
+      fmargin: fmargin,
+      rIn: rIn,
+      rent: rent,
+      rr: rr,
+      refi: refi,
+      refiBind: refiBind,
+      rcost: rcost,
+      cashOut: cashOut,
+      left: left,
+      egi: egi,
+      opex: opex,
+      noi: noi,
+      r: r,
+      n: n,
+      pi: pi,
+      cf: cf,
+      dscr: dscr,
+      coc: coc,
+      flipOK: flipOK,
+      rentOK: rentOK,
+      rec: rec,
+      why: why
+    }
+  }
+
+  // Highest purchase price (in $500 steps, up to the 75% rule price) at which a test passes.
+  function maxPriceFor(x, test) {
+    var hi = recPrice75(x),
+      lo = 0;
+    var ok = function(P) {
+      return test(exitCalc(Object.assign({}, x, {
+        P: P
+      })))
+    };
+    if (ok(hi)) return hi;
+    if (!ok(0)) return null;
+    while (hi - lo > 500) {
+      var mid = Math.round((lo + hi) / 2);
+      if (ok(mid)) lo = mid;
+      else hi = mid
+    }
+    return Math.floor(lo / 500) * 500
+  }
+
+  function prices(x) {
+    var f = maxPriceFor(x, function(z) {
+        return z.flipOK
+      }),
+      r = maxPriceFor(x, function(z) {
+        return z.rentOK
+      });
+    var best = Math.max(f === null ? -1 : f, r === null ? -1 : r);
+    return {
+      rule75: recPrice75(x),
+      flip: f,
+      rent: r,
+      best: best < 0 ? null : best
+    }
   }
 
   function ltcLabel(x) {
@@ -570,105 +719,8 @@
     var x0 = x,
       recP = recPrice(x);
 
-    function calc(x, atRec) {
-      var D = deal(x, x.P),
-        L = D.L,
-        cc = D.cc,
-        tx = x.T.t,
-        ins = 3000,
-        util = 200,
-        mo = 6;
-      // Out of pocket = all closing costs (lender + third-party) + 6 months of holding costs
-      // + any purchase or repairs the loan does not cover. Repairs inside the loan come back
-      // through draws, so the 1/3-of-repairs liquidity reserve is not cash invested.
-      var tp = D.tp,
-        ccAll = cc + tp,
-        gap = D.gap;
-      var hold = Math.round(L * .11 * mo / 12 + tx * mo / 12 + ins * mo / 12 + util * mo),
-        sell = Math.round(.07 * x.arv);
-      var fp = Math.round(x.arv - sell - x.P - x.R - ccAll - hold),
-        fcash = Math.max(1, gap + ccAll + hold),
-        froi = fp / fcash,
-        fann = froi * 12 / mo,
-        fmargin = fp / x.arv;
-      var rIn = num(v("daRent")),
-        rent = rIn || Math.round(.008 * x.arv),
-        rr = (num(v("daRefi")) || 7.5) / 100;
-      var refi = Math.round(.75 * x.arv),
-        rcost = Math.round(.02 * refi),
-        cashOut = refi - L - rcost,
-        left = fcash - cashOut;
-      var egi = rent * .95,
-        opex = (tx + ins) / 12 + rent * .08 + egi * .08,
-        noi = egi - opex,
-        r = rr / 12,
-        n = 360,
-        pi = refi * r / (1 - Math.pow(1 + r, -n)),
-        cf = noi - pi,
-        dscr = pi ? noi / pi : 0,
-        coc = left > 0 ? cf * 12 / left : null;
-      var flipOK = fmargin >= .10,
-        rentOK = dscr >= 1.20 && cf > 0,
-        rec, why;
-      if (flipOK && rentOK) {
-        if (left <= 0 || (coc !== null && coc >= fann)) {
-          rec = "Rent";
-          why = "Both strategies work. Refinancing returns most or all of the cash and the rent covers the new loan, so holding builds equity without leaving much money in the deal."
-        } else {
-          rec = "Flip";
-          why = "Both strategies work, but the sale returns more on the cash invested than the rental does on the cash left in after refinancing."
-        }
-      } else if (flipOK) {
-        rec = "Flip";
-        why = "The sale clears a 10% margin on the after-repair value. As a rental, the rent does not cover the refinance payment at a 1.20 DSCR."
-      } else if (rentOK) {
-        rec = "Rent";
-        why = "The sale margin is under 10% of the after-repair value, but the rent covers the refinance payment at a 1.20 DSCR or better."
-      } else {
-        rec = "Neither at this price";
-        why = atRec ? "At the ACP recommended purchase price the sale does not clear a 10% margin on the after-repair value and the rent does not cover a refinance at a 1.20 DSCR. At this ARV and repair budget the deal does not work as a flip or a rental." : "At this purchase price the sale does not clear a 10% margin and the rent does not cover a refinance at a 1.20 DSCR. The deal needs a lower price, see the ACP Recommended Offer above."
-      }
-      return {
-        L: L,
-        cc: cc,
-        tp: tp,
-        ccAll: ccAll,
-        gap: gap,
-        tx: tx,
-        ins: ins,
-        util: util,
-        mo: mo,
-        hold: hold,
-        sell: sell,
-        fp: fp,
-        fcash: fcash,
-        froi: froi,
-        fann: fann,
-        fmargin: fmargin,
-        rIn: rIn,
-        rent: rent,
-        rr: rr,
-        refi: refi,
-        rcost: rcost,
-        cashOut: cashOut,
-        left: left,
-        egi: egi,
-        opex: opex,
-        noi: noi,
-        r: r,
-        n: n,
-        pi: pi,
-        cf: cf,
-        dscr: dscr,
-        coc: coc,
-        flipOK: flipOK,
-        rentOK: rentOK,
-        rec: rec,
-        why: why
-      }
-    }
-    var S = calc(x0),
-      A = calc(nums(doc, Object.assign({}, d, {
+    var S = exitCalc(x0),
+      A = exitCalc(nums(doc, Object.assign({}, d, {
         purchasePrice: String(recP)
       })), true);
     var pc = function(z) {
@@ -687,7 +739,7 @@
         ["Holding costs, " + Z.mo + " months (interest payments, taxes, insurance, utilities)", usd(Z.hold), usd(Z.hold)],
         ["Estimated profit", '<b>' + m(Z.fp) + '</b> (' + pc(Z.fmargin) + ' of ARV)', "-"],
         ["Cash invested (closing costs + holding costs" + (Z.gap ? " + purchase and repairs not covered by the loan" : "") + "; repairs in the loan are reimbursed through draws)", usd(Z.fcash), usd(Z.fcash)],
-        ["Refinance loan (75% of ARV)", "-", usd(Z.refi)],
+        ["Refinance loan (lower of 75% of ARV and a 1.20 DSCR; set by " + Z.refiBind + ")", "-", usd(Z.refi)],
         ["Cash back at refinance (after payoff and 2% costs)", "-", m(Z.cashOut)],
         ["Cash left in the deal", "-", Z.left > 0 ? usd(Z.left) : "None"],
         ["Monthly rent" + (Z.rIn ? "" : " (0.8% of ARV, verify with rent comps)"), "-", usd(Z.rent)],
@@ -702,7 +754,7 @@
     };
     var sec = doc.createElement("div");
     sec.className = "sec";
-    sec.innerHTML = '<h2>Profitability Estimate</h2>' + card(A, recP, "At the ACP recommended purchase price") + card(S, x0.P, "At the purchase price as submitted") + '<p class="muted" style="margin-top:8px">Both use the repairs in this report (' + usd(x.R) + '), a loan equal to the lower of loan-to-cost (' + ltcLabel(x) + ') and 75% of ARV, lender closing costs and estimated third-party closing costs (' + (x.F.tpp * 100).toFixed(1) + '% of the loan) paid at closing, annual taxes of ' + usd(A.tx) + ', insurance of ' + usd(A.ins) + ' a year and ' + usd(A.util) + ' a month in utilities. Recommendation rule: flip when the sale clears a 10% margin on ARV; rent when the rent covers the refinance at a 1.20 DSCR; when both work, the one with the better return on cash. Not a commitment to lend.</p>';
+    sec.innerHTML = '<h2>Profitability Estimate</h2>' + card(A, recP, "At the ACP recommended purchase price") + card(S, x0.P, "At the purchase price as submitted") + '<p class="muted" style="margin-top:8px">Both use the repairs in this report (' + usd(x.R) + '), a loan equal to the lower of loan-to-cost (' + ltcLabel(x) + ') and 75% of ARV, lender closing costs and estimated third-party closing costs (' + (x.F.tpp * 100).toFixed(1) + '% of the loan) paid at closing, annual taxes of ' + usd(A.tx) + ', insurance of ' + usd(A.ins) + ' a year and ' + usd(A.util) + ' a month in utilities. Recommendation rule: flip when the sale clears a 10% margin on ARV; rent when the rent supports a refinance at a 1.20 DSCR with positive cash flow and at least a 10% cash-on-cash return on cash left in; when both work, the one with the better return on cash. Not a commitment to lend.</p>';
     var after = null;
     secs(doc).forEach(function(s2) {
       if (/^ACP Recommended Offer/.test(s2.t)) after = s2.el
@@ -715,11 +767,12 @@
   function offer(html, d) {
     var doc = new DOMParser().parseFromString(html, "text/html");
     var x = nums(doc, d);
-    var rec = recPrice(x),
+    var PX = prices(x),
+      rec = recPrice(x),
       D = deal(x, rec);
     var sec = doc.createElement("div");
     sec.className = "sec";
-    sec.innerHTML = '<h2>ACP Recommended Offer</h2><table class="kv"><tr><td>Recommended offer</td><td><b>' + usd(rec) + '</b></td></tr></table><p class="muted" style="margin-top:10px">Recommended offer = 75% of ARV (' + usd(D.La) + ') less repairs (' + usd(x.R) + '). The loan is the lower of the approved loan-to-cost (' + ltcLabel(x) + ', ' + usd(D.Lc) + ') and 75% of ARV, so at this price the loan is ' + usd(D.L) + ' and ' + usd(D.gap) + ' of purchase and repairs is paid at closing. Lender closing costs (estimated ' + usd(D.cc) + ') and third-party closing costs (estimated ' + usd(D.tp) + ') are paid at closing and cannot be included in the loan.</p><p>Phone walkthrough: call or text 936-522-8951 to schedule.</p>';
+    sec.innerHTML = '<h2>ACP Recommended Offer</h2><table class="kv"><tr><td>Recommended offer</td><td><b>' + (rec ? usd(rec) : 'No price works') + '</b></td></tr><tr><td>75% rule price (75% of ARV less repairs)</td><td>' + usd(PX.rule75) + '</td></tr><tr><td>Highest price that works as a flip (10% margin on ARV)</td><td>' + (PX.flip === null ? 'None' : usd(PX.flip)) + '</td></tr><tr><td>Highest price that works as a rental (1.20 DSCR refinance, positive cash flow, 10% cash-on-cash)</td><td>' + (PX.rent === null ? 'None' : usd(PX.rent)) + '</td></tr></table><p class="muted" style="margin-top:10px">' + (rec ? 'Recommended offer = the 75% rule price (75% of ARV, ' + usd(D.La) + ', less repairs, ' + usd(x.R) + ')' + (rec < PX.rule75 ? ', lowered to the highest price at which the deal works as a ' + (rec === PX.flip ? 'flip' : 'rental') : '') + '. The loan is the lower of the approved loan-to-cost (' + ltcLabel(x) + ', ' + usd(D.Lc) + ') and 75% of ARV, so at this price the loan is ' + usd(D.L) + ' and ' + usd(D.gap) + ' of purchase and repairs is paid at closing. Lender closing costs (estimated ' + usd(D.cc) + ') and third-party closing costs (estimated ' + usd(D.tp) + ') are paid at closing and cannot be included in the loan.' : 'At this ARV, rent and repair budget no purchase price makes the deal work as a flip or a rental.') + '</p><p>Phone walkthrough: call or text 936-522-8951 to schedule.</p>';
     applyChart(doc, x, D, deal(x, x.P));
     var after = null;
     secs(doc).forEach(function(s) {
@@ -830,7 +883,7 @@
       }
     });
     var FULL = !!d.__full;
-    if (FULL && arv) P = Math.max(0, Math.round(.75 * arv - R));
+    if (FULL && arv) P = recPrice(nums(doc, Object.assign({}, d, { repairBudget: String(R) })));
     var f = num(document.getElementById("daFico").value),
       e = num(document.getElementById("daExp").value),
       tpp = fees().tpp,
