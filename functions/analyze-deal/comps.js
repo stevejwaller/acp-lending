@@ -5,7 +5,7 @@
 // POST /analyze-deal/comps  {address, city, state, zip} -> JSON
 // Bindings: env.PROPERTYREACH_API_KEY (Pages secret, already used by /prospects).
 
-const WINDOWS = [12, 18, 24, 36, 48, 60]; // months, widened until MIN comps are found
+const WINDOWS = [12, 18]; // months: 12, widened to 18 if fewer than MIN comps, never farther (Steve, 3 Nov 2026)
 const MIN = 20;
 
 function j(o, s) { return new Response(JSON.stringify(o), { status: s || 200, headers: { "Content-Type": "application/json" } }); }
