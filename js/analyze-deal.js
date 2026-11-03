@@ -22,7 +22,7 @@
     sb.parentNode.insertBefore(lv, sb);
     var fx = document.createElement("div");
     fx.id = "daFin";
-    fx.innerHTML = '<div class="calc-field-row da-three"><div class="calc-field"><label for="daFico">Credit Score</label><input id="daFico" type="number" placeholder="700"></div><div class="calc-field"><label for="daExp">Deals Closed (36 mo)</label><input id="daExp" type="number" placeholder="3"></div><div class="calc-field"><label for="daTp">Third-Party Closing (% of loan)</label><input id="daTp" type="number" step="0.1" value="2.0"></div></div><div class="calc-field-row"><div class="calc-field"><label for="daLtcP">Approved LTC: % of Purchase</label><input id="daLtcP" type="number" step="1" value="90"></div><div class="calc-field"><label for="daLtcR">Approved LTC: % of Repairs</label><input id="daLtcR" type="number" step="1" value="100"></div></div><div class="calc-field-row"><div class="calc-field"><label for="daOrig">Broker Origination</label><select id="daOrig"><option value="0">0%</option><option value="1">1%</option><option value="2" selected>2%</option></select></div><div class="calc-field"><label for="daBcf">Broker Closing Fee</label><select id="daBcf"><option>500</option><option>750</option><option selected>1000</option></select></div></div><div class="calc-field-row"><div class="calc-field"><label for="daRent">Estimated Monthly Rent</label><span class="da-money"><input id="daRent" type="number" placeholder="blank = 0.8% of ARV"></span></div><div class="calc-field"><label for="daRefi">Rental Refinance Rate (%)</label><input id="daRefi" type="number" step="0.125" value="7.5"></div></div><div class="calc-field"><label><input id="daPhotos" type="checkbox" style="width:auto;display:inline-block;margin:0 6px 0 0;vertical-align:middle"> Interior and exterior photos available</label></div><div class="calc-field"><label for="daAcpRep">ACP Repair Estimate from Photos</label><span class="da-money"><input id="daAcpRep" type="number" placeholder="from the photo repair chart"></span></div><div class="calc-field"><label><input id="daUseBor" type="checkbox" style="width:auto;display:inline-block;margin:0 6px 0 0;vertical-align:middle"> Borrower showed why their repair number is better &mdash; use it</label></div><div class="calc-field"><label>Shown not needed (from photos or records):</label> <label><input id="daNoHvac" type="checkbox" style="width:auto;display:inline-block;margin:0 6px 0 0;vertical-align:middle"> HVAC</label> &nbsp; <label><input id="daNoRoof" type="checkbox" style="width:auto;display:inline-block;margin:0 6px 0 0;vertical-align:middle"> Roof</label> &nbsp; <label><input id="daNoFdn" type="checkbox" style="width:auto;display:inline-block;margin:0 6px 0 0;vertical-align:middle"> Foundation</label></div>';
+    fx.innerHTML = '<div class="calc-field-row da-three"><div class="calc-field"><label for="daFico">Credit Score</label><input id="daFico" type="number" placeholder="700"></div><div class="calc-field"><label for="daExp">Deals Closed (36 mo)</label><input id="daExp" type="number" placeholder="3"></div><div class="calc-field"><label for="daTp">Third-Party Closing (% of loan)</label><input id="daTp" type="number" step="0.1" value="2.0"></div></div><div class="calc-field-row"><div class="calc-field"><label for="daLtcP">Approved LTC: % of Purchase</label><input id="daLtcP" type="number" step="1" value="90"></div><div class="calc-field"><label for="daLtcR">Approved LTC: % of Repairs</label><input id="daLtcR" type="number" step="1" value="100"></div></div><div class="calc-field-row"><div class="calc-field"><label for="daOrig">Broker Origination</label><select id="daOrig"><option value="0">0%</option><option value="1">1%</option><option value="2" selected>2%</option></select></div><div class="calc-field"><label for="daBcf">Broker Closing Fee</label><select id="daBcf"><option>500</option><option>750</option><option selected>1000</option></select></div></div><div class="calc-field-row"><div class="calc-field"><label for="daRent">Estimated Monthly Rent</label><span class="da-money"><input id="daRent" type="number" placeholder="blank = 0.8% of ARV"></span></div><div class="calc-field"><label for="daRefi">Rental Refinance Rate (%)</label><input id="daRefi" type="number" step="0.125" value="7.5"></div></div><div class="calc-field"><label><input id="daPhotos" type="checkbox" style="width:auto;display:inline-block;margin:0 6px 0 0;vertical-align:middle"> Interior and exterior photos available</label></div><div class="calc-field"><label for="daAcpRep">ACP Repair Estimate from Photos</label><span class="da-money"><input id="daAcpRep" type="number" placeholder="from the photo repair chart"></span></div><div class="calc-field"><label><input id="daUseBor" type="checkbox" style="width:auto;display:inline-block;margin:0 6px 0 0;vertical-align:middle"> Borrower showed why their repair number is better &mdash; use it</label></div><div class="calc-field-row"><div class="calc-field"><label for="daCond">Estimated Condition (no photos)</label><select id="daCond"><option value="auto" selected>Auto: Heavy if remarks say handyman/fixer, else Full</option><option value="cosmetic">Cosmetic</option><option value="full">Full</option><option value="heavy">Heavy</option></select></div><div class="calc-field"><label for="daRemarks">Listing Remarks (paste, optional)</label><input id="daRemarks" type="text" placeholder="e.g. handyman special, sold as-is"></div></div><div class="calc-field"><label>Shown not needed (from photos or records; roof and HVAC cannot be waived on homes 15+ years old):</label> <label><input id="daNoHvac" type="checkbox" style="width:auto;display:inline-block;margin:0 6px 0 0;vertical-align:middle"> HVAC</label> &nbsp; <label><input id="daNoRoof" type="checkbox" style="width:auto;display:inline-block;margin:0 6px 0 0;vertical-align:middle"> Roof</label> &nbsp; <label><input id="daNoFdn" type="checkbox" style="width:auto;display:inline-block;margin:0 6px 0 0;vertical-align:middle"> Foundation</label></div>';
     sb.parentNode.insertBefore(fx, sb);
   }
   // A mouse wheel over a focused number field silently changes its value; blur it instead.
@@ -304,33 +304,57 @@
       age = yb ? new Date().getFullYear() - yb : 40;
     var it = [];
     var ph = ck("daPhotos") && num(v("daAcpRep")) > 0;
+    // No photos: three levels. Every level carries roof, HVAC and foundation unless proven
+    // otherwise; roof and HVAC are always replaced on homes 15 years or older.
+    var LV = ["Cosmetic", "Full", "Heavy"],
+      lvTot = [0, 0, 0],
+      lvRows = [],
+      lvPick = 1,
+      kw = null;
     if (ph) it.push(["Photo review", "ACP repair estimate from borrower photos (full line-item chart" + (document.getElementById("daLevel").value === "full" ? " attached as an exhibit)" : " included in the Full Package)"), num(v("daAcpRep"))]);
     else {
-      if (!ck("daNoHvac")) it.push(["Major", "HVAC (full replacement)", Math.max(7500, Math.round(4.5 * sf))]);
-      if (!ck("daNoRoof")) it.push(["Major", "Roof (full replacement)", Math.max(9000, Math.round(5 * sf))]);
-      if (!ck("daNoFdn")) it.push(["Major", "Foundation (leveling / repair)", sf > 2000 ? 10000 : 8000]);
-      it.push(["Interior", "Flooring throughout (" + Math.round(sf).toLocaleString("en-US") + " SF)", Math.round(5 * sf)]);
-      it.push(["Interior", "Kitchen remodel", age < 15 ? 8000 : 15000]);
-      it.push(["Interior", "Bathroom remodel (" + full + " full" + (half ? " + " + half + " half" : "") + ")", full * (age < 15 ? 5000 : 8000) + half * 3000]);
-      it.push(["Interior", "Paint, full interior", Math.round(2.5 * sf)]);
-      it.push(["Exterior", "Paint, full exterior", Math.round(2 * sf)]);
+      var old15 = age >= 15;
+      var add = function(cat, item, cost, from) {
+        lvRows.push([cat, item, cost, from]);
+        for (var q = from; q < 3; q++) lvTot[q] += cost
+      };
+      if (old15 || !ck("daNoRoof")) add("Major", "Roof replacement" + (old15 ? " (required: home is " + age + " years old)" : " (until shown otherwise)"), Math.max(9000, Math.round(5 * sf)), 0);
+      if (old15 || !ck("daNoHvac")) add("Major", "HVAC replacement" + (old15 ? " (required: home is " + age + " years old)" : " (until shown otherwise)"), Math.max(7500, Math.round(4.5 * sf)), 0);
+      if (!ck("daNoFdn")) add("Major", "Foundation (leveling / repair, until shown otherwise)", sf > 2000 ? 10000 : 8000, 0);
+      add("Cosmetic", "Paint, full interior", Math.round(2.5 * sf), 0);
+      add("Cosmetic", "Paint, full exterior", Math.round(2 * sf), 0);
+      add("Cosmetic", "Flooring replacement throughout (" + Math.round(sf).toLocaleString("en-US") + " SF)", Math.round(5 * sf), 0);
+      add("Full", "Kitchen, full rehab", 15000, 1);
+      add("Full", "Bathrooms, full rehab (" + full + " full" + (half ? " + " + half + " half" : "") + ")", full * 8000 + half * 3000, 1);
+      add("Heavy", "Replacement windows (est. " + Math.max(8, Math.round(sf / 120)) + ")", Math.max(8, Math.round(sf / 120)) * 650, 2);
+      var rm = String(v("daRemarks") || "");
+      var km = rm.match(/handyman|fixer|tlc|investor special|needs (work|repairs|updating|tlc)|as[- ]is|cash only|bring your contractor|tear ?down|fire damage|foundation (issue|repair)|distressed/i);
+      kw = km ? km[0] : null;
+      var cs = v("daCond") || "auto";
+      lvPick = cs === "cosmetic" ? 0 : cs === "heavy" ? 2 : cs === "full" ? 1 : (kw ? 2 : 1);
+      it.push(["Level used", LV[lvPick], lvTot[lvPick]])
     }
-    var sub = it.reduce(function(a, x) {
-        return a + x[2]
-      }, 0),
-      af = ph ? 0 : age >= 45 ? .15 : age >= 25 ? .10 : .05,
-      adj = Math.round(sub * af),
-      tot = sub + adj;
-    if (!ph) it.push(["Age factor", "Built " + (yb || "unknown") + " (" + Math.round(af * 100) + "% of items above)", adj]);
+    var tot = ph ? it[0][2] : lvTot[lvPick];
     var bR = num(d.repairBudget),
       useB = ck("daUseBor") && bR > 0,
       used = useB ? bR : tot;
     d.repairBudget = String(used);
     var sec = doc.createElement("div");
     sec.className = "sec";
-    sec.innerHTML = '<h2>' + (ph ? 'Repair Estimate (From Borrower Photos)' : 'Estimated Repairs (Level 1 Condition)') + '</h2><p class="muted">' + (ph ? 'ACP reviewed the interior and exterior photos provided and priced the work at third-party contractor rates.' : 'No photos provided. Estimate is based on age, size and configuration to bring the property to Level 1 condition. HVAC, roof and foundation are assumed needed unless shown otherwise. The repair budget is finalized once interior and exterior photos are reviewed.') + '</p><table><tr><th>Category</th><th>Item</th><th>Estimate</th></tr>' + (document.getElementById("daLevel").value === "full" ? it.map(function(x) {
+    var isFull = document.getElementById("daLevel").value === "full";
+    var cell = function(x, q) {
+      return x[3] <= q ? usd(x[2]) : "&mdash;"
+    };
+    var noPhotoNote = 'No interior photos were available from the borrower, the listing site or the listing agent. The estimate is based on the home\u2019s age (built ' + (yb || "unknown") + '), size and the curbside street view' + (kw ? ', and the listing remarks (\u201c' + esc(kw) + '\u201d)' : '') + '. Three levels are shown: Cosmetic (full interior and exterior paint and full flooring replacement), Full (Cosmetic plus full kitchen and bathroom rehab) and Heavy (Full plus replacement windows). Every level carries roof, HVAC and foundation unless shown otherwise; roof and HVAC are always replaced on homes 15 years or older. This report uses the <b>' + LV[lvPick] + '</b> level' + (useB ? ' (the borrower\u2019s budget is used)' : '') + '. The budget is finalized once interior and exterior photos are reviewed.';
+    sec.innerHTML = '<h2>' + (ph ? 'Repair Estimate (From Borrower Photos)' : 'Estimated Repairs (No Photos: Cosmetic / Full / Heavy)') + '</h2><p class="muted">' + (ph ? 'ACP reviewed the interior and exterior photos provided and priced the work at third-party contractor rates.' : noPhotoNote) + '</p>' + (ph ? '<table><tr><th>Category</th><th>Item</th><th>Estimate</th></tr>' + (isFull ? it.map(function(x) {
       return "<tr><td>" + x[0] + "</td><td>" + esc(x[1]) + "</td><td>" + usd(x[2]) + "</td></tr>"
-    }).join("") : "<tr><td>Total</td><td>Repair budget used in this report (line items included in the Full Package)</td><td>" + usd(used) + "</td></tr>") + '</table>';
+    }).join("") : "<tr><td>Total</td><td>Repair budget used in this report (line items included in the Full Package)</td><td>" + usd(used) + "</td></tr>") + '</table>' : (isFull ? '<table><tr><th>Category</th><th>Item</th><th>Cosmetic</th><th>Full</th><th>Heavy</th></tr>' + lvRows.map(function(x) {
+      return "<tr><td>" + x[0] + "</td><td>" + esc(x[1]) + "</td><td>" + cell(x, 0) + "</td><td>" + cell(x, 1) + "</td><td>" + cell(x, 2) + "</td></tr>"
+    }).join("") + '<tr><th></th><th>Total</th>' + lvTot.map(function(t, q) {
+      return "<th>" + usd(t) + (q === lvPick ? " (used)" : "") + "</th>"
+    }).join("") + '</tr></table>' : '<table><tr><th>Level</th><th>Estimate</th></tr>' + lvTot.map(function(t, q) {
+      return "<tr><td>" + LV[q] + (q === lvPick ? " (used in this report)" : "") + "</td><td>" + usd(t) + "</td></tr>"
+    }).join("") + '</table><p class="muted">Line items are included in the Full Package.</p>'));
     var snap = null;
     secs(doc).forEach(function(s2) {
       if (/^Property Snapshot/.test(s2.t)) snap = s2.el;
@@ -979,7 +1003,7 @@
       }
       if (kind === "repairs") {
         var ph = /Borrower Photos/.test(el.querySelector("h2").textContent);
-        return "ACP's repair budget is " + usd(x.R) + (ph ? ", priced at third-party contractor rates from the interior and exterior photos provided" : ", estimated from the property's age, size and configuration to bring it to Level 1 condition; HVAC, roof and foundation are assumed needed unless shown otherwise") + ". This is the figure used in every calculation in this report. The line-item estimate is Exhibit " + L + "."
+        return "ACP's repair budget is " + usd(x.R) + (ph ? ", priced at third-party contractor rates from the interior and exterior photos provided" : ", estimated without interior photos from the home's age, size, curbside view and listing remarks at the " + ((el.textContent.match(/uses the (Cosmetic|Full|Heavy) level/) || [, "Full"])[1]) + " level (Cosmetic, Full and Heavy are all shown); roof, HVAC and foundation are carried unless shown otherwise, and roof and HVAC are always replaced on homes 15 years or older") + ". This is the figure used in every calculation in this report. The line-item estimate is Exhibit " + L + "."
       }
       if (kind === "fin") {
         var hd = el.querySelector("tr"), best = hd && hd.children[1] ? hd.children[1].textContent.replace(/^Best fit:\s*/, "").trim() : "";
