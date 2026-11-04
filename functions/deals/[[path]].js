@@ -70,6 +70,16 @@ export async function onRequest(context) {
       clip(b.purchase, 20), clip(b.repairs, 20), clip(b.arv, 20), clip(b.liquidity, 20), html, tok).run();
     return json({ ok: true, id: r.meta && r.meta.last_row_id });
   }
+  // 4 Nov 2026: replace a saved report's HTML (exhibits added after the run: property record, map, Agent Single Line).
+  const um = path.match(/^api\/report\/(\d+)$/);
+  if (um && req.method === "PUT") {
+    let b = {}; try { b = await req.json(); } catch (e) {}
+    const html = String(b.html || "");
+    if (!html || html.length > 1800000) return json({ ok: false, error: "Report missing or too large" }, 400);
+    await env.DB.prepare(RUNS_DDL).run();
+    const r = await env.DB.prepare("UPDATE analyzer_runs SET report_html = ? WHERE id = ? AND kind = 'report'").bind(html, Number(um[1])).run();
+    return json({ ok: !!(r.meta && r.meta.changes) });
+  }
   const rm = path.match(/^api\/report\/(\d+)\/(view|send)$/);
   if (rm) {
     await env.DB.prepare(RUNS_DDL).run();
