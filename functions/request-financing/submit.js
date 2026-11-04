@@ -1,11 +1,15 @@
 // Request for Information submit (30 Oct 2026).
-// Steve: submissions are emailed to him only, never to the client.
+// Steve: the submission details are emailed to him only, never to the client.
+// 4 Nov 2026 (Steve): the borrower now also gets a short receipt (no figures, no analysis)
+// sent through the acp-mailer worker.
 // The forms worker emails a copy to whatever is in client_email, so this function
 // forwards the submission with client_email blank (the client's email rides in the
 // phone line of Steve's alert), then restores the email and phone on the saved D1 row.
+import { sendMail, EMAIL_RE, firstName, SIGN } from "../_lib/mailer.js";
+
 const WORKER = "https://acp-lending-forms.owner-1ab.workers.dev/request-for-information";
 
-export async function onRequestPost({ request, env }) {
+export async function onRequestPost({ request, env, waitUntil }) {
   const form = await request.formData();
   const email = (form.get("client_email") || "").toString().trim();
   const phone = (form.get("client_phone") || "").toString().trim();
@@ -40,6 +44,15 @@ export async function onRequestPost({ request, env }) {
           .bind(email, phone, row.id).run();
       }
     } catch (e) {}
+  }
+
+  if (EMAIL_RE.test(email)) {
+    const p = sendMail(env, {
+      to: email,
+      subject: "We received your financing request - ACP Real Estate Lending",
+      text: `Hi ${firstName(name)},\n\nThanks for reaching out. ACP Real Estate Lending received your request for information, and Steve Waller will review it and follow up with you by phone.\n\nWant to talk sooner? Call or text 936-522-8951.\n\n${SIGN}`,
+    });
+    if (waitUntil) waitUntil(p); else await p;
   }
 
   const html = await res.text();

@@ -42,7 +42,8 @@ follow the request and update this file in the same commit.
     Guidance, ACP Investor Brief, Commercial Credit Application, Case Studies.
   - Financing Products: Fix & Flip Bridge, DSCR Rental, Ground-Up Construction,
     Multifamily, Portfolio, Commercial Real Estate Loans.
-- Request for Information submissions email Steve only — never the client.
+- Request for Information submissions: the details email Steve only. The
+  borrower gets only a short receipt with no figures (Steve, 4 Nov 2026).
 
 ## 4. Content rules
 - No lender names anywhere customer-facing (forms, pages, reports). Use
@@ -66,6 +67,17 @@ follow the request and update this file in the same commit.
   keep both.
 - The Daily Brief (/investor-brief/daily/) is served by the separate
   `acp-brief` worker, not this repo.
+- Site email (4 Nov 2026) goes through the `acp-mailer` worker
+  (`workers/acp-mailer/`, Cloudflare Email Service, built from this repo by
+  Workers Builds). It sends from reports@mail.acp-lending.com with replies to
+  owner@acp-lending.com, and is reachable only through the `MAILER` service
+  binding. Helpers: `functions/_lib/mailer.js`. Transactional mail only —
+  never marketing or cold email from this path.
+- Deal Analyzer emails: borrowers' free summaries are emailed by
+  `functions/analyze-deal/summary-email.js` (alert to Steve; logged in D1
+  `analyzer_runs`). Paid reports Steve runs in owner mode are saved to /deals,
+  where "Mark paid & email to borrower" sends a private link
+  (/analyze-deal/r/<token>) plus an HTML copy.
 - Pages must work at phone width (Steve and his clients use phones).
 
 ## 6. Before you finish

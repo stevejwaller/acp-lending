@@ -7,6 +7,7 @@
 // plus hand-logged deals kept in the repo (functions/_lib/logged-deals.js).
 
 import { LOGGED_DEALS } from "../_lib/logged-deals.js";
+import { sendMail, EMAIL_RE, SIGN, clip, firstName, b64, RUNS_DDL, publicHtml } from "../_lib/mailer.js";
 
 const PASS_HASH = "b029eed3f2094d8bdc6d1ae9b9c6fa2d4a840084fdcc649533c9bc5a34882bc3"; // same as /prospects
 const COOKIE = "acp_dl";
@@ -55,6 +56,52 @@ export async function onRequest(context) {
   if (!(await authed(req))) return json({ ok: false, error: "Sign in" }, 401);
 
   if (path === "app.js") return new Response(APP_JS, { headers: { "Content-Type": "text/javascript; charset=utf-8", ...SEC } });
+  // 4 Nov 2026: paid Deal Analyzer reports saved from owner mode, sent to the borrower with one click.
+  if (path === "api/report" && req.method === "POST") {
+    let b = {}; try { b = await req.json(); } catch (e) {}
+    const html = String(b.html || "");
+    if (!html || html.length > 1800000) return json({ ok: false, error: "Report missing or too large" }, 400);
+    await env.DB.prepare(RUNS_DDL).run();
+    const tok = [...crypto.getRandomValues(new Uint8Array(24))].map(x => x.toString(16).padStart(2, "0")).join("");
+    const r = await env.DB.prepare(
+      `INSERT INTO analyzer_runs (kind, level, borrower_name, borrower_email, borrower_phone, property, purchase, repairs, arv, liquidity, report_html, token, status)
+       VALUES ('report', ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'Report ready')`
+    ).bind(b.level === "full" ? "full" : "deal", clip(b.name, 80), clip(b.email, 120).toLowerCase(), clip(b.phone, 40), clip(b.property, 200),
+      clip(b.purchase, 20), clip(b.repairs, 20), clip(b.arv, 20), clip(b.liquidity, 20), html, tok).run();
+    return json({ ok: true, id: r.meta && r.meta.last_row_id });
+  }
+  const rm = path.match(/^api\/report\/(\d+)\/(view|send)$/);
+  if (rm) {
+    await env.DB.prepare(RUNS_DDL).run();
+    const row = await env.DB.prepare("SELECT * FROM analyzer_runs WHERE id = ? AND kind = 'report'").bind(Number(rm[1])).first();
+    if (!row) return json({ ok: false, error: "Not found" }, 404);
+    if (rm[2] === "view") return new Response(row.report_html, { headers: { "Content-Type": "text/html; charset=utf-8", ...SEC } });
+    if (req.method !== "POST") return json({ ok: false }, 405);
+    let b = {}; try { b = await req.json(); } catch (e) {}
+    const to = clip(b.to || row.borrower_email, 120).toLowerCase();
+    if (!EMAIL_RE.test(to)) return json({ ok: false, error: "No valid borrower email on this report" }, 400);
+    const label = row.level === "full" ? "$149.99 Full Package" : "$49.99 Deal Report";
+    const link = new URL("/analyze-deal/r/" + row.token, req.url).toString();
+    const property = row.property || "your property";
+    const text = `Hi ${firstName(row.borrower_name)},
+
+Thank you for your order. Your ACP ${label} for ${property} is ready:
+${link}
+
+A copy is also attached. It opens in any browser, and Save as PDF keeps a PDF copy.
+
+I'd like to walk you through it by phone. Call or text me at 936-522-8951, or reply with a good time.
+
+Steve Waller
+${SIGN}`;
+    const r = await sendMail(env, {
+      to, subject: `Your ACP ${label} - ${property}`, text,
+      attachments: [{ content: b64(publicHtml(row.report_html)), filename: "ACP Deal Report - " + property.replace(/[^\w ,.-]+/g, "").slice(0, 80) + ".html", type: "text/html", disposition: "attachment" }],
+    });
+    if (!r || !r.ok) return json({ ok: false, error: (r && r.error) || "Send failed" }, 502);
+    await env.DB.prepare("UPDATE analyzer_runs SET status = 'Report sent', borrower_email = ?, sent_at = datetime('now') WHERE id = ?").bind(to, row.id).run();
+    return json({ ok: true, to });
+  }
   if (path === "api/list") {
     const rfi = await env.DB.prepare(
       `SELECT 'Request for Information' AS source, id, created_at, COALESCE(deal_status,'Active') AS status, client_full_name AS borrower, client_email AS email, client_phone AS phone,
@@ -70,7 +117,18 @@ export async function onRequest(context) {
         estimated_arv AS arv, credit_score_range AS credit, liquidity, closing_timeframe AS closing,
         '' AS exit_strategy, additional_notes AS summary, '' AS signature
        FROM preapproval_submissions ORDER BY id`).all();
-    return json({ ok: true, rows: [...(rfi.results || []), ...(pre.results || []), ...LOGGED_DEALS] });
+    let rep = { results: [] };
+    try {
+      await env.DB.prepare(RUNS_DDL).run();
+      rep = await env.DB.prepare(
+        `SELECT 'Deal Report' AS source, id, created_at, status, borrower_name AS borrower, borrower_email AS email, borrower_phone AS phone,
+          '' AS entity, property, '' AS property_type, CASE level WHEN 'full' THEN '$149.99 Full Package' ELSE '$49.99 Deal Report' END AS product,
+          '' AS owned, '' AS financing, purchase, repairs, arv, '' AS credit, liquidity, '' AS closing, '' AS exit_strategy,
+          CASE WHEN sent_at IS NOT NULL THEN 'Report emailed ' || sent_at || ' UTC' ELSE 'Paid report saved from the analyzer, not sent yet' END AS summary,
+          '' AS signature, 'report' AS kind
+         FROM analyzer_runs WHERE kind = 'report' ORDER BY id`).all();
+    } catch (e) {}
+    return json({ ok: true, rows: [...(rfi.results || []), ...(pre.results || []), ...(rep.results || []), ...LOGGED_DEALS] });
   }
   return json({ ok: false, error: "Not found" }, 404);
 }
@@ -114,7 +172,7 @@ function pageHtml() {
   return HEAD + HEADER + `<main class="dl-wrap">
 <div class="dl-bar"><h1 style="font-size:24px;margin:0 12px 0 0">Deals</h1>
 <input type="search" id="q" placeholder="Search borrower, property, entity, product">
-<select id="fsrc"><option value="">All sources</option><option>Request for Information</option><option>Pre-Approval</option></select>
+<select id="fsrc"><option value="">All sources</option><option>Request for Information</option><option>Pre-Approval</option><option>Deal Report</option></select>
 <select id="fprod"><option value="">All products</option></select>
 <button class="dl-btn alt" id="csvBtn">Export CSV</button>
 <button class="dl-btn alt" id="outBtn">Sign out</button></div>
@@ -165,7 +223,9 @@ function render(){
   if(openId===r.key){
    body+='<tr class="detail"><td colspan="'+COLS.length+'"><b>'+esc(r.source)+' #'+esc(r.id)+'</b> · '+cell(r.email)+' · '+cell(r.phone)+
     '<br>Type: '+cell(r.property_type)+' · Owned: '+cell(r.owned)+' · Exit: '+cell(r.exit_strategy)+' · Closing: '+cell(r.closing)+
-    (r.signature?' · Signed: '+esc(r.signature):'')+'<br>'+cell(r.summary)+'</td></tr>';
+    (r.signature?' · Signed: '+esc(r.signature):'')+'<br>'+cell(r.summary)+
+    (r.kind==='report'?'<div style="margin-top:8px;display:flex;gap:8px;flex-wrap:wrap;align-items:center"><a class="dl-btn alt" target="_blank" rel="noopener" href="/deals/api/report/'+esc(r.id)+'/view">Preview report</a>'+
+     '<button class="dl-btn" data-send="'+esc(r.id)+'">'+(r.status==='Report sent'?'Send again':'Mark paid &amp; email to borrower')+'</button><span class="dl-msg" style="font-size:13px"></span></div>':'')+'</td></tr>';
   }
  });
  $('tbl').querySelector('tbody').innerHTML=body||'<tr><td colspan="'+COLS.length+'">No deals match.</td></tr>';
@@ -196,6 +256,14 @@ fetch('/deals/api/list').then(function(r){return r.json()}).then(function(d){
 });
 ['q','fsrc','fprod'].forEach(function(id){$(id).addEventListener('input',render)});
 $('tbl').addEventListener('click',function(e){
+ var sb=e.target.closest('[data-send]');
+ if(sb){e.stopPropagation();var id=sb.getAttribute('data-send'),msg=sb.parentNode.querySelector('.dl-msg');
+  var r0=rows.filter(function(x){return x.kind==='report'&&String(x.id)===id})[0]||{};
+  if(sb.getAttribute('data-armed')!=='1'){sb.setAttribute('data-armed','1');sb.textContent='Confirm: email to '+(r0.email||'borrower');return}
+  sb.disabled=true;msg.textContent='Sending…';
+  fetch('/deals/api/report/'+id+'/send',{method:'POST',headers:{'Content-Type':'application/json'},body:'{}'}).then(function(x){return x.json()}).then(function(j){
+   if(j.ok){r0.status='Report sent';r0.summary='Report emailed just now to '+j.to;render()}else{sb.disabled=false;sb.removeAttribute('data-armed');sb.textContent='Mark paid & email to borrower';msg.textContent=j.error||'Send failed'}
+  }).catch(function(){sb.disabled=false;msg.textContent='Send failed'});return}
  var th=e.target.closest('th');if(th){var k=th.getAttribute('data-k');if(sortKey===k)sortDir=-sortDir;else{sortKey=k;sortDir=1}render();return}
  var tr=e.target.closest('tr.row');if(tr){var k2=tr.getAttribute('data-key');openId=openId===k2?null:k2;render()}
 });

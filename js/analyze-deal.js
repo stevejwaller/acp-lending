@@ -121,6 +121,7 @@
       raw = injectComps(raw);
       if (!OWNER) {
         res.innerHTML = basic(raw, d);
+        mailSummary(d);
         ld.style.display = "none";
         f.style.display = "block";
         res.scrollIntoView({
@@ -135,6 +136,7 @@
       var html = addBar(dropArv(tiers(lvl === "full" ? profit(offer(financing(raw, Object.assign({}, d, {
         __full: true
       })), d), d) : financing(summary(raw), d), lvl, d)), d.borrowerEmail);
+      saveReport(d, lvl, html);
       var w = window.open("", "_blank");
       if (w) {
         w.document.write(html);
@@ -173,7 +175,8 @@
   }
 
   var CM = null,
-    CMERR = "";
+    CMERR = "",
+    LAST = null;
   function cmMonths() {
     return CM ? CM.months : 12
   }
@@ -263,6 +266,7 @@
     ].filter(function(x) {
       return x[1] && x[1] !== "-"
     });
+    LAST = { rows: rows, addr: addr };
     var pay = ["PayPal: owner@acp-lending.com", "Zelle: 936-522-8951", "Card: call or text 936-522-8951 for a secure Chase payment link"];
     var credit = "Full credit: the report fee is credited back in full at closing if your loan closes with ACP.";
     var photos = "Photos required: interior and exterior photos of the property must be provided, either your own or from the listing site or a prior MLS listing.";
@@ -1201,6 +1205,44 @@
       if (/^ARV Analysis/.test(s.t)) s.el.parentNode.removeChild(s.el)
     });
     return "<!doctype html>" + doc.documentElement.outerHTML
+  }
+
+  // 4 Nov 2026: email the free summary to the borrower (and alert Steve) through the site mailer.
+  function mailSummary(d) {
+    if (!LAST) return;
+    fetch("/analyze-deal/summary-email", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        name: d.borrowerName, email: d.borrowerEmail, phone: d.borrowerPhone, property: LAST.addr, rows: LAST.rows,
+        purchase: d.purchasePrice, repairs: d.repairBudget, arv: d.arvEstimate, liquidity: d.borrowerLiquidity
+      })
+    }).then(function(r) { return r.json() }).then(function(j) {
+      if (j && j.emailed && j.to) {
+        var p = document.createElement("p");
+        p.style.cssText = "margin:0 24px 12px;font-size:14px;color:#1a7f37";
+        p.textContent = "A copy of this summary was emailed to " + j.to + ".";
+        res.appendChild(p)
+      }
+    }).catch(function() {})
+  }
+
+  // 4 Nov 2026: owner mode saves the paid report to /deals, where one click emails it to the borrower.
+  function saveReport(d, lvl, html) {
+    fetch("/deals/api/report", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      credentials: "same-origin",
+      body: JSON.stringify({
+        level: lvl, html: html, name: d.borrowerName, email: d.borrowerEmail, phone: d.borrowerPhone,
+        property: [d.propertyAddress, d.city, d.state, d.zip].filter(Boolean).join(", "),
+        purchase: d.purchasePrice, repairs: d.repairBudget, arv: d.arvEstimate, liquidity: d.borrowerLiquidity
+      })
+    }).then(function(r) { return r.json().then(function(j) { return { s: r.status, j: j } }) }).then(function(x) {
+      er.innerHTML = x.j && x.j.ok
+        ? "<div style='margin:0 24px 12px;font-size:14px;color:#1a7f37'>Report saved to <a href='/deals'>/deals</a> (#" + esc(x.j.id) + "). Send it to the borrower from there.</div>"
+        : "<div class='da-err'>Report not saved to /deals" + (x.s === 401 ? ": sign in at <a href='/deals'>/deals</a> first, then run it again." : ".") + "</div>"
+    }).catch(function() {})
   }
 
   function addBar(html, to) {
