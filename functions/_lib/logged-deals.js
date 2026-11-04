@@ -57,7 +57,7 @@ export const LOGGED_DEALS = [
       "Braewood Glen Sec 4; 2-story, 1978, 3BR/2.5BA, 2,022 SF. Occupied. Asking $135,000. " +
       "ARV $250,000 (ACP memo 3 Nov 2026, 54 size-matched subdivision closed sales, HARMLS). " +
       "Repair estimate $137,500 (range $80,750-$209,500) from 36 photos - hoarder clear-out, collapsed upstairs ceiling / likely roof leak, popcorn ceilings, chimney chase. " +
-      "ACP offer $50,000, walk-away $67,750 if roof/HVAC/plumbing verified; at asking the flip loses ~$64,800; rental DSCR 1.02.",
+      "ACP offer $50,000, walk-away $67,750 if roof/HVAC/plumbing verified; at asking the flip loses ~$68,000; rental DSCR 1.02.",
     signature: "",
   },
   {
@@ -84,7 +84,7 @@ export const LOGGED_DEALS = [
     summary:
       "Southlake (77077); 1-story brick, 1970, 4BR/2BA, 1,790 SF, detached garage. Occupied, livable. Submitted price $235,000 (borrower's prelim term sheet shows $229,000 at $375,000 ARV). " +
       "ACP ARV $350,000 (ACP memo 3 Nov 2026, 26 subdivision closed sales, HARMLS). Repairs $59,000 (range $33,500-$108,500), mainly kitchen. " +
-      "ACP offer $203,500, walk-away $220,000; flip roughly breakeven at $235,000; rental DSCR 0.90.",
+      "ACP offer $203,500, walk-away $220,000; flip loses ~$6,400 at $235,000; rental DSCR 0.90.",
     signature: "",
   },
 ];
