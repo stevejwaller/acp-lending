@@ -4,6 +4,9 @@
     er = document.getElementById("err");
   var PASS = "b029eed3f2094d8bdc6d1ae9b9c6fa2d4a840084fdcc649533c9bc5a34882bc3";
   var OWNER = false;
+  // 4 Nov 2026 (Steve): manual comps mode - no PropertyReach API calls until real business is coming in.
+  // ARV is entered from the MLS subdivision comp set; set to false to turn the API pull back on.
+  var MANUAL_COMPS = true;
   try {
     OWNER = localStorage.getItem("acpOwner") === "1"
   } catch (e) {}
@@ -80,7 +83,7 @@
       // Subdivision comps, widened in time until 20 closed sales; ARV = what the comps justify.
       CM = null;
       CMERR = "";
-      try {
+      if (!MANUAL_COMPS) try {
         var cq = await fetch("/analyze-deal/comps", {
           method: "POST",
           headers: {
@@ -192,7 +195,7 @@
           if (b && !num(b.textContent) && ent) b.textContent = usd(ent);
           var p = dd.createElement("p");
           p.className = "muted";
-          p.innerHTML = "<b>Subdivision comps unavailable" + (CMERR ? " (" + esc(CMERR) + ")" : "") + ". " + (ent ? "The ARV shown is the entered estimate and must be confirmed against the MLS comp set." : "No ARV estimate was entered, so the deal math cannot be completed. Enter an ARV estimate or check the address and run again.") + "</b>";
+          p.innerHTML = MANUAL_COMPS ? (ent ? "ARV entered from the MLS subdivision comp set (manual review)." : "<b>No ARV estimate was entered, so the deal math cannot be completed. Enter the ARV from the MLS subdivision comps and run again.</b>") : "<b>Subdivision comps unavailable" + (CMERR ? " (" + esc(CMERR) + ")" : "") + ". " + (ent ? "The ARV shown is the entered estimate and must be confirmed against the MLS comp set." : "No ARV estimate was entered, so the deal math cannot be completed. Enter an ARV estimate or check the address and run again.") + "</b>";
           s.el.appendChild(p)
         }
       });

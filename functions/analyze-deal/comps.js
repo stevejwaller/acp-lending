@@ -7,6 +7,8 @@
 
 const WINDOWS = [12, 18]; // months: 12, widened to 18 if fewer than MIN comps, never farther (Steve, 3 Nov 2026)
 const MIN = 20;
+// 4 Nov 2026 (Steve): manual comps mode - no PropertyReach API calls until real business comes in.
+const MANUAL_COMPS = true;
 
 function j(o, s) { return new Response(JSON.stringify(o), { status: s || 200, headers: { "Content-Type": "application/json" } }); }
 function n(v) { if (v === undefined || v === null || v === "") return null; const x = Number(v); return isNaN(x) ? null : x; }
@@ -50,6 +52,7 @@ function mapComp(p) {
 }
 
 export async function onRequestPost({ request, env }) {
+  if (MANUAL_COMPS) return j({ success: false, error: "manual comps mode - enter ARV from MLS comps" });
   let b; try { b = await request.json(); } catch (e) { return j({ success: false, error: "Invalid request" }, 400); }
   if (!b.address || !b.city || !b.state) return j({ success: false, error: "Missing address" }, 400);
   const key = env.PROPERTYREACH_API_KEY;
