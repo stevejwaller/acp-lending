@@ -32,4 +32,32 @@ export const LOGGED_DEALS = [
       "flooring loss, heavy clean-out. Renovation lift only ~$20-25K over as-is; deal depends on purchase price.",
     signature: "",
   },
+  {
+    source: "Worked deal",
+    id: "L2",
+    created_at: "2026-11-03 18:05:00",
+    status: "Active",
+    borrower: "Pending",
+    email: "Pending",
+    phone: "Pending",
+    entity: "Pending",
+    property: "7606 Miller Glen Ln, Houston, TX 77072",
+    property_type: "Single-family",
+    product: "Bridge / Fix & Flip",
+    owned: "No",
+    financing: "Pending",
+    purchase: "135000",
+    repairs: "137500",
+    arv: "250000",
+    credit: "Pending",
+    liquidity: "Pending",
+    closing: "Pending",
+    exit_strategy: "Flip",
+    summary:
+      "Braewood Glen Sec 4; 2-story, 1978, 3BR/2.5BA, 2,022 SF. Occupied. Asking $135,000. " +
+      "ARV $250,000 (ACP memo 3 Nov 2026, 54 size-matched subdivision closed sales, HARMLS). " +
+      "Repair estimate $137,500 (range $80,750-$209,500) from 36 photos - hoarder clear-out, collapsed upstairs ceiling / likely roof leak, popcorn ceilings, chimney chase. " +
+      "ACP offer $50,000, walk-away $67,750 if roof/HVAC/plumbing verified; at asking the flip loses ~$64,800; rental DSCR 1.02.",
+    signature: "",
+  },
 ];
