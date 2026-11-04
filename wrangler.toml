@@ -14,3 +14,9 @@ database_id = "8e7a5498-22e7-40df-8bb1-c02f454c8d1e"
 [[services]]
 binding = "ACP_COMPS"
 service = "acp-comps"
+
+# Added 4 Nov 2026: site email (RFI receipts, analyzer summaries, paid report sends)
+# through the acp-mailer worker (workers/acp-mailer). See functions/_lib/mailer.js.
+[[services]]
+binding = "MAILER"
+service = "acp-mailer"
