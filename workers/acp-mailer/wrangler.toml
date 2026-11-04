@@ -1,0 +1,13 @@
+# acp-mailer: sends ACP's transactional email through Cloudflare Email Service.
+# Added 4 Nov 2026. Reachable ONLY through the MAILER service binding on the
+# acplending Pages project: no routes, no workers.dev URL, no preview URLs.
+# Sender domain mail.acp-lending.com (onboarded 4 Nov 2026); replies go to owner@acp-lending.com.
+name = "acp-mailer"
+main = "src/index.js"
+compatibility_date = "2026-10-15"
+workers_dev = false
+preview_urls = false
+
+[[send_email]]
+name = "EMAIL"
+allowed_sender_addresses = ["reports@mail.acp-lending.com"]

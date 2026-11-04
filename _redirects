@@ -2,6 +2,9 @@
 /CLAUDE.md / 301
 /claude.md / 301
 
+# Worker source kept in the repo for deploys - not public pages
+/workers/* / 301
+
 # Retired Investor Brief posts -> brief index
 /investor-brief/weekly-recap-week-ahead-august-16-2026 /investor-brief/ 301
 /investor-brief/weekly-recap-week-ahead-august-16-2026.html /investor-brief/ 301
