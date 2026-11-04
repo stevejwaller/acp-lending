@@ -25,7 +25,7 @@
     sb.parentNode.insertBefore(lv, sb);
     var fx = document.createElement("div");
     fx.id = "daFin";
-    fx.innerHTML = '<div class="calc-field-row da-three"><div class="calc-field"><label for="daFico">Credit Score</label><input id="daFico" type="number" placeholder="700"></div><div class="calc-field"><label for="daExp">Deals Closed (36 mo)</label><input id="daExp" type="number" placeholder="3"></div><div class="calc-field"><label for="daTp">Third-Party Closing (% of loan)</label><input id="daTp" type="number" step="0.1" value="2.0"></div></div><div class="calc-field-row"><div class="calc-field"><label for="daLtcP">Approved LTC: % of Purchase</label><input id="daLtcP" type="number" step="1" value="90"></div><div class="calc-field"><label for="daLtcR">Approved LTC: % of Repairs</label><input id="daLtcR" type="number" step="1" value="100"></div></div><div class="calc-field-row"><div class="calc-field"><label for="daOrig">Broker Origination</label><select id="daOrig"><option value="0">0%</option><option value="1">1%</option><option value="2" selected>2%</option></select></div><div class="calc-field"><label for="daBcf">Broker Closing Fee</label><select id="daBcf"><option>500</option><option>750</option><option selected>1000</option></select></div></div><div class="calc-field-row"><div class="calc-field"><label for="daRent">Estimated Monthly Rent</label><span class="da-money"><input id="daRent" type="number" placeholder="blank = 0.8% of ARV"></span></div><div class="calc-field"><label for="daRefi">Rental Refinance Rate (%)</label><input id="daRefi" type="number" step="0.125" value="7.5"></div></div><div class="calc-field"><label><input id="daPhotos" type="checkbox" style="width:auto;display:inline-block;margin:0 6px 0 0;vertical-align:middle"> Interior and exterior photos available</label></div><div class="calc-field"><label for="daAcpRep">ACP Repair Estimate from Photos</label><span class="da-money"><input id="daAcpRep" type="number" placeholder="from the photo repair chart"></span></div><div class="calc-field"><label><input id="daUseBor" type="checkbox" style="width:auto;display:inline-block;margin:0 6px 0 0;vertical-align:middle"> Borrower showed why their repair number is better &mdash; use it</label></div><div class="calc-field-row"><div class="calc-field"><label for="daCond">Estimated Condition (no photos)</label><select id="daCond"><option value="auto" selected>Auto: Heavy if remarks say handyman/fixer, else Full</option><option value="cosmetic">Cosmetic</option><option value="full">Full</option><option value="heavy">Heavy</option></select></div><div class="calc-field"><label for="daRemarks">Listing Remarks (paste, optional)</label><input id="daRemarks" type="text" placeholder="e.g. handyman special, sold as-is"></div></div><div class="calc-field"><label>Shown not needed (from photos or records; roof and HVAC cannot be waived on homes 15+ years old):</label> <label><input id="daNoHvac" type="checkbox" style="width:auto;display:inline-block;margin:0 6px 0 0;vertical-align:middle"> HVAC</label> &nbsp; <label><input id="daNoRoof" type="checkbox" style="width:auto;display:inline-block;margin:0 6px 0 0;vertical-align:middle"> Roof</label> &nbsp; <label><input id="daNoFdn" type="checkbox" style="width:auto;display:inline-block;margin:0 6px 0 0;vertical-align:middle"> Foundation</label></div>';
+    fx.innerHTML = '<div class="calc-field-row da-three"><div class="calc-field"><label for="daFico">Credit Score</label><input id="daFico" type="number" placeholder="700"></div><div class="calc-field"><label for="daExp">Deals Closed (36 mo)</label><input id="daExp" type="number" placeholder="3"></div><div class="calc-field"><label for="daTp">Third-Party: Broker Fee (% of loan)</label><input id="daTp" type="number" step="0.1" value="1.0"></div></div><div class="calc-field-row"><div class="calc-field"><label for="daLtcP">Approved LTC: % of Purchase</label><input id="daLtcP" type="number" step="1" value="90"></div><div class="calc-field"><label for="daLtcR">Approved LTC: % of Repairs</label><input id="daLtcR" type="number" step="1" value="90"></div></div><div class="calc-field-row"><div class="calc-field"><label for="daOrig">Lender Origination</label><select id="daOrig"><option value="2">2%</option><option value="2.5" selected>2.5%</option><option value="3">3%</option></select></div><div class="calc-field"><label for="daBcf">Third-Party Closing Fee</label><select id="daBcf"><option selected>500</option><option>750</option><option>1000</option></select></div></div><div class="calc-field-row"><div class="calc-field"><label for="daRent">Estimated Monthly Rent</label><span class="da-money"><input id="daRent" type="number" placeholder="blank = 0.8% of ARV"></span></div><div class="calc-field"><label for="daRefi">Rental Refinance Rate (%)</label><input id="daRefi" type="number" step="0.125" value="7.5"></div></div><div class="calc-field"><label><input id="daPhotos" type="checkbox" style="width:auto;display:inline-block;margin:0 6px 0 0;vertical-align:middle"> Interior and exterior photos available</label></div><div class="calc-field"><label for="daAcpRep">ACP Repair Estimate from Photos</label><span class="da-money"><input id="daAcpRep" type="number" placeholder="from the photo repair chart"></span></div><div class="calc-field"><label><input id="daUseAcp" type="checkbox" style="width:auto;display:inline-block;margin:0 6px 0 0;vertical-align:middle"> Use ACP&rsquo;s repair estimate instead of the entered repair budget</label></div><div class="calc-field-row"><div class="calc-field"><label for="daCond">Estimated Condition (no photos)</label><select id="daCond"><option value="auto" selected>Auto: Heavy if remarks say handyman/fixer, else Full</option><option value="cosmetic">Cosmetic</option><option value="full">Full</option><option value="heavy">Heavy</option></select></div><div class="calc-field"><label for="daRemarks">Listing Remarks (paste, optional)</label><input id="daRemarks" type="text" placeholder="e.g. handyman special, sold as-is"></div></div><div class="calc-field"><label>Shown not needed (from photos or records; roof and HVAC cannot be waived on homes 15+ years old):</label> <label><input id="daNoHvac" type="checkbox" style="width:auto;display:inline-block;margin:0 6px 0 0;vertical-align:middle"> HVAC</label> &nbsp; <label><input id="daNoRoof" type="checkbox" style="width:auto;display:inline-block;margin:0 6px 0 0;vertical-align:middle"> Roof</label> &nbsp; <label><input id="daNoFdn" type="checkbox" style="width:auto;display:inline-block;margin:0 6px 0 0;vertical-align:middle"> Foundation</label></div>';
     sb.parentNode.insertBefore(fx, sb);
   }
   // A mouse wheel over a focused number field silently changes its value; blur it instead.
@@ -188,6 +188,12 @@
   function injectComps(raw) {
     if (!CM) {
       var dd = new DOMParser().parseFromString(raw, "text/html"),
+        pv = function(id) { var e = document.getElementById(id); return e ? String(e.value || "").trim() : "" },
+        man = { "Beds / Baths": pv("mBeds") || pv("mBaths") ? (pv("mBeds") || "-") + " / " + (pv("mBaths") || "-") : "", "Sq Ft": pv("mSqft") ? Number(num(pv("mSqft"))).toLocaleString("en-US") : "", "Year Built": pv("mYear"), "Subdivision": pv("mSubdiv") };
+      dd.querySelectorAll("table.kv tr").forEach(function(tr) {
+        var c = tr.children, k = c[0] ? c[0].textContent.trim() : "";
+        if (c.length > 1 && man[k]) c[1].textContent = man[k]
+      });
         ent = num(f.querySelector("#arvEstimate") ? f.querySelector("#arvEstimate").value : "");
       secs(dd).forEach(function(s) {
         if (/^ARV Analysis/.test(s.t)) {
@@ -313,7 +319,7 @@
     var e = document.getElementById(id);
     return !!(e && e.checked)
   }
-  var RNOTE = "Repair budget: ACP\u2019s repair figure is used unless the borrower can show why their number is better. The repair number must reflect what a third-party contractor would charge if the lender were forced to finish the project. If the borrower completes the work for less, any unused repair funds are returned when the loan is paid in full.";
+  var RNOTE = "Repair budget: the repair budget entered is used; ACP\u2019s estimate is shown for comparison. The repair number must reflect what a third-party contractor would charge if the lender were forced to finish the project. If the borrower completes the work for less, any unused repair funds are returned when the loan is paid in full.";
 
   function repairs(raw, d) {
     var doc = new DOMParser().parseFromString(raw, "text/html");
@@ -363,7 +369,7 @@
     }
     var tot = ph ? it[0][2] : lvTot[lvPick];
     var bR = num(d.repairBudget),
-      useB = ck("daUseBor") && bR > 0,
+      useB = !ck("daUseAcp") && bR > 0,
       used = useB ? bR : tot;
     d.repairBudget = String(used);
     var sec = doc.createElement("div");
@@ -448,8 +454,8 @@
       Lc = Math.round(x.F.lp * P + x.F.lr * x.R);
     var L = Math.min(La, Lc),
       bind = Lc < La ? "loan-to-cost" : "75% of ARV";
-    var cc = Math.round((.015 + x.F.bo) * L + x.F.bc);
-    var tp = Math.round(x.F.tpp * L);
+    var cc = Math.round((.015 + x.F.bo) * L + 1450 + 350);
+    var tp = Math.round(x.F.tpp * L + x.F.bc);
     var gap = Math.max(0, Math.round(P + x.R - L));
     var due = gap + cc + tp;
     var liq = Math.round(L * .11 / 2 + x.T.t / 2 + x.R / 3);
@@ -610,7 +616,7 @@
   }
 
   function ltcLabel(x) {
-    return Math.round(x.F.lp * 100) + "% of purchase + " + Math.round(x.F.lr * 100) + "% of repairs"
+    return x.F.lp === x.F.lr ? Math.round(x.F.lp * 100) + "% of cost (purchase + repairs)" : Math.round(x.F.lp * 100) + "% of purchase + " + Math.round(x.F.lr * 100) + "% of repairs"
   }
 
   // Two columns: the ACP recommended purchase price and the purchase price as submitted.
@@ -623,8 +629,8 @@
       ["Loan limited by", A.bind, B.bind],
       ["Repairs", usd(x.R), usd(x.R)],
       ["Purchase + repairs not covered by the loan", usd(A.gap), usd(B.gap)],
-      ["Lender Closing Costs (lender points 1.5% + broker " + Math.round(x.F.bo * 100) + "% + " + usd(x.F.bc) + ")", usd(A.cc), usd(B.cc)],
-      ["Third-Party Closing Costs (estimated at " + (x.F.tpp * 100).toFixed(1) + "% of the loan: title, escrow, appraisal, survey and recording)", usd(A.tp), usd(B.tp)],
+      ["Lender Closing Costs (title 1.5% + origination " + (x.F.bo * 100) + "% + $1,450 closing fee + $350 legal fee)", usd(A.cc), usd(B.cc)],
+      ["Third-Party Closing Costs (broker fee " + (x.F.tpp * 100) + "% + " + usd(x.F.bc) + " closing fee)", usd(A.tp), usd(B.tp)],
       ["<b>Cash Due at Closing</b> (closing costs are paid at closing and cannot be included in the loan)", "<b>" + usd(A.due) + "</b>", "<b>" + usd(B.due) + "</b>"],
       ["&nbsp;", "", ""],
       ["Liquidity to manage the project after closing (6 months of interest and 1/2 of annual taxes + 1/3 of repair costs)", usd(A.liq), usd(B.liq)]
@@ -689,11 +695,11 @@
       return e && e.value !== "" ? num(e.value) : dv
     };
     return {
-      bo: g("daOrig", 2) / 100,
-      bc: g("daBcf", 1000),
-      tpp: g("daTp", 2) / 100,
+      bo: g("daOrig", 2.5) / 100,
+      bc: g("daBcf", 500),
+      tpp: g("daTp", 1) / 100,
       lp: g("daLtcP", 90) / 100,
-      lr: g("daLtcR", 100) / 100
+      lr: g("daLtcR", 90) / 100
     }
   }
 
@@ -811,7 +817,7 @@
     }
     var sec = doc.createElement("div");
     sec.className = "sec";
-    sec.innerHTML = '<h2>Profitability Estimate</h2>' + intro + chart() + concl + neg + '<p class="muted" style="margin-top:8px">The chart uses the repairs in this report (' + usd(x.R) + '), a loan equal to the lower of loan-to-cost (' + ltcLabel(x) + ') and 75% of ARV, lender closing costs and estimated third-party closing costs (' + (x.F.tpp * 100).toFixed(1) + '% of the loan) paid at closing, annual taxes of ' + usd(A.tx) + ', insurance of ' + usd(A.ins) + ' a year and ' + usd(A.util) + ' a month in utilities. Recommendation rule: flip when the sale clears a 10% margin on ARV; rent when the rent supports a refinance at a 1.20 DSCR with positive cash flow and at least a 10% cash-on-cash return on cash left in; when both work, the one with the better return on cash. Not a commitment to lend.</p><p>Phone walkthrough: call or text 936-522-8951 to schedule.</p>';
+    sec.innerHTML = '<h2>Profitability Estimate</h2>' + intro + chart() + concl + neg + '<p class="muted" style="margin-top:8px">The chart uses the repairs in this report (' + usd(x.R) + '), a loan equal to the lower of loan-to-cost (' + ltcLabel(x) + ') and 75% of ARV, lender closing costs and third-party closing costs (broker fee ' + (x.F.tpp * 100) + '% + ' + usd(x.F.bc) + ') paid at closing, annual taxes of ' + usd(A.tx) + ', insurance of ' + usd(A.ins) + ' a year and ' + usd(A.util) + ' a month in utilities. Recommendation rule: flip when the sale clears a 10% margin on ARV; rent when the rent supports a refinance at a 1.20 DSCR with positive cash flow and at least a 10% cash-on-cash return on cash left in; when both work, the one with the better return on cash. Not a commitment to lend.</p><p>Phone walkthrough: call or text 936-522-8951 to schedule.</p>';
     var after = null;
     secs(doc).forEach(function(s2) {
       if (/^ACP Recommended Offer/.test(s2.t)) after = s2.el
@@ -972,8 +978,8 @@
         return
       }
       var lc = Math.round((p.lfee ? p.lfee(L) : p.pts * L) + p.fixed),
-        bf = Math.round(bo * L + bc),
-        tp = Math.round(tpp * L),
+        bf = 0,
+        tp = Math.round(tpp * L + bc),
         eq = P + R - L,
         rs = L * .11 / 2 + T.t / 2,
         cash = eq + lc + bf + tp + rs;
@@ -1024,10 +1030,10 @@
           ["Purchase + repairs not covered by loan", function(o) {
             return usd(Math.max(0, o.eq))
           }],
-          ["Lender Closing Costs (lender + broker)", function(o) {
+          ["Lender Closing Costs", function(o) {
             return usd(o.lc + o.bf)
           }],
-          ["Third-Party Closing Costs (estimated at " + (tpp * 100).toFixed(1) + "% of the loan)", function(o) {
+          ["Third-Party Closing Costs (broker fee " + (tpp * 100) + "% + " + usd(bc) + " closing fee)", function(o) {
             return usd(o.tp)
           }],
           ["<b>Cash Due at Closing</b>", function(o) {
@@ -1076,7 +1082,7 @@
     });
     var desc = [bb[0] ? bb[0] + "-bedroom" : "", bb[1] ? bb[1] + "-bath" : "", kv["Sq Ft"] ? Number(num(kv["Sq Ft"])).toLocaleString("en-US") + " SF" : "", "home", kv["Year Built"] ? "built in " + kv["Year Built"] : "", kv["Subdivision"] ? "in " + kv["Subdivision"] : ""].filter(Boolean).join(" ").replace("-bath ", "-bath, ");
     var D0 = deal(x, lvl === "full" ? recPrice(x) : x.P);
-    var para = "ACP Real Estate Lending has reviewed " + esc(x.addr) + ", a " + desc + "." + (x.arv ? " Based on " + (x.n ? x.n + " closed comparable sales" : "comparable sales") + ", ACP estimates an after-repair value of " + usd(x.arv) + (x.R ? " with repairs of " + usd(x.R) : "") + ". ACP is prepared to provide an estimated loan of " + usd(D0.L) + ", the lower of the approved loan-to-cost (" + ltcLabel(x) + ") and 75% of the after-repair value, toward the purchase and repairs, subject to final credit approval." : "") + " Lender and third-party closing costs are paid at closing and cannot be included in the loan. The property details follow, and the financing figures are laid out in the sections below.";
+    var para = "ACP Real Estate Lending has reviewed " + esc(x.addr) + ", a " + desc + "." + (x.arv ? " Based on " + (x.n ? x.n + " closed comparable sales" : MANUAL_COMPS ? "the MLS closed sales in the subject\u2019s subdivision" : "comparable sales") + ", ACP estimates an after-repair value of " + usd(x.arv) + (x.R ? " with repairs of " + usd(x.R) : "") + ". ACP is prepared to provide an estimated loan of " + usd(D0.L) + ", the lower of the approved loan-to-cost (" + ltcLabel(x) + ") and 75% of the after-repair value, toward the purchase and repairs, subject to final credit approval." : "") + " Lender and third-party closing costs are paid at closing and cannot be included in the loan. The property details follow, and the financing figures are laid out in the sections below.";
     var ps = doc.createElement("div");
     ps.className = "sec";
     ps.innerHTML = "<h2>Summary</h2><p>" + para + "</p>";
