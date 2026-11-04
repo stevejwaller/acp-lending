@@ -378,15 +378,15 @@
     var cell = function(x, q) {
       return x[3] <= q ? usd(x[2]) : "&mdash;"
     };
-    var noPhotoNote = 'No interior photos were available from the borrower, the listing site or the listing agent. The estimate is based on the home\u2019s age (built ' + (yb || "unknown") + '), size and the curbside street view' + (kw ? ', and the listing remarks (\u201c' + esc(kw) + '\u201d)' : '') + '. Three levels are shown: Cosmetic (full interior and exterior paint and full flooring replacement), Full (Cosmetic plus full kitchen and bathroom rehab) and Heavy (Full plus replacement windows). Every level carries roof, HVAC and foundation unless shown otherwise; roof and HVAC are always replaced on homes 15 years or older. This report uses the <b>' + LV[lvPick] + '</b> level' + (useB ? ' (the borrower\u2019s budget is used)' : '') + '. The budget is finalized once interior and exterior photos are reviewed.';
+    var noPhotoNote = 'No interior photos were available from the borrower, the listing site or the listing agent. The estimate is based on the home\u2019s age (built ' + (yb || "unknown") + '), size and the curbside street view' + (kw ? ', and the listing remarks (\u201c' + esc(kw) + '\u201d)' : '') + '. Three levels are shown: Cosmetic (full interior and exterior paint and full flooring replacement), Full (Cosmetic plus full kitchen and bathroom rehab) and Heavy (Full plus replacement windows). Every level carries roof, HVAC and foundation unless shown otherwise; roof and HVAC are always replaced on homes 15 years or older. ' + (useB ? 'This report uses the borrower\u2019s repair budget of <b>' + usd(bR) + '</b>; ACP\u2019s three levels are shown for comparison.' : 'This report uses the <b>' + LV[lvPick] + '</b> level.') + ' The budget is finalized once interior and exterior photos are reviewed.';
     sec.innerHTML = '<h2>' + (ph ? 'Repair Estimate (From Borrower Photos)' : 'Estimated Repairs (No Photos: Cosmetic / Full / Heavy)') + '</h2><p class="muted">' + (ph ? 'ACP reviewed the interior and exterior photos provided and priced the work at third-party contractor rates.' : noPhotoNote) + '</p>' + (ph ? '<table><tr><th>Category</th><th>Item</th><th>Estimate</th></tr>' + (isFull ? it.map(function(x) {
       return "<tr><td>" + x[0] + "</td><td>" + esc(x[1]) + "</td><td>" + usd(x[2]) + "</td></tr>"
     }).join("") : "<tr><td>Total</td><td>Repair budget used in this report (line items included in the Full Package)</td><td>" + usd(used) + "</td></tr>") + '</table>' : (isFull ? '<table><tr><th>Category</th><th>Item</th><th>Cosmetic</th><th>Full</th><th>Heavy</th></tr>' + lvRows.map(function(x) {
       return "<tr><td>" + x[0] + "</td><td>" + esc(x[1]) + "</td><td>" + cell(x, 0) + "</td><td>" + cell(x, 1) + "</td><td>" + cell(x, 2) + "</td></tr>"
     }).join("") + '<tr><th></th><th>Total</th>' + lvTot.map(function(t, q) {
-      return "<th>" + usd(t) + (q === lvPick ? " (used)" : "") + "</th>"
+      return "<th>" + usd(t) + (q === lvPick && !useB ? " (used)" : "") + "</th>"
     }).join("") + '</tr></table>' : '<table><tr><th>Level</th><th>Estimate</th></tr>' + lvTot.map(function(t, q) {
-      return "<tr><td>" + LV[q] + (q === lvPick ? " (used in this report)" : "") + "</td><td>" + usd(t) + "</td></tr>"
+      return "<tr><td>" + LV[q] + (q === lvPick && !useB ? " (used in this report)" : "") + "</td><td>" + usd(t) + "</td></tr>"
     }).join("") + '</table><p class="muted">Line items are included in the Full Package.</p>'));
     var snap = null;
     secs(doc).forEach(function(s2) {
@@ -616,7 +616,7 @@
   }
 
   function ltcLabel(x) {
-    return x.F.lp === x.F.lr ? Math.round(x.F.lp * 100) + "% of cost (purchase + repairs)" : Math.round(x.F.lp * 100) + "% of purchase + " + Math.round(x.F.lr * 100) + "% of repairs"
+    return x.F.lp === x.F.lr ? Math.round(x.F.lp * 100) + "% of purchase + repairs" : Math.round(x.F.lp * 100) + "% of purchase + " + Math.round(x.F.lr * 100) + "% of repairs"
   }
 
   // Two columns: the ACP recommended purchase price and the purchase price as submitted.
@@ -1080,7 +1080,7 @@
     var bb = (kv["Beds / Baths"] || "").split("/").map(function(z) {
       return z.trim()
     });
-    var desc = [bb[0] ? bb[0] + "-bedroom" : "", bb[1] ? bb[1] + "-bath" : "", kv["Sq Ft"] ? Number(num(kv["Sq Ft"])).toLocaleString("en-US") + " SF" : "", "home", kv["Year Built"] ? "built in " + kv["Year Built"] : "", kv["Subdivision"] ? "in " + kv["Subdivision"] : ""].filter(Boolean).join(" ").replace("-bath ", "-bath, ");
+    var desc = [bb[0] ? bb[0] + "-bedroom" : "", bb[1] ? bb[1] + "-bath" : "", kv["Sq Ft"] ? Number(num(kv["Sq Ft"])).toLocaleString("en-US") + " SF" : "", "home", kv["Year Built"] ? "built in " + kv["Year Built"] : "", kv["Subdivision"] && kv["Subdivision"] !== "-" ? "in " + kv["Subdivision"] : ""].filter(Boolean).join(" ").replace("-bath ", "-bath, ");
     var D0 = deal(x, lvl === "full" ? recPrice(x) : x.P);
     var para = "ACP Real Estate Lending has reviewed " + esc(x.addr) + ", a " + desc + "." + (x.arv ? " Based on " + (x.n ? x.n + " closed comparable sales" : MANUAL_COMPS ? "the MLS closed sales in the subject\u2019s subdivision" : "comparable sales") + ", ACP estimates an after-repair value of " + usd(x.arv) + (x.R ? " with repairs of " + usd(x.R) : "") + ". ACP is prepared to provide an estimated loan of " + usd(D0.L) + ", the lower of the approved loan-to-cost (" + ltcLabel(x) + ") and 75% of the after-repair value, toward the purchase and repairs, subject to final credit approval." : "") + " Lender and third-party closing costs are paid at closing and cannot be included in the loan. The property details follow, and the financing figures are laid out in the sections below.";
     var ps = doc.createElement("div");
