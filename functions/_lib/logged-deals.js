@@ -47,7 +47,7 @@ export const LOGGED_DEALS = [
     owned: "No",
     financing: "Pending",
     purchase: "135000",
-    repairs: "137500",
+    repairs: "132500",
     arv: "250000",
     credit: "Pending",
     liquidity: "Pending",
@@ -56,8 +56,8 @@ export const LOGGED_DEALS = [
     summary:
       "Braewood Glen Sec 4; 2-story, 1978, 3BR/2.5BA, 2,022 SF. Occupied. Asking $135,000. " +
       "ARV $250,000 (ACP memo 3 Nov 2026, 54 size-matched subdivision closed sales, HARMLS). " +
-      "Repair estimate $137,500 (range $80,750-$209,500) from 36 photos - hoarder clear-out, collapsed upstairs ceiling / likely roof leak, popcorn ceilings, chimney chase. " +
-      "ACP offer $50,000, walk-away $67,750 if roof/HVAC/plumbing verified; at asking the flip loses ~$68,000; rental DSCR 1.02.",
+      "Repair estimate $132,500 (range $71,500-$217,500) from all 36 photos, re-reviewed 3 Nov - hoarder clear-out, collapsed upstairs ceiling / likely roof leak, popcorn ceilings, chimney chase. " +
+      "ACP offer $55,000, walk-away $76,000 if roof/HVAC/plumbing verified; at asking the flip loses ~$63,000; rental DSCR 1.02.",
     signature: "",
   },
   {
