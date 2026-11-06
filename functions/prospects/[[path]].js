@@ -4,6 +4,10 @@
 //   /prospects/app.js     -> page script (served here so it sits behind the same gate)
 //   /prospects/api/...    -> JSON API (list, add, update, remove, import, PropertyReach contact lookup)
 // Bindings: env.DB (D1 acp-lending-forms, via wrangler.toml), env.PROPERTYREACH_API_KEY (Pages secret).
+// 6 Nov 2026 (Steve): contact lookups moved to Propelio (no API) - PropertyReach is being cancelled.
+// The site never calls PropertyReach while this is false, whether or not the key is still set.
+const PROPERTYREACH_LOOKUPS = false;
+const PROPELIO_SEARCH = "https://genesis.propelio.com/search";
 
 const PASS_HASH = "b029eed3f2094d8bdc6d1ae9b9c6fa2d4a840084fdcc649533c9bc5a34882bc3"; // sha256(sha256("acp-prospects:"+password))
 const COOKIE = "acp_px";
@@ -81,7 +85,7 @@ export async function onRequest(context) {
     switch (path) {
       case "api/status": {
         const c = await env.DB.prepare("SELECT COUNT(*) n, SUM(CASE WHEN traced_at IS NOT NULL THEN 1 ELSE 0 END) traced, SUM(credits_used) credits FROM prospects").first();
-        return json(req, { ok: true, lookupReady: !!env.PROPERTYREACH_API_KEY, count: c.n, traced: c.traced || 0, credits: c.credits || 0, statuses: STATUSES });
+        return json(req, { ok: true, lookupReady: PROPERTYREACH_LOOKUPS && !!env.PROPERTYREACH_API_KEY, count: c.n, traced: c.traced || 0, credits: c.credits || 0, statuses: STATUSES });
       }
       case "api/list": {
         const r = await env.DB.prepare("SELECT * FROM prospects ORDER BY CASE WHEN soon IS NULL OR soon='' THEN 1 ELSE 0 END, soon, total DESC").all();
@@ -177,6 +181,7 @@ function normPhone(p) {
 function normEmail(e) { return typeof e === "string" ? e : s(pick(e, ["email", "address", "value", "emailAddress"])); }
 
 async function lookup(env, b) {
+  if (!PROPERTYREACH_LOOKUPS) return { ok: false, error: "Contact lookups run in Propelio now - open the property there, use the Skiptrace tab, then paste the phone and email here and click Save." };
   if (!env.PROPERTYREACH_API_KEY) return { ok: false, error: "PropertyReach key not added to the site yet" };
   const row = await env.DB.prepare("SELECT * FROM prospects WHERE id=?").bind(s(b.id)).first();
   if (!row) return { ok: false, error: "Prospect not found" };
@@ -293,7 +298,7 @@ var r=await fetch('/prospects/api/login',{method:'POST',headers:{'Content-Type':
 if(r.ok)location.reload();else document.getElementById('le').textContent='Wrong password';});`;
 
 const APP_JS = String.raw`(function(){
-var rows=[],statuses=[],lookupReady=false,open={};
+var rows=[],statuses=[],lookupReady=false,open={},PROPELIO='https://genesis.propelio.com/search';
 var $=function(id){return document.getElementById(id)};
 function esc(v){return String(v==null?'':v).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
 function money(n){n=Number(n)||0;return n?'$'+n.toLocaleString():''}
@@ -307,13 +312,13 @@ function load(){return Promise.all([api('status'),api('list')]).then(function(x)
   var st=x[0],li=x[1];if(!st.ok){$('list').innerHTML='<p>'+esc(st.error)+'</p>';return}
   statuses=st.statuses;lookupReady=st.lookupReady;rows=li.rows||[];
   var fs=$('fs');if(fs.options.length<2)statuses.forEach(function(s){var o=document.createElement('option');o.value=s;o.textContent=s;fs.appendChild(o)});
-  $('note').innerHTML=lookupReady?'':'<div class="px-note">Contact lookups are switched off until the PropertyReach key is added to the site. Everything else works.</div>';
-  $('bulkBtn').disabled=!lookupReady;
+  $('note').innerHTML=lookupReady?'':'<div class="px-note">Contact lookups run in Propelio. Open a prospect, click <b>Copy address</b>, then <b>Open Propelio</b>, paste the address, and use the Skiptrace tab. Paste the phone and email back here and click Save.</div>';
+  $('bulkBtn').style.display=lookupReady?'':'none';
   stats(st);render();})}
 
 function stats(st){var nophone=rows.filter(function(r){return !digits(r.phone)}).length;
   var due=rows.filter(function(r){return r.next_touch&&r.next_touch<=today()}).length;
-  $('stats').innerHTML='<span><b>'+rows.length+'</b> prospects</span><span><b>'+nophone+'</b> without a phone</span><span><b>'+(st.traced||0)+'</b> looked up</span><span><b>'+due+'</b> next touch due</span><span><b>'+(st.credits||0)+'</b> PropertyReach credits used</span>'}
+  $('stats').innerHTML='<span><b>'+rows.length+'</b> prospects</span><span><b>'+nophone+'</b> without a phone</span><span><b>'+(st.traced||0)+'</b> looked up</span><span><b>'+due+'</b> next touch due</span>'+(lookupReady?'<span><b>'+(st.credits||0)+'</b> lookup credits used</span>':'')}
 
 function match(r){var q=$('q').value.toLowerCase().trim(),fs=$('fs').value,fc=$('fc').value;
   if(fs&&r.status!==fs)return false;
@@ -362,8 +367,9 @@ function card(r){var L=loans(r),C=contacts(r),dnc=r.status==='Do not contact';
    '<div><label>Email</label><input data-f="email" value="'+esc(r.email)+'"></div>'+
    '<div style="grid-column:1/-1"><label>My notes</label><textarea data-f="my_notes">'+esc(r.my_notes)+'</textarea></div></div>';
   h+='<div class="px-actions"><button class="px-btn" data-act="save">Save</button>'+
-   '<button class="px-btn gold" data-act="lookup"'+(lookupReady?'':' disabled')+'>'+(r.traced_at?'Look up again':'Find contacts')+' (2 credits)</button>'+
-   (L.length>1?'<button class="px-btn alt" data-act="lookupall"'+(lookupReady?'':' disabled')+'>Look up all '+L.length+' properties ('+(L.length*2)+' credits)</button>':'')+
+   (lookupReady?'<button class="px-btn gold" data-act="lookup">'+(r.traced_at?'Look up again':'Find contacts')+' (2 credits)</button>'+
+   (L.length>1?'<button class="px-btn alt" data-act="lookupall">Look up all '+L.length+' properties ('+(L.length*2)+' credits)</button>':''):
+   (L.length?'<button class="px-btn alt" data-act="copyaddr" data-v="'+esc(L[0].addr)+'">Copy address</button>':'')+'<a class="px-btn gold" target="_blank" rel="noopener" href="'+PROPELIO+'">Open Propelio</a>')+
    '<button class="px-btn alt" data-act="remove">Remove</button><span class="px-sub" data-msg></span></div>';
   if(r.texted||r.emailed||r.called)h+='<p class="px-sub">'+[r.texted?'Texted '+r.texted.slice(0,10):'',r.emailed?'Emailed '+r.emailed.slice(0,10):'',r.called?'Called '+r.called.slice(0,10):''].filter(Boolean).join(' · ')+'</p>';
   return h+'</div></div>'}
@@ -378,6 +384,7 @@ document.addEventListener('click',function(e){var b=e.target.closest('[data-act]
     if(k==='emailed'&&(!r.status||r.status==='New'||r.status==='Texted'))f.status='Emailed';
     api('update',{id:id,fields:f}).then(function(x){if(x.ok){Object.assign(r,f);render()}});return}
   if(act==='toggle'){open[id]=!open[id];cardEl.classList.toggle('open');return}
+  if(act==='copyaddr'){var v=b.dataset.v;(navigator.clipboard?navigator.clipboard.writeText(v):Promise.reject()).then(function(){msg(cardEl,'Address copied')},function(){window.prompt('Copy the address',v)});return}
   if(act==='usephone'||act==='useemail'){cardEl.querySelector('[data-f="'+(act==='usephone'?'phone':'email')+'"]').value=b.dataset.v;msg(cardEl,'Click Save to keep it');return}
   if(act==='save'){var f={};cardEl.querySelectorAll('[data-f]').forEach(function(x){f[x.dataset.f]=x.value});
     if(f.status==='Texted'&&!r.texted)f.texted=new Date().toISOString();

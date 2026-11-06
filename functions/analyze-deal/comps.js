@@ -8,6 +8,7 @@
 const WINDOWS = [12, 18]; // months: 12, widened to 18 if fewer than MIN comps, never farther (Steve, 3 Nov 2026)
 const MIN = 20;
 // 4 Nov 2026 (Steve): manual comps mode - no PropertyReach API calls until real business comes in.
+// 6 Nov 2026 (Steve): comps now come from Propelio (actual HAR sold prices, no API); PropertyReach is being cancelled.
 const MANUAL_COMPS = true;
 
 function j(o, s) { return new Response(JSON.stringify(o), { status: s || 200, headers: { "Content-Type": "application/json" } }); }
@@ -52,7 +53,7 @@ function mapComp(p) {
 }
 
 export async function onRequestPost({ request, env }) {
-  if (MANUAL_COMPS) return j({ success: false, error: "manual comps mode - enter ARV from MLS comps" });
+  if (MANUAL_COMPS) return j({ success: false, error: "manual comps mode - enter ARV from the Propelio subdivision comps" });
   let b; try { b = await request.json(); } catch (e) { return j({ success: false, error: "Invalid request" }, 400); }
   if (!b.address || !b.city || !b.state) return j({ success: false, error: "Missing address" }, 400);
   const key = env.PROPERTYREACH_API_KEY;

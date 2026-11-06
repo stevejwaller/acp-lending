@@ -680,6 +680,19 @@
         if (/^\s*Max Offer/.test(tr.textContent)) tr.remove()
       })
     });
+    // 6 Nov 2026: PropertyReach is being cancelled. If the report service's property-record lookup
+    // fails, show a neutral line instead of an error; the record is added as an exhibit after review.
+    secs(doc).forEach(function(s) {
+      if (/^Property Record/.test(s.t) && /(error|unauthori[sz]ed|forbidden|invalid api|api key|\b40[13]\b|subscription|quota)/i.test(s.el.textContent)) {
+        var h = s.el.querySelector("h2");
+        s.el.innerHTML = "";
+        if (h) s.el.appendChild(h);
+        var p = doc.createElement("p");
+        p.className = "muted";
+        p.textContent = "Property record details are confirmed from public records and added as an exhibit after review.";
+        s.el.appendChild(p)
+      }
+    });
     // No data-vendor names in client reports.
     doc.querySelectorAll("h2,h3,p,td,th,span,div.muted").forEach(function(el) {
       if (el.children.length === 0 && /PropertyReach/i.test(el.textContent)) el.textContent = el.textContent.replace(/\s*\(PropertyReach\)/gi, "").replace(/PropertyReach/gi, "public records")
