@@ -336,6 +336,14 @@
   }
   var dqMatch = /[?&]q=([a-z0-9]{10})(?:&|$)/.exec(window.location.search || '');
   if (dqMatch) {
+    // Quote-view tracking (6 Nov 2026), same as the flip calculator: log that a
+    // shared DSCR quote link was opened. Link-preview bots do not run this script.
+    try {
+      var dqvBody = JSON.stringify({ ref: dqMatch[1], referrer: document.referrer || '' });
+      if (!(navigator.sendBeacon && navigator.sendBeacon('/qv', new Blob([dqvBody], { type: 'application/json' })))) {
+        fetch('/qv', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: dqvBody, keepalive: true })['catch'](function () {});
+      }
+    } catch (e) {}
     fetch('/quote/' + dqMatch[1] + '/data', { headers: { Accept: 'application/json' } })
       .then(function (r) { return r.json(); })
       .then(function (d) {
