@@ -581,6 +581,15 @@ wrap.hidden = false;
 }
 var quoteMatch = /[?&]q=([a-z0-9]{10})(?:&|$)/.exec(window.location.search || '');
 if (quoteMatch) {
+// Quote-view tracking (6 Nov 2026): record that a shared quote link was opened,
+// so Steve can see which prospects looked at the quote he sent. Bots that only
+// fetch link previews do not run this script, so they are not counted.
+try {
+var qvBody = JSON.stringify({ ref: quoteMatch[1], referrer: document.referrer || '' });
+if (!(navigator.sendBeacon && navigator.sendBeacon('/qv', new Blob([qvBody], { type: 'application/json' })))) {
+fetch('/qv', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: qvBody, keepalive: true })['catch'](function () {});
+}
+} catch (e) {}
 fetch('/quote/' + quoteMatch[1] + '/data', { headers: { Accept: 'application/json' } })
 .then(function (r) { return r.json(); })
 .then(function (d) {
