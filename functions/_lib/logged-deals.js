@@ -221,4 +221,32 @@ export const LOGGED_DEALS = [
       "Long-term takeout letter already issued. Lender referral requested 3 Nov.",
     signature: "",
   },
+  {
+    source: "Worked deal",
+    id: "L9",
+    created_at: "2026-11-09 13:30:00",
+    status: "Active",
+    borrower: "Pending",
+    email: "Pending",
+    phone: "Pending",
+    entity: "Pending",
+    property: "185 S Morris St, Dover, NJ 07801",
+    property_type: "Commercial - automotive repair shop (owner-user)",
+    product: "Commercial acquisition (non-SBA requested)",
+    owned: "No",
+    financing: "562500",
+    purchase: "750000",
+    repairs: "Minor cosmetic only",
+    arv: "Pending",
+    credit: "810",
+    liquidity: "150000",
+    closing: "Pending",
+    exit_strategy: "Long-term hold, owner-operated",
+    summary:
+      "Referred for soft terms 9 Nov 2026; not under contract. 75% LTV requested ($562,500), higher if possible. " +
+      "Taxes $12,958/yr, insurance $5,000/yr, shop gross revenue $10,948/mo (expenses Pending). " +
+      "Est. cash to close ~$218K at 75% vs ~$150K liquid now; ~$300K more expected from a condo sale. " +
+      "No documented operating history. Routing: owner-user commercial, stabilized; SBA 504/7(a) would reach 90% if borrower reconsiders SBA.",
+    signature: "",
+  },
 ];
