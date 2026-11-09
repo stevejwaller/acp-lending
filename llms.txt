@@ -78,6 +78,7 @@ Service area: United States, with Texas-specific programs
 
 - [Privacy Policy](https://acp-lending.com/privacy)
 - [Terms of Use](https://acp-lending.com/terms)
+- [Wire Fraud Warning](https://acp-lending.com/wire-fraud): how to verify wire instructions before sending closing funds
 
 ## Terms of use for this information
 
