@@ -222,7 +222,7 @@ export const LOGGED_DEALS = [
     signature: "",
   },
   {
-    source: "Worked deal",
+    source: "Broker referral",
     id: "L9",
     created_at: "2026-11-09 13:30:00",
     status: "Active",
@@ -246,7 +246,10 @@ export const LOGGED_DEALS = [
       "Referred for soft terms 9 Nov 2026; not under contract. 75% LTV requested ($562,500), higher if possible. " +
       "Taxes $12,958/yr, insurance $5,000/yr, shop gross revenue $10,948/mo (expenses Pending). " +
       "Est. cash to close ~$218K at 75% vs ~$150K liquid now; ~$300K more expected from a condo sale. " +
-      "No documented operating history. Routing: owner-user commercial, stabilized; SBA 504/7(a) would reach 90% if borrower reconsiders SBA.",
+      "No documented operating history. Routing: owner-user commercial, stabilized; SBA 504/7(a) would reach 90% if borrower reconsiders SBA. " +
+      "Value risk (public record): last sold 12 Dec 2024 for $320,000; 2025 assessment $371,300; built 1945. Loan sizes off the lower of price or appraisal - " +
+      "if it appraises near $450K, 75% = $337,500 and cash to close at $750K jumps to ~$432K. Working offer $430K (what $150K liquid covers at 75% with 6 mo reserves); ceiling = appraised value. " +
+      "Need seller P&L/returns, real estate vs business allocation, building SF, Phase I.",
     signature: "",
   },
   {
