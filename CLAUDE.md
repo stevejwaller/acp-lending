@@ -79,6 +79,9 @@ follow the request and update this file in the same commit.
   `analyzer_runs`). Paid reports Steve runs in owner mode are saved to /deals,
   where "Mark paid & email to borrower" sends a private link
   (/analyze-deal/r/<token>) plus an HTML copy.
+- Facebook group rotation stamps (9 Nov 2026): D1 `fb_group_rotation` is written
+  only from the committed log `functions/_lib/rotation-log.js`. Append entries,
+  push, then load /rotation/apply once (idempotent; re-runs change nothing).
 - Pages must work at phone width (Steve and his clients use phones).
 
 ## 6. Before you finish
