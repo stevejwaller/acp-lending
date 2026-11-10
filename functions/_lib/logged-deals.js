@@ -249,4 +249,33 @@ export const LOGGED_DEALS = [
       "No documented operating history. Routing: owner-user commercial, stabilized; SBA 504/7(a) would reach 90% if borrower reconsiders SBA.",
     signature: "",
   },
+  {
+    source: "Worked deal",
+    id: "L10",
+    created_at: "2026-11-10 08:45:00",
+    status: "Active",
+    borrower: "Pending",
+    email: "Pending",
+    phone: "Pending",
+    entity: "Pending",
+    property: "3917 W Belle Pl, St. Louis, MO 63108",
+    property_type: "Residential - conversion to 4-unit rental (6,600 SF)",
+    product: "Fix & Hold (rehab bridge, then DSCR refinance)",
+    owned: "No",
+    financing: "382500",
+    purchase: "75000",
+    repairs: "350000",
+    arv: "700000",
+    credit: "750",
+    liquidity: "Pending",
+    closing: "Pending",
+    exit_strategy: "Convert to 4 units, lease up, refinance into long-term DSCR and hold",
+    summary:
+      "Received 10 Nov 2026. Borrower's numbers: purchase $75,000, rehab $350,000 (cost $425,000), ARV $700,000 ($106/SF on 6,600 SF). " +
+      "Baseline sizing: lower of 90% of cost ($382,500) and 75% of ARV ($525,000) = $382,500 (55% loan-to-ARV). " +
+      "Est. closing costs ~$21.4K; est. cash at purchase ~$64K (10% of cost + closing costs); est. liquidity most lenders want ~$200K (incl. 1/3 of rehab). " +
+      "Hurdles: no completed fix & holds of his own (general contractor on client projects); rehab is 4.7x purchase, heavy for a first-time file. " +
+      "Pending: verified liquidity, entity, itemized scope, market rents for the 4 units, ARV comps, timeline.",
+    signature: "",
+  },
 ];
