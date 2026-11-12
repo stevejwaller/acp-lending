@@ -440,4 +440,32 @@ export const LOGGED_DEALS = [
       "ACP review and updated review sent 10 Nov 2026; financing sized conservatively pending credit, experience and liquidity. No lender yet.",
     signature: "",
   },
+  {
+    source: "Worked deal",
+    id: "L17",
+    created_at: "2026-11-07 20:02:00",
+    status: "Active",
+    borrower: "Pending",
+    email: "Pending",
+    phone: "Pending",
+    entity: "Pending",
+    property: "2317 Prince St, Georgetown, SC 29440",
+    property_type: "Assisted living facility (22 beds)",
+    product: "Commercial purchase",
+    owned: "No",
+    financing: "680000",
+    purchase: "850000",
+    repairs: "Pending",
+    arv: "1080000",
+    credit: "590-600",
+    liquidity: "Pending",
+    closing: "Pending",
+    exit_strategy: "Long-term hold, owner-operated",
+    summary:
+      "22-bed licensed ALF, fully occupied; one single-story building, built 2000, ~7,050 SF on 0.48 ac. Purchase $850,000 (signed contract) incl. real estate and operating business; 2026 appraisal $1,080,000. " +
+      "Requested $680,000 first lien (80% of price) + $170,000 seller carry, no cash in. ACP quote 7 and 12 Nov: $637,500 first (75%) + up to $127,500 seller second (90% CLTV); borrower brings ~$85,000 + closing, ~$119,200 total cash to close. " +
+      "Shopped: national investor lender - 75% / 90% CLTV works at 590-600 FICO, in prescreen 12 Nov. Declined 12 Nov: a Texas-only private lender (out of footprint); a private lender (credit plus no real equity); a commercial lender (more than 25 miles from the nearest MSA, low population). Two private lenders, no answer yet. " +
+      "Next: prescreen result; borrower to pick a cash-to-close option and send details on his other facility.",
+    signature: "",
+  },
 ];
