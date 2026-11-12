@@ -492,7 +492,7 @@ export const LOGGED_DEALS = [
     summary:
       "Referred 12 Nov 2026 by a private lender contact. Auction purchase of a closed department-store anchor at a regional mall, currently vacant; $4,300,000 price (unsigned PSA), referrer says comps support higher value. " +
       "Requested 70% LTV = $3,010,000, 12-month bridge, 780 FICO. Only approved fit: a $3MM+ commercial bridge lender (retail, acquisition/lease-up, to 75% LTV) - loan barely clears its $3.0MM minimum. Stabilized-only and residential outlets do not fit (vacant retail). " +
-      "Not yet shopped. Next: get PSA, auction closing date, sponsor experience/liquidity, business plan and capex, then submit.",
+      "Not yet shopped. 12 Nov: ACP told the referrer it is considering - concern that the vacant box and anchor closures at the center may make a firm value hard to support. Next: decide whether to pursue; if so, get PSA, auction closing date, sponsor experience/liquidity, business plan and capex.",
     signature: "",
   },
 ];
