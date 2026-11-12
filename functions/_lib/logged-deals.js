@@ -278,7 +278,12 @@ export const LOGGED_DEALS = [
       "Baseline sizing: lower of 90% of cost ($382,500) and 75% of ARV ($525,000) = $382,500 (55% loan-to-ARV). " +
       "Est. closing costs ~$21.4K; est. cash at purchase ~$64K (10% of cost + closing costs); est. liquidity most lenders want ~$200K (incl. 1/3 of rehab). " +
       "Hurdles: no completed fix & holds of his own (general contractor on client projects); rehab is 4.7x purchase, heavy for a first-time file. " +
-      "Pending: verified liquidity, entity, itemized scope, market rents for the 4 units, ARV comps, timeline.",
+      "Pending: verified liquidity, entity, itemized scope, market rents for the 4 units, ARV comps, timeline. " +
+      "Shopped 10 Nov 2026: a national fix-and-flip / DSCR lender (scenario on its no-experience flip program). Answer 12 Nov: rehab size is the issue - no heavy rehab for a borrower with no completed projects of his own. " +
+      "Paths: document 3+ comparable GC projects (contracts, permits, GC license) for its experienced tier, or add an experienced guarantor; St. Louis carries 680+ FICO and 3+ projects on one program. " +
+      "Leverage if experience qualifies: 85-90% of cost ($361,250-$382,500), capped at 70-75% of ARV; requested $417,500 (~98% of cost) is too high. Borrower brings ~$42,500-$63,750 plus closing; liquidity 6 months of payments + 10% of financed rehab (~$35K). " +
+      "Takeout: same lender's 2-4 unit DSCR refi, no landlord experience, to 75% (~$525K at $700K value), 1.00-1.05x DSCR minimum. " +
+      "Next: collect GC track record, rehab budget/scope and 4-unit zoning confirmation, purchase contract, projected rents per unit, 2 months bank statements, entity docs; reply to lender.",
     signature: "",
   },
   {
