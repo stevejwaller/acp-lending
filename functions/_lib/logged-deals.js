@@ -468,4 +468,31 @@ export const LOGGED_DEALS = [
       "Next: prescreen result; borrower to pick a cash-to-close option and send details on his other facility.",
     signature: "",
   },
+  {
+    source: "Broker referral",
+    id: "L18",
+    created_at: "2026-11-12 15:32:00",
+    status: "Active",
+    borrower: "Pending",
+    email: "Pending",
+    phone: "Pending",
+    entity: "Pending",
+    property: "7700 Old Wake Forest Rd, Raleigh, NC",
+    property_type: "Vacant former department-store anchor (retail, ~83,000 SF)",
+    product: "Commercial bridge (12 months)",
+    owned: "No",
+    financing: "3010000",
+    purchase: "4300000",
+    repairs: "Pending",
+    arv: "Pending",
+    credit: "780",
+    liquidity: "Pending",
+    closing: "Pending",
+    exit_strategy: "Pending",
+    summary:
+      "Referred 12 Nov 2026 by a private lender contact. Auction purchase of a closed department-store anchor at a regional mall, currently vacant; $4,300,000 price (unsigned PSA), referrer says comps support higher value. " +
+      "Requested 70% LTV = $3,010,000, 12-month bridge, 780 FICO. Only approved fit: a $3MM+ commercial bridge lender (retail, acquisition/lease-up, to 75% LTV) - loan barely clears its $3.0MM minimum. Stabilized-only and residential outlets do not fit (vacant retail). " +
+      "Not yet shopped. Next: get PSA, auction closing date, sponsor experience/liquidity, business plan and capex, then submit.",
+    signature: "",
+  },
 ];
