@@ -500,4 +500,33 @@ export const LOGGED_DEALS = [
       "12 Nov: ACP told the referrer it is considering - concern that the vacant box and anchor closures at the center may make a firm value hard to support. Shopped 12 Nov (inquiry only, no package): a $3MM+ commercial bridge lender and a national private commercial bridge lender - awaiting answers. Next: if either will consider it, get PSA, auction closing date, sponsor experience/liquidity, business plan and capex.",
     signature: "",
   },
+  {
+    source: "Broker referral",
+    id: "L19",
+    created_at: "2026-11-12 10:41:00",
+    status: "Active",
+    borrower: "Pending",
+    email: "Pending",
+    phone: "Pending",
+    entity: "Pending",
+    property: "3718 Pleasanton Rd, San Antonio, TX 78221",
+    property_type: "Multifamily - 16 units (possible bar/hospitality component - Pending)",
+    product: "Bridge cash-out refinance with rehab capital",
+    owned: "Yes",
+    financing: "1387500",
+    purchase: "Pending",
+    repairs: "262500",
+    arv: "2140000",
+    credit: "Pending",
+    liquidity: "Pending",
+    closing: "Pending",
+    exit_strategy: "Pending",
+    summary:
+      "Received 12 Nov 2026 from a commercial broker/capital shop. As submitted: 1st lien payoff $1,125,000; rehab $262,500; ARV $2,140,000; ask 65% LTV. Implied loan ~$1,387,500 (payoff + rehab) = 64.8% of ARV. As-is value Pending. " +
+      "Broker also asked whether a liquor license and FF&E can count as collateral - use (pure multifamily vs mixed-use/hospitality) to be confirmed. " +
+      "Routing: no approved outlet fits - $3MM+ commercial bridge minimum too high, stabilized-only lender is a takeout candidate after rehab, residential 5-10 unit programs cap below 16 units. Best fit is a non-program commercial funding source (terms not on file). " +
+      "12 Nov: ACP replied asking for as-is value/appraisal and purchase date/price, rent roll, T-12 and occupancy, rehab scope, sponsor credit/experience/liquidity, current lender and maturity. Not shopped yet. " +
+      "Next: collect those items, confirm property use, then route.",
+    signature: "",
+  },
 ];
