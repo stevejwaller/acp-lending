@@ -112,14 +112,15 @@ export const LOGGED_DEALS = [
       "121 units (66 1BR / 55 2BR), 92,425 SF, Greenspoint. 58.7% occupied 9/30/26 (73.6% in April); 16-unit fire building down. " +
       "T-12 NOI $184,923; stabilized NOI ~$414K at 93% (ACP est.), value ~$4.87M at 8.5% cap. Restoration $884K bid + $170K make-ready. " +
       "Bridge request $3,654,200 (72% LTC); cash to close ~$1.58M at $4.0M. ACP offer ~$2.6M, ceiling ~$3.4M. " +
-      "Scenario sent 3 Nov to three lenders; sponsor asked for a proof-of-funds letter (conditional pre-qual only).",
+      "Scenario sent 3 Nov to three lenders; sponsor asked for a proof-of-funds letter (conditional pre-qual only). " +
+      "13 Nov: a national multifamily lender answered - active on permanent loans in Houston but not lending on value-add projects in the Houston market (declined the bridge).",
     signature: "",
   },
   {
     source: "Worked deal",
     id: "L5",
     created_at: "2026-11-03 15:10:00",
-    status: "Active",
+    status: "Terminated",
     borrower: "Pending",
     email: "Pending",
     phone: "Pending",
@@ -138,7 +139,8 @@ export const LOGGED_DEALS = [
     exit_strategy: "Hold",
     summary:
       "Broker-submitted purchase. 80% ($2,720,000) interest-only bridge requested. Rents ~$12,400/mo with 2 of 8 vacant; market ~$20,000/mo. " +
-      "Lender quote 3 Nov: 75% ($2,550,000), 30-year fixed at 9.79%, DSCR works as-is, 5-yr prepay buy-down to 1 yr; second lien to 90% CLTV possible from another source.",
+      "Lender quote 3 Nov: 75% ($2,550,000), 30-year fixed at 9.79%, DSCR works as-is, 5-yr prepay buy-down to 1 yr; second lien to 90% CLTV possible from another source. " +
+      "13 Nov 2026: broker reported the seller will not carry the $170K second and the borrower will not increase his down payment - file closed (broker will reach out if anything changes).",
     signature: "",
   },
   {
@@ -339,7 +341,11 @@ export const LOGGED_DEALS = [
       "Seven built buildings carry $15,730,492 of debt; three office/flex buildings planned at ~$2M each. Stabilized NOI $1,909,241 = $27.27M at a 7% cap (three appraisals within ~1%); debt 57.7% of value. " +
       "1.25x DSCR on 30-yr supports ~$19.1M at 7%, $17.3M at 8%, $15.8M at 9%. Car wash is 22% of NOI with no appraisal. " +
       "Shopped: a Houston private bridge lender declined 10-11 Nov; a Texas bridge lender declined (size); a national private lender declined (no construction); commercial funding source reviewing. " +
-      "Next: present the refinance of the seven standing buildings separately from the construction.",
+      "13 Nov: a $3MM+ commercial bridge lender sized the file at about $16MM - well short of the ask. At $16MM: ~59% of the 7% cap value, ~11.9% debt yield; " +
+      "$269,508 above current debt before arrears, so the borrower would need roughly $0.5-0.7M plus arrears to cover closing costs. " +
+      "13 Nov: ACP proposed the $16MM on the seven income-producing buildings only (pads excluded from the lien, construction financed separately later) and asked what drives the sizing, " +
+      "whether a subordinate note from the existing lender and partial release prices are allowed, and for indicative terms. " +
+      "Next: lender answer; payoff letter with arrears, bankruptcy status, car wash appraisal or operating statements.",
     signature: "",
   },
   {
@@ -365,7 +371,10 @@ export const LOGGED_DEALS = [
     exit_strategy: "Long-term hold, owner-operated",
     summary:
       "~$340K request incl. ~$250K of business debt to refinance; 10-year operating history in the building; requested leverage ~85%. " +
-      "An investor-only lender declined 11 Nov (owner-user, mixed-use, rural market, credit and leverage). With a non-bank commercial lender's owner-user program (conventional and SBA); borrower documents sent 11 Nov.",
+      "An investor-only lender declined 11 Nov (owner-user, mixed-use, rural market, credit and leverage). With a non-bank commercial lender's owner-user program (conventional and SBA); borrower documents sent 11 Nov. " +
+      "12 Nov conventional terms presented: up to 65% of appraised value (~$260K at $400K est.), 30-yr fixed at 5-yr Treasury + 5.00% (~9.73%), fully amortizing, 5-yr step-down prepay, 1.15x DSCR; SBA not available (business occupies under 51% of the building). " +
+      "13 Nov: the lender will not start until the borrower's IRS back taxes (business and personal) are on an installment agreement with payments current; it cannot fund enough to pay the taxes in full. " +
+      "Next: borrower to set up the IRS payment plan; 2026 YTD balance sheet and mortgage statement still due.",
     signature: "",
   },
   {
@@ -497,7 +506,9 @@ export const LOGGED_DEALS = [
     summary:
       "Referred 12 Nov 2026 by a private lender contact. Auction purchase of a closed department-store anchor at a regional mall, currently vacant; $4,300,000 price (unsigned PSA), referrer says comps support higher value. " +
       "Requested 70% LTV = $3,010,000, 12-month bridge, 780 FICO. Only approved fit: a $3MM+ commercial bridge lender (retail, acquisition/lease-up, to 75% LTV) - loan barely clears its $3.0MM minimum. Stabilized-only and residential outlets do not fit (vacant retail). " +
-      "12 Nov: ACP told the referrer it is considering - concern that the vacant box and anchor closures at the center may make a firm value hard to support. Shopped 12 Nov (inquiry only, no package): a $3MM+ commercial bridge lender and a national private commercial bridge lender - awaiting answers. Next: if either will consider it, get PSA, auction closing date, sponsor experience/liquidity, business plan and capex.",
+      "12 Nov: ACP told the referrer it is considering - concern that the vacant box and anchor closures at the center may make a firm value hard to support. Shopped 12 Nov (inquiry only, no package): a $3MM+ commercial bridge lender and a national private commercial bridge lender. " +
+      "13 Nov answers: the $3MM+ commercial bridge lender declined - loan size too small for its program; the national private commercial lender will consider it at a maximum of 50% LTV on as-is value in present condition and can close quickly. " +
+      "Next: confirm with the referrer whether 50% of as-is works; if so, get PSA, auction closing date, sponsor experience/liquidity, business plan and capex.",
     signature: "",
   },
   {
@@ -526,7 +537,24 @@ export const LOGGED_DEALS = [
       "Broker also asked whether a liquor license and FF&E can count as collateral - use (pure multifamily vs mixed-use/hospitality) to be confirmed. " +
       "Routing: no approved outlet fits - $3MM+ commercial bridge minimum too high, stabilized-only lender is a takeout candidate after rehab, residential 5-10 unit programs cap below 16 units. Best fit is a non-program commercial funding source (terms not on file). " +
       "12 Nov: ACP replied asking for as-is value/appraisal and purchase date/price, rent roll, T-12 and occupancy, rehab scope, sponsor credit/experience/liquidity, current lender and maturity. Not shopped yet. " +
+      "13 Nov: asked a national multifamily lender (no value-add in Houston) whether it will look at a San Antonio value-add file - awaiting answer. " +
       "Next: collect those items, confirm property use, then route.",
     signature: "",
   },
 ];
+
+// Lender-response notes for deals that live as D1 form rows (keyed "<source>-<id>").
+// Appended to that row's summary on /deals. Same public-repo rules: no names, no lender names.
+export const DEAL_UPDATES = {
+  "Request for Information-22": // 215 Bay Colony Cir, La Porte, TX
+    "Lender update 13 Nov 2026 - as submitted: purchase $140,000 (amended contract), rehab $95,000, ARV $380,000 (Oct appraisal; a 2 Nov appraisal came in at $338,000), request ~$221,000; borrower FICO 666 (soft pull). " +
+    "A DSCR/fix-and-flip marketplace lender's note buyer approved an exception: $112,000 initial (80% of purchase) + $95,000 rehab holdback, 9.75%, 6-month interest reserve; at 680 FICO it goes to 85% and may drop the reserve. " +
+    "Underwriter wants proof of rehab work behind the track record; broker fee structure to confirm. " +
+    "A fix-and-flip lender sent updated terms after the appraisal dispute (13 Nov) and is still waiting on its feasibility study before final approval. " +
+    "Seller is pressing to close. Next: borrower decision on the exception terms; feasibility result.",
+  "Request for Information-23": // 2112 & 2116 N Trenton Ave, Tulsa, OK
+    "Lender update 13 Nov 2026: national DSCR lender with the loan in process - appraisal came in at $425,000 (prior appraisal $592,000); reconsideration of value submitted 12 Nov. " +
+    "Backups: a national DSCR lender (7 Nov) caps LTV at 70% with vacant units, quoted three options (two under 1.00 DSCR), 15-day close on a full file - asked 12 Nov about using an existing appraisal; " +
+    "an investor-only DSCR lender issued a 75% LTV / 7.75% term sheet 12 Nov - both appraisals sent 13 Nov; a DSCR marketplace lender is reviewing and asked about the two-lot structure (docs sent 13 Nov); " +
+    "a capital-source referral firm passed 13 Nov (loan size, collateral, closing timeline). Next: ROV result; terms at $425K sent to the referring broker 12 Nov.",
+};

@@ -6,7 +6,7 @@
 // Reads D1 tables rfi_submissions and preapproval_submissions (env.DB via wrangler.toml),
 // plus hand-logged deals kept in the repo (functions/_lib/logged-deals.js).
 
-import { LOGGED_DEALS } from "../_lib/logged-deals.js";
+import { LOGGED_DEALS, DEAL_UPDATES } from "../_lib/logged-deals.js";
 import { sendMail, EMAIL_RE, SIGN, clip, firstName, b64, RUNS_DDL, publicHtml } from "../_lib/mailer.js";
 
 const CONTACTS_DDL = `CREATE TABLE IF NOT EXISTS deal_contacts (deal_key TEXT PRIMARY KEY, sent_by TEXT, sent_by_company TEXT, sent_by_email TEXT,
@@ -165,6 +165,8 @@ ${SIGN}`;
     } catch (e) {}
     const pend = v => !v || /^pending$/i.test(String(v).trim());
     const rows = [...(rfi.results || []), ...(pre.results || []), ...(rep.results || []), ...LOGGED_DEALS.map(d => ({ ...d }))].map(r => {
+      const u = DEAL_UPDATES[r.source + "-" + r.id];
+      if (u) r.summary = (r.summary ? r.summary + " | " : "") + u;
       const c = contacts[r.source + "-" + r.id];
       if (!c) return r;
       r.sent_by = c.sent_by || ""; r.sent_by_company = c.sent_by_company || ""; r.sent_by_email = c.sent_by_email || ""; r.sent_by_phone = c.sent_by_phone || "";
