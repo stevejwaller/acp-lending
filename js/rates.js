@@ -1,49 +1,78 @@
-/* ACP rate and advance check (/rates). Terms below are the best published
-   program terms ACP can typically structure, by credit and experience band.
-   Rates are estimated ranges, not quotes. Edit the tables here to change them. */
+/* ACP rate and advance check (/rates). Reads program terms from js/rates-data.js
+   and shows three options for the visitor's credit and experience:
+   lowest rate, highest advance, lowest lender fees. Starting terms, subject to quote. */
 (function () {
+  var D = window.ACP_RATES;
   var $ = function (id) { return document.getElementById(id); };
+  var money = function (n) { return '$' + Math.round(n).toLocaleString('en-US'); };
+  var SAMPLE_B = { p: 200000, r: 50000, arv: 350000 };
+  var SAMPLE_D = { v: 300000 };
 
-  // Bridge / fix & flip tiers
-  function bridgeTerms(fico, exp) {
-    if (fico < 600) return null;
-    var t;
-    if (fico >= 720 && exp === '10s') {
-      t = { tier: 'Maximum', purchase: '100%', rehab: '100%', arv: '75%', rate: '9.25% to 10.25%', points: '1 to 2',
-        extra: 'Loan amount up to $800,000. You bring closing costs and reserves, not a down payment.' };
-    } else if (fico >= 720 && (exp === '10' || exp === '10s')) {
-      t = { tier: 'Preferred', purchase: 'up to 100%', rehab: '100%', arv: '75%', rate: '9.5% to 10.5%', points: '1 to 2' };
-    } else if (fico >= 700 && exp !== '0' && exp !== '1') {
-      t = { tier: 'Advanced', purchase: 'up to 100%', rehab: '100%', arv: '75%', rate: '9.99% to 11%', points: '1.5 to 2',
-        extra: 'Closing costs are paid at closing. Most lenders want liquidity of about 25% of the rehab budget plus closing costs.' };
-    } else {
-      var rate = fico >= 680 ? '10.5% to 11.5%' : fico >= 640 ? '11% to 12%' : '11.5% to 12.5%';
-      t = { tier: 'Standard', purchase: '90%', rehab: '100%', arv: '70%', rate: rate, points: '1 to 2' };
-    }
-    if (exp === '0') {
-      t.extra = (t.extra ? t.extra + ' ' : '') + 'First flip: most programs fund light to moderate rehab. A heavy rehab (more than the purchase price) needs a track record or an experienced partner on the loan.';
-    }
-    return t;
+  function estRate(type, fico) {
+    if (type === 'bridge') return fico >= 720 ? '9.5% to 10.5%' : fico >= 680 ? '10.5% to 11.5%' : fico >= 640 ? '11% to 12%' : '11.5% to 12.5%';
+    return fico >= 740 ? '6.25% to 7%' : fico >= 720 ? '6.5% to 7.25%' : fico >= 680 ? '7% to 7.75%' : fico >= 640 ? '7.75% to 8.75%' : fico >= 600 ? '8.75% to 9.75%' : '9.5% to 10.5%';
+  }
+  function lenderFees(p, loan) {
+    if (p.points == null && p.fees == null) return null;
+    var orig = p.points != null ? Math.max(loan * p.points / 100, p.feeMin || 0) : 0;
+    return orig + (p.fees || 0);
   }
 
-  // DSCR rental tiers
-  function dscrTerms(fico, exp) {
-    var t = { term: '30-year fixed (5/1 and 7/1 ARM and interest-only options available)', prepay: '5-year declining (5/4/3/2/1), buy-down options available' };
-    if (fico >= 640) {
-      t.purchase = 'up to 80%'; t.refi = 'up to 80%'; t.cashout = 'up to 75%';
-      t.dscr = fico >= 680 ? '1.00x on most programs, as low as 0.80x on some' : 'No minimum DSCR on some programs';
-      t.rate = fico >= 740 ? '6.25% to 7%' : fico >= 720 ? '6.5% to 7.25%' : fico >= 680 ? '7% to 7.75%' : '7.75% to 8.75%';
-    } else {
-      t.purchase = exp === '0' ? 'up to 70%' : 'up to 75%';
-      t.refi = fico >= 600 ? 'up to 65%' : 'up to 60%';
-      t.cashout = t.refi;
-      t.dscr = 'No minimum DSCR. Vacant properties qualify on market rent.';
-      t.rate = fico >= 600 ? '8.75% to 9.75%' : '9.5% to 10.5%';
-    }
-    return t;
+  function bridgeOptions(fico, flipsKey) {
+    var flips = flipsKey === '10s' ? 10 : parseInt(flipsKey, 10);
+    var inState = flipsKey === '10s';
+    var s = SAMPLE_B;
+    return D.bridge.filter(function (p) {
+      return fico >= p.minFico && flips >= p.minFlips && (!p.inState || inState);
+    }).map(function (p) {
+      var arv = p.arvFn ? p.arvFn(fico, flips) : p.arv;
+      var caps = [s.p * p.purchase / 100 + s.r * p.rehab / 100, s.arv * arv / 100, p.maxLoan];
+      if (p.ltc) caps.push((s.p + s.r) * p.ltc / 100);
+      var loan = Math.min.apply(null, caps);
+      return { p: p, arv: arv, loan: loan, fees: lenderFees(p, loan) };
+    });
   }
-
+  function dscrOptions(fico, expKey) {
+    var first = expKey === '0';
+    return D.dscr.filter(function (p) { return fico >= p.minFico; }).map(function (p) {
+      var pur = first && p.purchaseFirst ? p.purchaseFirst : p.purchase;
+      var refi = p.refiFn ? p.refiFn(fico) : p.refi;
+      var cash = p.refiFn ? p.refiFn(fico) : p.cashout;
+      var loan = pur ? SAMPLE_D.v * pur / 100 : null;
+      return { p: p, pur: pur, refi: refi, cash: cash, loan: loan, fees: loan ? lenderFees(p, loan) : null };
+    });
+  }
+  function pick(list, key, dir) {
+    var best = null;
+    list.forEach(function (o) {
+      var v = key(o); if (v == null) return;
+      if (!best || (dir > 0 ? v > best.v : v < best.v)) best = { o: o, v: v };
+    });
+    return best && best.o;
+  }
   function row(k, v) { return '<tr><td>' + k + '</td><td>' + v + '</td></tr>'; }
+  function rateCell(type, o, fico) {
+    if (o.p.rate != null) return 'from ' + o.p.rate.toFixed(2) + '%' + (o.p.points != null ? ', ' + o.p.points + ' points' : '');
+    if (o.p.rateText) return o.p.rateText;
+    return 'est. ' + estRate(type, fico) + ' (quoted on your deal)';
+  }
+  function card(label, type, o, fico) {
+    var p = o.p, h = '<h4 style="margin:18px 0 6px">' + label + ' &mdash; Program ' + p.id + '</h4><table class="snapshot">';
+    if (type === 'bridge') {
+      h += row('Purchase advance', 'up to ' + p.purchase + '% of the purchase price')
+        + row('Rehab advance', p.rehab + '% of the renovation budget')
+        + row('Caps', 'up to ' + o.arv + '% of after-repair value' + (p.ltc ? ' and ' + p.ltc + '% of total cost' : '') + '; loans up to ' + money(p.maxLoan))
+        + row('On the sample deal', money(o.loan) + ' loan');
+    } else {
+      h += row('Purchase', o.pur ? 'up to ' + o.pur + '% of value' : 'quoted on your deal')
+        + row('Refinance / cash-out', (o.refi ? 'up to ' + o.refi + '%' : 'quoted') + ' / ' + (o.cash ? 'up to ' + o.cash + '%' : 'quoted'))
+        + row('Minimum DSCR', p.minDscr);
+    }
+    h += row('Term', p.term) + row('Rate', rateCell(type, o, fico))
+      + row('Lender fees', o.fees != null ? 'about ' + money(o.fees) + ' on the sample loan' : 'quoted on your deal')
+      + (p.note ? row('Note', p.note) : '') + '</table>';
+    return h;
+  }
 
   function render() {
     var type = $('rt-type').value;
@@ -54,40 +83,38 @@
     var exp = type === 'bridge' ? $('rt-exp-bridge').value : $('rt-exp-dscr').value;
     var res = $('rt-result');
     if (!type || ficoV === '' || exp === '') { res.hidden = true; return; }
-    var fico = parseInt(ficoV, 10);
-    var html = '', title = '', note = '', cta = '/request-financing';
+    var fico = parseInt(ficoV, 10), html = '', intro, cta = '/request-financing';
+    var list = type === 'bridge' ? bridgeOptions(fico, exp) : dscrOptions(fico, exp);
     if (type === 'bridge') {
-      var b = bridgeTerms(fico, exp);
       cta += '?product=Bridge%20%2F%20Fix%20%26%20Flip';
-      if (!b) {
-        title = 'Manual review';
-        html = row('Advance', 'Below most bridge program minimums. Send the deal and it will be reviewed by hand, or add a partner with stronger credit as a guarantor.');
-      } else {
-        title = b.tier + ' tier &mdash; Bridge / Fix &amp; Flip';
-        html = row('Purchase advance', b.purchase + ' of the purchase price')
-          + row('Rehab advance', b.rehab + ' of the renovation budget')
-          + row('Cap', 'Up to ' + b.arv + ' of after-repair value (the lower cap governs)')
-          + row('Term', '12 months, interest-only (up to 24 months available)')
-          + row('Estimated rate', b.rate + ', ' + b.points + ' points');
-        note = b.extra || '';
-      }
+      intro = 'Ranked on a sample deal: ' + money(SAMPLE_B.p) + ' purchase, ' + money(SAMPLE_B.r) + ' rehab, ' + money(SAMPLE_B.arv) + ' after-repair value.';
     } else {
-      var d = dscrTerms(fico, exp);
       cta += '?product=DSCR%20Rental';
-      title = 'DSCR Rental';
-      html = row('Purchase', d.purchase + ' of value')
-        + row('Rate-and-term refinance', d.refi + ' of value')
-        + row('Cash-out refinance', d.cashout + ' of value')
-        + row('Minimum DSCR', d.dscr)
-        + row('Term', d.term)
-        + row('Prepayment', d.prepay)
-        + row('Estimated rate', d.rate);
-      note = 'Rates track the 10-year Treasury and depend on leverage, DSCR and loan size. Lower leverage or a rate buy-down can bring the rate down.';
+      intro = 'Ranked on a sample ' + money(SAMPLE_D.v) + ' rental purchase.';
     }
-    $('rt-title').innerHTML = title;
-    $('rt-table').innerHTML = html;
-    $('rt-note').textContent = note;
-    $('rt-note').hidden = !note;
+    if (!list.length) {
+      html = '<p>No published program fits this credit and experience. Send the deal and it will be reviewed by hand, or add a partner with stronger credit or more experience as a guarantor.</p>';
+    } else {
+      var lowRate = pick(list, function (o) { return o.p.rate; }, -1);
+      var hiAdv = pick(list, function (o) { return type === 'bridge' ? o.loan : o.pur; }, 1);
+      var lowFee = pick(list, function (o) { return o.fees; }, -1);
+      var rateTextPick = lowRate || list.filter(function (o) { return o.p.rateText; })[0];
+      var order = [], labels = {};
+      [['Lowest rate', rateTextPick], ['Highest advance', hiAdv], ['Lowest lender fees', lowFee]].forEach(function (x) {
+        if (!x[1]) return;
+        var id = x[1].p.id;
+        if (!labels[id]) { labels[id] = []; order.push(x[1]); }
+        labels[id].push(x[0]);
+      });
+      order.forEach(function (o) { html += card(labels[o.p.id].join(' + '), type, o, fico); });
+      if (!rateTextPick) {
+        html += '<p class="footnote">Lowest rate: rates on these programs are priced on your file. Estimated range for your credit: ' + estRate(type, fico) + '.</p>';
+      }
+      html += '<p class="footnote">' + list.length + ' program' + (list.length === 1 ? '' : 's') + ' fit your profile. Terms as of ' + D.asOf + '.</p>';
+    }
+    $('rt-title').innerHTML = (type === 'bridge' ? 'Bridge / Fix &amp; Flip' : 'DSCR Rental') + ' &mdash; your best options';
+    $('rt-intro').textContent = intro;
+    $('rt-cards').innerHTML = html;
     $('rt-cta').href = cta;
     res.hidden = false;
   }
