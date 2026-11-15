@@ -1,5 +1,5 @@
 /* ACP rate and advance check (/rates). Reads program terms from js/rates-data.js
-   and shows ONE option for the visitor's credit and experience: ACP's lowest priced
+   and shows two options for the visitor's credit and experience: ACP's lowest priced
    rate, ties broken by the lowest closing costs (Steve, 15 Nov 2026). No program IDs,
    counts or other-lender wording on the page. Starting terms, subject to quote. */
 (function () {
@@ -84,7 +84,7 @@
     var exp = type === 'bridge' ? $('rt-exp-bridge').value : $('rt-exp-dscr').value;
     var res = $('rt-result');
     if (!type || ficoV === '' || exp === '') { res.hidden = true; return; }
-    var fico = parseInt(ficoV, 10), html = '', intro, cta = '/request-financing';
+    var oneCard = true, fico = parseInt(ficoV, 10), html = '', intro, cta = '/request-financing';
     var list = type === 'bridge' ? bridgeOptions(fico, exp) : dscrOptions(fico, exp);
     if (type === 'bridge') {
       cta += '?product=Bridge%20%2F%20Fix%20%26%20Flip';
@@ -106,10 +106,25 @@
         var fa = a.fees == null ? 1e12 : a.fees, fb = b.fees == null ? 1e12 : b.fees;
         return fa - fb;
       })[0];
-      html += card('ACP\'s lowest rate with the lowest closing costs', type, best, fico);
+      // Second option (15 Nov 2026, Steve): the highest advance, so visitors who want the
+      // least cash in see it too. Ties go to the lower rate, then lower closing costs.
+      var adv = function (o) { return type === 'bridge' ? o.loan : (o.pur || 0); };
+      var hi = list.slice().sort(function (a, b) {
+        if (adv(a) !== adv(b)) return adv(b) - adv(a);
+        var ra = a.p.rate == null ? 99 : a.p.rate, rb = b.p.rate == null ? 99 : b.p.rate;
+        if (ra !== rb) return ra - rb;
+        return (a.fees == null ? 1e12 : a.fees) - (b.fees == null ? 1e12 : b.fees);
+      })[0];
+      if (hi.p.id === best.p.id) {
+        html += card('Lowest rate, lowest closing costs and highest advance', type, best, fico);
+      } else {
+        oneCard = false;
+        html += card('Option 1: lowest rate with the lowest closing costs', type, best, fico);
+        html += card('Option 2: highest advance (least cash in)', type, hi, fico);
+      }
       html += '<p class="footnote">Terms as of ' + D.asOf + '.</p>';
     }
-    $('rt-title').innerHTML = (type === 'bridge' ? 'Bridge / Fix &amp; Flip' : 'DSCR Rental') + ' &mdash; your best terms';
+    $('rt-title').innerHTML = (type === 'bridge' ? 'Bridge / Fix &amp; Flip' : 'DSCR Rental') + (oneCard ? ' &mdash; your best option' : ' &mdash; your two best options');
     $('rt-intro').textContent = intro;
     $('rt-cards').innerHTML = html;
     $('rt-cta').href = cta;
