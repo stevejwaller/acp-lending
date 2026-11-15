@@ -1,6 +1,7 @@
 /* ACP rate and advance check (/rates). Reads program terms from js/rates-data.js
-   and shows three options for the visitor's credit and experience:
-   lowest rate, highest advance, lowest lender fees. Starting terms, subject to quote. */
+   and shows ONE option for the visitor's credit and experience: ACP's lowest priced
+   rate, ties broken by the lowest closing costs (Steve, 15 Nov 2026). No program IDs,
+   counts or other-lender wording on the page. Starting terms, subject to quote. */
 (function () {
   var D = window.ACP_RATES;
   var $ = function (id) { return document.getElementById(id); };
@@ -52,12 +53,12 @@
   }
   function row(k, v) { return '<tr><td>' + k + '</td><td>' + v + '</td></tr>'; }
   function rateCell(type, o, fico) {
-    if (o.p.rate != null) return 'from ' + o.p.rate.toFixed(2) + '%' + (o.p.points != null ? ', ' + o.p.points + ' points' : '');
+    if (o.p.rate != null) return 'from ' + o.p.rate.toFixed(2) + '%' + (o.p.points != null ? ', ' + o.p.points + (o.p.points === 1 ? ' point' : ' points') : '');
     if (o.p.rateText) return o.p.rateText;
     return 'est. ' + estRate(type, fico) + ' (quoted on your deal)';
   }
   function card(label, type, o, fico) {
-    var p = o.p, h = '<h4 style="margin:18px 0 6px">' + label + ' &mdash; Program ' + p.id + '</h4><table class="snapshot">';
+    var p = o.p, h = '<h4 style="margin:18px 0 6px">' + label + '</h4><table class="snapshot">';
     if (type === 'bridge') {
       h += row('Purchase advance', 'up to ' + p.purchase + '% of the purchase price')
         + row('Rehab advance', p.rehab + '% of the renovation budget')
@@ -69,7 +70,7 @@
         + row('Minimum DSCR', p.minDscr);
     }
     h += row('Term', p.term) + row('Rate', rateCell(type, o, fico))
-      + row('Lender fees', o.fees != null ? 'about ' + money(o.fees) + ' on the sample loan' : 'quoted on your deal')
+      + row('Closing costs', o.fees != null ? 'about ' + money(o.fees) + ' on the sample loan' : 'quoted on your deal')
       + (p.note ? row('Note', p.note) : '') + '</table>';
     return h;
   }
@@ -87,32 +88,28 @@
     var list = type === 'bridge' ? bridgeOptions(fico, exp) : dscrOptions(fico, exp);
     if (type === 'bridge') {
       cta += '?product=Bridge%20%2F%20Fix%20%26%20Flip';
-      intro = 'Ranked on a sample deal: ' + money(SAMPLE_B.p) + ' purchase, ' + money(SAMPLE_B.r) + ' rehab, ' + money(SAMPLE_B.arv) + ' after-repair value.';
+      intro = 'Based on a sample deal: ' + money(SAMPLE_B.p) + ' purchase, ' + money(SAMPLE_B.r) + ' rehab, ' + money(SAMPLE_B.arv) + ' after-repair value.';
     } else {
       cta += '?product=DSCR%20Rental';
-      intro = 'Ranked on a sample ' + money(SAMPLE_D.v) + ' rental purchase.';
+      intro = 'Based on a sample ' + money(SAMPLE_D.v) + ' rental purchase.';
     }
     if (!list.length) {
-      html = '<p>No published program fits this credit and experience. Send the deal and it will be reviewed by hand, or add a partner with stronger credit or more experience as a guarantor.</p>';
+      html = '<p>No standard program fits this credit and experience. Send the deal and it will be reviewed by hand, or add a partner with stronger credit or more experience as a guarantor.</p>';
     } else {
-      var lowRate = pick(list, function (o) { return o.p.rate; }, -1);
-      var hiAdv = pick(list, function (o) { return type === 'bridge' ? o.loan : o.pur; }, 1);
-      var lowFee = pick(list, function (o) { return o.fees; }, -1);
-      var rateTextPick = lowRate || list.filter(function (o) { return o.p.rateText; })[0];
-      var order = [], labels = {};
-      [['Lowest rate', rateTextPick], ['Highest advance', hiAdv], ['Lowest lender fees', lowFee]].forEach(function (x) {
-        if (!x[1]) return;
-        var id = x[1].p.id;
-        if (!labels[id]) { labels[id] = []; order.push(x[1]); }
-        labels[id].push(x[0]);
-      });
-      order.forEach(function (o) { html += card(labels[o.p.id].join(' + '), type, o, fico); });
-      if (!rateTextPick) {
-        html += '<p class="footnote">Lowest rate: rates on these programs are priced on your file. Estimated range for your credit: ' + estRate(type, fico) + '.</p>';
-      }
-      html += '<p class="footnote">' + list.length + ' program' + (list.length === 1 ? '' : 's') + ' fit your profile. Terms as of ' + D.asOf + '.</p>';
+      // Lowest priced rate; ties go to the lowest closing costs. If no program fitting
+      // this profile has a priced rate, show the one with the lowest closing costs.
+      var priced = list.filter(function (o) { return o.p.rate != null; });
+      var pool = priced.length ? priced : list;
+      var best = pool.slice().sort(function (a, b) {
+        var ra = a.p.rate == null ? 99 : a.p.rate, rb = b.p.rate == null ? 99 : b.p.rate;
+        if (ra !== rb) return ra - rb;
+        var fa = a.fees == null ? 1e12 : a.fees, fb = b.fees == null ? 1e12 : b.fees;
+        return fa - fb;
+      })[0];
+      html += card('ACP\'s lowest rate with the lowest closing costs', type, best, fico);
+      html += '<p class="footnote">Terms as of ' + D.asOf + '.</p>';
     }
-    $('rt-title').innerHTML = (type === 'bridge' ? 'Bridge / Fix &amp; Flip' : 'DSCR Rental') + ' &mdash; your best options';
+    $('rt-title').innerHTML = (type === 'bridge' ? 'Bridge / Fix &amp; Flip' : 'DSCR Rental') + ' &mdash; your best terms';
     $('rt-intro').textContent = intro;
     $('rt-cards').innerHTML = html;
     $('rt-cta').href = cta;
