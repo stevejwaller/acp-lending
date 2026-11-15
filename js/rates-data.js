@@ -4,7 +4,7 @@
    points: lender origination points or null. fees: fixed lender fees in $ or null.
    feeMin: minimum origination in $ (points apply as the greater of the two). */
 window.ACP_RATES = {
-  asOf: '2026-11-14',
+  asOf: '2026-11-15',
   bridge: [
     { id: 'B1', minFico: 640, minFlips: 0, purchase: 100, rehab: 100, ltc: 95, arv: 80, maxLoan: 5000000,
       rate: null, points: null, fees: null, term: '12 months, interest-only',
@@ -28,7 +28,7 @@ window.ACP_RATES = {
       rate: null, rateText: 'from about 5.00% with a rate buy-down', points: null, fees: null,
       term: '30-year fixed', note: 'Sharpest pricing for strong credit and coverage.' },
     { id: 'D2', minFico: 640, purchase: 80, refi: 80, cashout: 75, minDscr: 'No minimum',
-      rate: null, points: null, fees: 1995, term: '30-year fixed', note: 'Short-term rentals and rural properties allowed. 1 to 10 units.' },
+      rate: 7.0, points: 3.625, fees: 2190, term: '30-year fixed', note: 'Short-term rentals and rural properties allowed. 1 to 10 units.' },
     { id: 'D3', minFico: 0, purchase: 80, refi: 80, cashout: 75, minDscr: 'As low as 0.75x',
       rate: null, points: 1, feeMin: 2000, fees: 1395, term: '30-year fixed', note: 'Vacant units cap leverage at 70%.' },
     { id: 'D4', minFico: 0, purchase: 75, refi: null, cashout: null, minDscr: 'Program minimum applies',
