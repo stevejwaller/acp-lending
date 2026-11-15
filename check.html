@@ -108,6 +108,7 @@
 (function(){
   var f=document.getElementById("arv-form"),w=document.getElementById("c-want"),qs=new URLSearchParams(location.search),box=document.querySelector(".calc-wrap");
   if(qs.get("sent")){box.innerHTML='<h3 style="margin-top:0">Request received</h3><p>Thanks. Steve Waller will send your ARV estimate, usually the same day. Questions? Call or text <a href="tel:+19365228951">936-522-8951</a>.</p>'+(qs.get("sent")==="both"?'<p><a class="btn" href="/rates" style="display:inline-block;padding:12px 22px;text-decoration:none">Now check your loan pricing</a></p>':'');return;}
+  if(!qs.get("error")&&(qs.get("want")==="arv"||qs.get("want")==="both")){var pre=document.querySelector('input[name="want"][value="'+qs.get("want")+'"]');pre.checked=true;w.value=pre.value;f.hidden=false;}
   if(qs.get("error")){var m=document.createElement("p");m.style.color="#a00";m.textContent=qs.get("error")==="missing"?"Please fill in every field marked * with a valid email.":"Something went wrong sending your request. Please try again or text 936-522-8951.";box.insertBefore(m,box.firstChild);var pw=document.querySelector('input[name="want"][value="'+(qs.get("want")==="both"?"both":"arv")+'"]');if(pw){pw.checked=true;w.value=pw.value;f.hidden=false;}}
   document.querySelectorAll('input[name="want"]').forEach(function(r){
     r.addEventListener("change",function(){
