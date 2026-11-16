@@ -82,6 +82,12 @@ follow the request and update this file in the same commit.
 - Facebook group rotation stamps (9 Nov 2026): D1 `fb_group_rotation` is written
   only from the committed log `functions/_lib/rotation-log.js`. Append entries,
   push, then load /rotation/apply once (idempotent; re-runs change nothing).
+- Maturity-text reply links (16 Nov 2026, Steve): final maturity texts carry
+  acp-lending.com/m/<code>. code = touch_log id in base 36 + first 4 base-36 chars
+  of SHA-256("<id>:<phone_last10>") (functions/_lib/maturity-code.js). GET /m/<code>
+  logs an 'opened' row and serves maturity-reply.html (noindex); POST /m/reply logs
+  the answer to D1 maturity_replies, marks touch_log replied (or do-not-contact for
+  "All set"), and emails Steve. The page shows nothing personal.
 - Pages must work at phone width (Steve and his clients use phones).
 
 ## 6. Before you finish
