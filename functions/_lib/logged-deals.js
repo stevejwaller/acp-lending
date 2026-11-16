@@ -251,7 +251,8 @@ export const LOGGED_DEALS = [
       "No documented operating history. Routing: owner-user commercial, stabilized; SBA 504/7(a) would reach 90% if borrower reconsiders SBA. " +
       "Value risk (public record): last sold 12 Dec 2024 for $320,000; 2025 assessment $371,300; built 1945. Loan sizes off the lower of price or appraisal - " +
       "if it appraises near $450K, 75% = $337,500 and cash to close at $750K jumps to ~$432K. Working offer $430K (what $150K liquid covers at 75% with 6 mo reserves); ceiling = appraised value. " +
-      "Need seller P&L/returns, real estate vs business allocation, building SF, Phase I.",
+      "Need seller P&L/returns, real estate vs business allocation, building SF, Phase I. " +
+      "16 Nov: a commercial bridge lender says it can help on this one - best pricing on full documentation, but it can go bank statement.",
     signature: "",
   },
   {
@@ -345,6 +346,7 @@ export const LOGGED_DEALS = [
       "$269,508 above current debt before arrears, so the borrower would need roughly $0.5-0.7M plus arrears to cover closing costs. " +
       "13 Nov: ACP proposed the $16MM on the seven income-producing buildings only (pads excluded from the lien, construction financed separately later) and asked what drives the sizing, " +
       "whether a subordinate note from the existing lender and partial release prices are allowed, and for indicative terms. " +
+      "16 Nov: a commercial bridge lender would size on the as-is value of the land only, 50% max LTV. " +
       "Next: lender answer; payoff letter with arrears, bankruptcy status, car wash appraisal or operating statements.",
     signature: "",
   },
@@ -374,6 +376,7 @@ export const LOGGED_DEALS = [
       "An investor-only lender declined 11 Nov (owner-user, mixed-use, rural market, credit and leverage). With a non-bank commercial lender's owner-user program (conventional and SBA); borrower documents sent 11 Nov. " +
       "12 Nov conventional terms presented: up to 65% of appraised value (~$260K at $400K est.), 30-yr fixed at 5-yr Treasury + 5.00% (~9.73%), fully amortizing, 5-yr step-down prepay, 1.15x DSCR; SBA not available (business occupies under 51% of the building). " +
       "13 Nov: the lender will not start until the borrower's IRS back taxes (business and personal) are on an installment agreement with payments current; it cannot fund enough to pay the taxes in full. " +
+      "16 Nov: a commercial bridge lender would go to 70% max LTV on this one. " +
       "Next: borrower to set up the IRS payment plan; 2026 YTD balance sheet and mortgage statement still due.",
     signature: "",
   },
@@ -508,6 +511,7 @@ export const LOGGED_DEALS = [
       "Requested 70% LTV = $3,010,000, 12-month bridge, 780 FICO. Only approved fit: a $3MM+ commercial bridge lender (retail, acquisition/lease-up, to 75% LTV) - loan barely clears its $3.0MM minimum. Stabilized-only and residential outlets do not fit (vacant retail). " +
       "12 Nov: ACP told the referrer it is considering - concern that the vacant box and anchor closures at the center may make a firm value hard to support. Shopped 12 Nov (inquiry only, no package): a $3MM+ commercial bridge lender and a national private commercial bridge lender. " +
       "13 Nov answers: the $3MM+ commercial bridge lender declined - loan size too small for its program; the national private commercial lender will consider it at a maximum of 50% LTV on as-is value in present condition and can close quickly. " +
+      "16 Nov: a commercial bridge lender said possibly, but the owner would have to be extremely strong given the asset class and vacancy. " +
       "Next: confirm with the referrer whether 50% of as-is works; if so, get PSA, auction closing date, sponsor experience/liquidity, business plan and capex.",
     signature: "",
   },
