@@ -4,18 +4,26 @@ import { lookup, REPLIES_DDL } from "../_lib/maturity-code.js";
 import { sendMail, STEVE, clip, sameOrigin } from "../_lib/mailer.js";
 
 const LABELS = {
+  refi_bridge: "Looked at bridge rates to refinance their current/matured loan",
+  refi_dscr: "Looked at DSCR rates to refinance their current/matured loan into a 30-year rental loan",
+  rate_flip: "Looked at bridge rates for a fix & flip",
+  rate_fixrent: "Looked at bridge rates for a fix & rent",
+  rate_dscr: "Looked at DSCR rental rates",
+  apply: "Clicked Apply for a loan (/request-financing)",
+  call_me: "Asked you to call",
+  // older page versions
   extension: "Extend the current loan",
   rental_refi: "Refinance into a long-term rental loan (DSCR)",
   selling: "Selling it, may need a short bridge",
   new_deal: "This one's handled, has another property to finance",
-  call_me: "Just call me",
   not_interested: "All set, no follow-up",
 };
 
 export async function onRequestPost({ request, env, waitUntil }) {
   const form = await request.formData();
   const code = clip(form.get("code"), 20).toLowerCase();
-  const back = q => Response.redirect(new URL(`/m/${encodeURIComponent(code)}?${q}`, request.url).toString(), 303);
+  const beacon = clip(form.get("beacon"), 2) === "1";
+  const back = q => beacon ? new Response(null, { status: 204 }) : Response.redirect(new URL(`/m/${encodeURIComponent(code)}?${q}`, request.url).toString(), 303);
   if (!sameOrigin(request)) return back("error=send");
   if (clip(form.get("website"), 50)) return back("sent=1");
   const choice = clip(form.get("choice"), 30);
@@ -29,15 +37,17 @@ export async function onRequestPost({ request, env, waitUntil }) {
     await env.DB.prepare("INSERT INTO maturity_replies (touch_id, code, borrower, phone_last10, property_address, choice, best_time, note, ip) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)")
       .bind(row.id, code, row.borrower, row.phone_last10, row.property_address, choice, best, note, request.headers.get("CF-Connecting-IP") || "").run();
     const stamp = new Date().toISOString().slice(0, 10);
-    const status = choice === "not_interested" ? "do-not-contact" : "replied";
-    await env.DB.prepare("UPDATE touch_log SET status = ?, notes = COALESCE(notes,'') || ? WHERE id = ?")
+    const status = choice === "not_interested" ? "do-not-contact" : (choice === "call_me" || choice === "apply") ? "replied" : null;
+    if (status) await env.DB.prepare("UPDATE touch_log SET status = ?, notes = COALESCE(notes,'') || ? WHERE id = ?")
       .bind(status, ` | Link reply ${stamp}: ${LABELS[choice]}`, row.id).run();
+    else await env.DB.prepare("UPDATE touch_log SET notes = COALESCE(notes,'') || ? WHERE id = ?")
+      .bind(` | Link ${stamp}: ${LABELS[choice]}`, row.id).run();
   } catch (e) {}
 
   const p = sendMail(env, {
     to: STEVE,
-    subject: `Maturity reply: ${row.borrower} - ${LABELS[choice]}`,
-    text: `${row.borrower} answered the link in your maturity text.\n\nAnswer: ${LABELS[choice]}\nBest time: ${best || "not given"}\nNote: ${note || "none"}\n\nProperty: ${row.property_address || "?"}\nLender: ${row.lender || "?"}\nMaturity: ${row.maturity_date || "?"}\nPhone: ${row.phone_last10}\nTouch: ${row.touch || "?"} (touch_log id ${row.id})\n\n${choice === "not_interested" ? "Marked do-not-contact in touch_log." : "Marked replied in touch_log. No more texts will be queued to this borrower."}`,
+    subject: `Maturity link: ${row.borrower} - ${LABELS[choice]}`,
+    text: `${row.borrower} used the link in your maturity text.\n\nAnswer: ${LABELS[choice]}\nBest time: ${best || "not given"}\nNote: ${note || "none"}\n\nProperty: ${row.property_address || "?"}\nLender: ${row.lender || "?"}\nMaturity: ${row.maturity_date || "?"}\nPhone: ${row.phone_last10}\nTouch: ${row.touch || "?"} (touch_log id ${row.id})\n\n${choice === "not_interested" ? "Marked do-not-contact in touch_log." : (choice === "call_me" || choice === "apply") ? "Marked replied in touch_log. No more texts will be queued to this borrower." : "Rate look only: touch_log status unchanged. A good time to call."}`,
   });
   if (waitUntil) waitUntil(p); else await p;
   return back(choice === "not_interested" ? "sent=no" : "sent=1");

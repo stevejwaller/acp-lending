@@ -86,8 +86,11 @@ follow the request and update this file in the same commit.
   acp-lending.com/m/<code>. code = touch_log id in base 36 + first 4 base-36 chars
   of SHA-256("<id>:<phone_last10>") (functions/_lib/maturity-code.js). GET /m/<code>
   logs an 'opened' row and serves maturity-reply.html (noindex); POST /m/reply logs
-  the answer to D1 maturity_replies, marks touch_log replied (or do-not-contact for
-  "All set"), and emails Steve. The page shows nothing personal.
+  the answer to D1 maturity_replies and emails Steve. The page shows nothing personal.
+  16 Nov 2026 (Steve): the page is a hub — see today's rate (refi a matured loan as
+  bridge or DSCR, bridge for fix & flip / fix & rent, DSCR rental -> /rates?type=),
+  Apply (/request-financing), or Call me. Rate clicks are logged by sendBeacon and
+  emailed to Steve without changing touch_log status; Apply and Call me mark it replied.
 - Pages must work at phone width (Steve and his clients use phones).
 
 ## 6. Before you finish
