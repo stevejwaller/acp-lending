@@ -91,6 +91,14 @@ follow the request and update this file in the same commit.
   bridge or DSCR, bridge for fix & flip / fix & rent, DSCR rental -> /rates?type=),
   Apply (/request-financing), or Call me. Rate clicks are logged by sendBeacon and
   emailed to Steve without changing touch_log status; Apply and Call me mark it replied.
+- Approved texts from Steve's iMac (16 Nov 2026, Steve): the morning task writes D1
+  text_batches/text_queue; Steve ticks and approves at /texts/approve?b=&k= (key from the
+  morning email). A launchd job on the iMac (~/.acp-texts, installed from a file sent to
+  Steve, token NOT in this repo) polls /texts/api/pending every 5 min, sends through
+  Messages and reports to /texts/api/report. Sending only 9am-7pm Central, 30/day cap,
+  re-checks do-not-contact / stop / replied and the 2-text cap at send time, never hands a
+  text out twice, and emails Steve one summary per batch. "{link}" in a body becomes
+  acp-lending.com/m/<code>. Code: functions/texts/[[path]].js.
 - Pages must work at phone width (Steve and his clients use phones).
 
 ## 6. Before you finish
