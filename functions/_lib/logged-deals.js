@@ -521,24 +521,28 @@ export const LOGGED_DEALS = [
     phone: "Pending",
     entity: "Pending",
     property: "3718 Pleasanton Rd, San Antonio, TX 78221",
-    property_type: "Multifamily - 16 units (possible bar/hospitality component - Pending)",
+    property_type: "Multifamily - 16 units, 2 buildings on one parcel (possible bar/hospitality component - Pending)",
     product: "Bridge cash-out refinance with rehab capital",
     owned: "Yes",
     financing: "1387500",
     purchase: "Pending",
     repairs: "262500",
     arv: "2140000",
-    credit: "Pending",
-    liquidity: "Pending",
+    credit: "709",
+    liquidity: "45500",
     closing: "Pending",
     exit_strategy: "Pending",
     summary:
       "Received 12 Nov 2026 from a commercial broker/capital shop. As submitted: 1st lien payoff $1,125,000; rehab $262,500; ARV $2,140,000; ask 65% LTV. Implied loan ~$1,387,500 (payoff + rehab) = 64.8% of ARV. As-is value Pending. " +
       "Broker also asked whether a liquor license and FF&E can count as collateral - use (pure multifamily vs mixed-use/hospitality) to be confirmed. " +
       "Routing: no approved outlet fits - $3MM+ commercial bridge minimum too high, stabilized-only lender is a takeout candidate after rehab, residential 5-10 unit programs cap below 16 units. Best fit is a non-program commercial funding source (terms not on file). " +
-      "12 Nov: ACP replied asking for as-is value/appraisal and purchase date/price, rent roll, T-12 and occupancy, rehab scope, sponsor credit/experience/liquidity, current lender and maturity. Not shopped yet. " +
-      "13 Nov: asked a national multifamily lender (no value-add in Houston) whether it will look at a San Antonio value-add file - awaiting answer. " +
-      "Next: collect those items, confirm property use, then route.",
+      "12 Nov: ACP replied asking for as-is value/appraisal and purchase date/price, rent roll, T-12 and occupancy, rehab scope, sponsor credit/experience/liquidity, current lender and maturity. " +
+      "13 Nov: asked a national multifamily lender (no value-add in Houston) whether it will look at a San Antonio value-add file - answered 16 Nov (below). " +
+      "16 Nov package received from the broker: no appraisal - pro forma value $2,140,000; renovation = appliances and parking (scope of work received); 2 buildings on one parcel, one vacant while under renovation, total occupancy 50%; rent roll, month-by-month P&L and sponsor track record/REO received; sponsor FICO 709, cash on hand $45,500; current lender a regional bank, loan matures 29 Nov 2027. " +
+      "Broker is not an owner; broker fee expectation 3% origination + $1,995 processing + 1% YSP - fee agreement to be signed before the file goes out. " +
+      "16 Nov lender feedback: a commercial bridge lender - 65% max of AS-IS value only (no ARV lending); a national multifamily lender - minimum $500K loan / 700 FICO, called it difficult but will review (package sent 16 Nov); a non-bank CRE lender - package sent 16 Nov, awaiting answer. " +
+      "Math: at 65% of as-is, the $1,387,500 request needs an as-is value of about $2,135,000, and the $1,125,000 payoff alone needs about $1,731,000 - unlikely at 50% occupancy with no appraisal. " +
+      "Next: get an as-is value (BOV or appraisal); expect the loan to size to payoff only or less, with rehab funded by the sponsor or a holdback.",
     signature: "",
   },
 ];
