@@ -98,7 +98,9 @@ follow the request and update this file in the same commit.
   Messages and reports to /texts/api/report. Sending only 9am-7pm Central, 30/day cap,
   re-checks do-not-contact / stop / replied and the 2-text cap at send time, never hands a
   text out twice, and emails Steve one summary per batch. "{link}" in a body becomes
-  acp-lending.com/m/<code>. Code: functions/texts/[[path]].js.
+  acp-lending.com/m/<code>. Code: functions/texts/[[path]].js. The iMac reaches the API at
+  acplending.pages.dev (its curl lacks the TLS 1.3 that acp-lending.com requires) — keep that
+  address serving the same functions.
 - Pages must work at phone width (Steve and his clients use phones).
 
 ## 6. Before you finish
