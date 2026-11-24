@@ -72,6 +72,7 @@
       state: v("state"),
       zip: v("zip"),
       purchasePrice: v("purchasePrice"),
+      sellerConcession: v("sellerConcession"),
       repairBudget: v("repairBudget"),
       arvEstimate: v("arvEstimate"),
       borrowerLiquidity: v("borrowerLiquidity"),
@@ -449,17 +450,23 @@
   // percentage of the loan) are paid at closing, never in the loan.
   // Cash due at closing = purchase + repairs not covered by the loan + lender + third-party costs.
   // Liquidity after closing = 6 months interest (~11%) + 1/2 annual taxes + 1/3 of repairs.
-  function deal(x, P) {
+  // Seller concession (24 Nov 2026, Steve): the loan-to-cost is sized on the purchase price net of
+  // the concession, and the credit is counted only up to the actual closing costs (lenders treat
+  // anything above that as a price reduction). Applies to the as-submitted figures only.
+  function deal(x, P, C) {
+    C = Math.max(0, C || 0);
+    var Pn = Math.max(0, P - C);
     var La = Math.round(.75 * x.arv),
-      Lc = Math.round(x.F.lp * P + x.F.lr * x.R);
+      Lc = Math.round(x.F.lp * Pn + x.F.lr * x.R);
     var L = Math.min(La, Lc),
       bind = Lc < La ? "loan-to-cost" : "75% of ARV";
     var cc = Math.round((.015 + x.F.bo) * L + 1450 + 350);
     var tp = Math.round(x.F.tpp * L + x.F.bc);
     var gap = Math.max(0, Math.round(P + x.R - L));
-    var due = gap + cc + tp;
+    var cr = Math.min(C, cc + tp);
+    var due = gap + cc + tp - cr;
     var liq = Math.round(L * .11 / 2 + x.T.t / 2 + x.R / 3);
-    return { P: P, L: L, La: La, Lc: Lc, bind: bind, cc: cc, tp: tp, gap: gap, due: due, liq: liq, tot: due + liq }
+    return { P: P, C: C, cr: cr, L: L, La: La, Lc: Lc, bind: bind, cc: cc, tp: tp, gap: gap, due: due, liq: liq, tot: due + liq }
   }
 
   function recPrice75(x) {
@@ -476,7 +483,7 @@
   }
 
   function exitCalc(x, atRec) {
-    var D = deal(x, x.P),
+    var D = deal(x, x.P, x.C),
       L = D.L,
       cc = D.cc,
       tx = x.T.t,
@@ -491,8 +498,8 @@
       gap = D.gap;
     var hold = Math.round(L * .11 * mo / 12 + tx * mo / 12 + ins * mo / 12 + util * mo),
       sell = Math.round(.07 * x.arv);
-    var fp = Math.round(x.arv - sell - x.P - x.R - ccAll - hold),
-      fcash = Math.max(1, gap + ccAll + hold),
+    var fp = Math.round(x.arv - sell - x.P - x.R - ccAll - hold + D.cr),
+      fcash = Math.max(1, gap + ccAll - D.cr + hold),
       froi = fp / fcash,
       fann = froi * 12 / mo,
       fmargin = fp / x.arv;
@@ -586,7 +593,8 @@
       lo = 0;
     var ok = function(P) {
       return test(exitCalc(Object.assign({}, x, {
-        P: P
+        P: P,
+        C: 0
       })))
     };
     if (ok(hi)) return hi;
@@ -621,20 +629,24 @@
 
   // Two columns: the ACP recommended purchase price and the purchase price as submitted.
   function chartRows(x, A, B) {
-    var arvV = x.arv ? usd(x.arv) : "not determined";
-    return [
+    var arvV = x.arv ? usd(x.arv) : "not determined",
+      sc = B.C > 0;
+    var rows = [
       ["ARV" + (x.arv && x.n ? " (" + x.n + " closed comparables)" : ""), arvV, arvV],
-      ["Purchase Price", usd(A.P), usd(B.P)],
-      ["Loan Amount (lower of loan-to-cost, " + ltcLabel(x) + ", and 75% of ARV)", usd(A.L), usd(B.L)],
+      ["Purchase Price", usd(A.P), usd(B.P)]
+    ].concat(sc ? [["Seller Concession (as submitted)", "-", usd(B.C)], ["Purchase Price net of Seller Concession", usd(A.P), usd(B.P - B.C)]] : []).concat([
+      ["Loan Amount (lower of loan-to-cost, " + ltcLabel(x) + (sc ? ", on the price net of the seller concession" : "") + ", and 75% of ARV)", usd(A.L), usd(B.L)],
       ["Loan limited by", A.bind, B.bind],
       ["Repairs", usd(x.R), usd(x.R)],
       ["Purchase + repairs not covered by the loan", usd(A.gap), usd(B.gap)],
       ["Lender Closing Costs (title 1.5% + origination " + (x.F.bo * 100) + "% + $1,450 closing fee + $350 legal fee)", usd(A.cc), usd(B.cc)],
-      ["Third-Party Closing Costs (broker fee " + (x.F.tpp * 100) + "% + " + usd(x.F.bc) + " closing fee)", usd(A.tp), usd(B.tp)],
+      ["Third-Party Closing Costs (broker fee " + (x.F.tpp * 100) + "% + " + usd(x.F.bc) + " closing fee)", usd(A.tp), usd(B.tp)]
+    ]).concat(sc ? [["Seller Credit applied to closing costs (credit above actual closing costs is not counted)", "-", "-" + usd(B.cr)]] : []).concat([
       ["<b>Cash Due at Closing</b> (closing costs are paid at closing and cannot be included in the loan)", "<b>" + usd(A.due) + "</b>", "<b>" + usd(B.due) + "</b>"],
       ["&nbsp;", "", ""],
       ["Liquidity to manage the project after closing (6 months of interest and 1/2 of annual taxes + 1/3 of repair costs)", usd(A.liq), usd(B.liq)]
-    ]
+    ]);
+    return rows
   }
 
   var COLS = '<th style="text-align:right">ACP Recommended Price</th><th style="text-align:right">Purchase Price as Submitted</th>';
@@ -698,7 +710,7 @@
       if (el.children.length === 0 && /PropertyReach/i.test(el.textContent)) el.textContent = el.textContent.replace(/\s*\(PropertyReach\)/gi, "").replace(/PropertyReach/gi, "public records")
     });
     // Deal Report level: the chart at the asking price.
-    applyChart(doc, x, deal(x, recPrice(x)), deal(x, x.P));
+    applyChart(doc, x, deal(x, recPrice(x)), deal(x, x.P, x.C));
     return "<!doctype html>" + doc.documentElement.outerHTML
   }
 
@@ -751,6 +763,7 @@
       arv: arv,
       n: n,
       P: P,
+      C: num(d.sellerConcession),
       R: R,
       F: F,
       T: T,
@@ -768,7 +781,8 @@
 
     var S = exitCalc(x0),
       A = exitCalc(nums(doc, Object.assign({}, d, {
-        purchasePrice: String(recP)
+        purchasePrice: String(recP),
+        sellerConcession: ""
       })), true);
     var pc = function(z) {
         return (Math.round(z * 1000) / 10).toFixed(1) + "%"
@@ -851,7 +865,7 @@
     var sec = doc.createElement("div");
     sec.className = "sec";
     sec.innerHTML = '<h2>ACP Recommended Offer</h2><table class="kv"><tr><td><b>Recommended offer</b></td><td><b>' + (rec ? usd(rec) : 'No price works') + '</b></td></tr><tr><td>75% rule price (75% of ARV less repairs)</td><td>' + usd(PX.rule75) + '</td></tr><tr><td>Highest price that works as a flip (10% margin)</td><td>' + (PX.flip === null ? 'None' : usd(PX.flip)) + '</td></tr><tr><td>Highest price that works as a rental (1.20 DSCR, 10% cash-on-cash)</td><td>' + (PX.rent === null ? 'None' : usd(PX.rent)) + '</td></tr></table><p class="muted" style="margin-top:10px">' + (rec ? (rec < PX.rule75 ? 'The 75% rule price does not leave a working exit, so the offer is lowered to the highest price that works as a ' + (rec === PX.flip ? 'flip' : 'rental') + '.' : 'The 75% rule price works, so it is the offer.') + ' Loan and cash at this price are in the Executive Summary.' : 'No purchase price makes this deal work as a flip or a rental at this ARV, rent and repair budget.') + '</p><p>Phone walkthrough: call or text 936-522-8951 to schedule.</p>';
-    applyChart(doc, x, D, deal(x, x.P));
+    applyChart(doc, x, D, deal(x, x.P, x.C));
     var after = null;
     secs(doc).forEach(function(s) {
       if (/^Deal Economics/.test(s.t)) after = s.el
@@ -960,8 +974,13 @@
         if (m) arv = num(m[0])
       }
     });
-    var FULL = !!d.__full;
-    if (FULL && arv) P = recPrice(nums(doc, Object.assign({}, d, { repairBudget: String(R) })));
+    var FULL = !!d.__full,
+      C = num(d.sellerConcession);
+    if (FULL && arv) {
+      P = recPrice(nums(doc, Object.assign({}, d, { repairBudget: String(R) })));
+      C = 0
+    }
+    var Pn = Math.max(0, P - C);
     var f = num(document.getElementById("daFico").value),
       e = num(document.getElementById("daExp").value),
       tpp = fees().tpp,
@@ -979,7 +998,7 @@
         caps = [
           [Math.round(Math.min(a, .75) * 100) + "% of ARV", Math.min(a, .75) * arv],
           ["program maximum", p.max],
-          ["loan-to-cost", Math.min(p.pp * P + p.rp * R, p.ltc * (P + R))]
+          ["loan-to-cost", Math.min(p.pp * Pn + p.rp * R, p.ltc * (Pn + R))]
         ];
       caps.sort(function(x, y) {
         return x[1] - y[1]
@@ -997,7 +1016,7 @@
         rs = L * .11 / 2 + T.t / 2,
         cash = eq + lc + bf + tp + rs;
       var liq = Math.round(L * .11 / 2 + T.t / 2 + R / 3);
-      var due = Math.max(0, Math.round(eq)) + lc + bf + tp;
+      var due = Math.max(0, Math.round(eq)) + lc + bf + tp - Math.min(C, lc + bf + tp);
       cash = due + liq;
       ok.push({
         c: p.c,
@@ -1094,7 +1113,7 @@
       return z.trim()
     });
     var desc = [bb[0] ? bb[0] + "-bedroom" : "", bb[1] ? bb[1] + "-bath" : "", kv["Sq Ft"] ? Number(num(kv["Sq Ft"])).toLocaleString("en-US") + " SF" : "", "home", kv["Year Built"] ? "built in " + kv["Year Built"] : "", kv["Subdivision"] && kv["Subdivision"] !== "-" ? "in " + kv["Subdivision"] : ""].filter(Boolean).join(" ").replace("-bath ", "-bath, ");
-    var D0 = deal(x, lvl === "full" ? recPrice(x) : x.P);
+    var D0 = lvl === "full" ? deal(x, recPrice(x)) : deal(x, x.P, x.C);
     var para = "ACP Real Estate Lending has reviewed " + esc(x.addr) + ", a " + desc + "." + (x.arv ? " Based on " + (x.n ? x.n + " closed comparable sales" : MANUAL_COMPS ? "the MLS closed sales in the subject\u2019s subdivision" : "comparable sales") + ", ACP estimates an after-repair value of " + usd(x.arv) + (x.R ? " with repairs of " + usd(x.R) : "") + ". ACP is prepared to provide an estimated loan of " + usd(D0.L) + ", the lower of the approved loan-to-cost (" + ltcLabel(x) + ") and 75% of the after-repair value, toward the purchase and repairs, subject to final credit approval." : "") + " Lender and third-party closing costs are paid at closing and cannot be included in the loan. The property details follow, and the financing figures are laid out in the sections below.";
     var ps = doc.createElement("div");
     ps.className = "sec";

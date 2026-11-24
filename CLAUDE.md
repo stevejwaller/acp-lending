@@ -36,6 +36,11 @@ follow the request and update this file in the same commit.
   closing, never in the loan. Every chart and the profitability test are calculated
   at both the ACP recommended purchase price (75% of ARV less repairs) and the
   purchase price as submitted, side by side.
+- Seller concession (24 Nov 2026, Steve approved): optional "Seller Concession /
+  Credit" field on /analyze-deal. As-submitted figures only: loan-to-cost is sized
+  on the purchase price net of the concession, and the credit reduces cash due at
+  closing only up to the actual lender + third-party closing costs. Concession rows
+  show in the report only when one is entered.
 - Header menu (same on every page):
   - Client Tools: Pre-Approval, Deal Executive Summary Analyzer (/analyze-deal),
     DSCR Calculator, Request Financing (/request-financing), Forms, Investor
