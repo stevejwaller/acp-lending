@@ -227,7 +227,7 @@ export const LOGGED_DEALS = [
     source: "Broker referral",
     id: "L9",
     created_at: "2026-11-09 13:30:00",
-    status: "Active",
+    status: "Terminated",
     borrower: "Pending",
     email: "Pending",
     phone: "Pending",
@@ -252,7 +252,8 @@ export const LOGGED_DEALS = [
       "Value risk (public record): last sold 12 Dec 2024 for $320,000; 2025 assessment $371,300; built 1945. Loan sizes off the lower of price or appraisal - " +
       "if it appraises near $450K, 75% = $337,500 and cash to close at $750K jumps to ~$432K. Working offer $430K (what $150K liquid covers at 75% with 6 mo reserves); ceiling = appraised value. " +
       "Need seller P&L/returns, real estate vs business allocation, building SF, Phase I. " +
-      "16 Nov: a commercial bridge lender says it can help on this one - best pricing on full documentation, but it can go bank statement.",
+      "16 Nov: a commercial bridge lender says it can help on this one - best pricing on full documentation, but it can go bank statement. " +
+      "25 Nov: Terminated - Steve confirmed the deal is dead.",
     signature: "",
   },
   {
