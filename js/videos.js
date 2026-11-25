@@ -52,7 +52,7 @@
     var meta = v.channel ? v.channel : '';
     if (v.date && /^\d{4}-\d{2}-\d{2}$/.test(v.date)) {
       var d = new Date(v.date + 'T12:00:00Z');
-      meta += (meta ? ' · ' : '') + d.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC' });
+      meta += (meta ? ' \u00b7 ' : '') + d.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC' });
     }
     if (meta) { art.appendChild(el('p', 'brief-meta', meta)); }
     if (v.summary) { art.appendChild(el('p', 'video-summary', v.summary)); }
