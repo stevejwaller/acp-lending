@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Ask a Lender | ACP Lending</title>
 <link rel="stylesheet" href="/css/style.css?v=35">
-<link rel="stylesheet" href="/css/ask.css?v=1">
+<link rel="stylesheet" href="/css/ask.css?v=2">
 <link rel="canonical" href="https://acp-lending.com/ask">
 <meta name="description" content="Ask ACP Real Estate Lending a question about fix-and-flip, DSCR rental, construction or commercial financing, and read answers to the questions investors ask most.">
 <meta property="og:type" content="website">
@@ -72,7 +72,7 @@
 </div>
 <main id="top">
 
-<p>Have a question about financing an investment property? Ask it here. Steve Waller reads every question and gets back to you directly by email or phone. Answers to the questions investors ask most are below.</p>
+<p>Have a question about financing an investment property? Ask it here. Steve Waller reads every question and gets back to you directly by email or phone. You can also estimate your loan below, and read answers to the questions investors ask most.</p>
 
 <div class="ask-box" id="ask-box">
 <h2>Ask your question</h2>
@@ -158,6 +158,44 @@
 </form>
 </div>
 
+<section class="ask-box calc-box" id="calc-box" aria-labelledby="calc-title">
+<h2 id="calc-title">How much can I borrow on a fix and flip?</h2>
+<p>Enter your numbers for a quick estimate. We size most fix-and-flip loans at the lower of 90% of your total cost (purchase price plus repairs) and 75% of the after-repair value (ARV).</p>
+<p class="ask-msg" id="calc-msg" role="status" aria-live="polite" hidden></p>
+<div class="ask-form calc-inputs">
+<label for="calc-price">Purchase price</label>
+<input type="text" id="calc-price" inputmode="numeric" autocomplete="off" placeholder="$">
+<label for="calc-repairs">Repair budget</label>
+<input type="text" id="calc-repairs" inputmode="numeric" autocomplete="off" placeholder="$">
+<label for="calc-arv">After-repair value (ARV)</label>
+<input type="text" id="calc-arv" inputmode="numeric" autocomplete="off" placeholder="$">
+</div>
+<div class="calc-result" id="calc-result" hidden>
+<div class="calc-row"><span>Estimated loan</span><strong id="calc-loan"></strong></div>
+<div class="calc-row"><span>Your cash for the purchase and repairs</span><strong id="calc-cash"></strong></div>
+<p class="calc-why" id="calc-why"></p>
+<p class="calc-min" id="calc-min" hidden>Our minimum loan is $50,000, so this deal is below what we finance.</p>
+<p class="footnote">Lender costs (origination, processing and closing fees) and third-party costs (title, insurance, legal and appraisal) are paid at closing on top of this. 100% financing is possible for borrowers with strong credit, experience, liquidity and collateral. Estimates only, subject to underwriting. Not a commitment to lend.</p>
+<form id="calc-form" class="ask-form" method="POST" action="/ask/numbers">
+<h3>Send me my numbers</h3>
+<input type="hidden" name="purchase" id="calc-h-price">
+<input type="hidden" name="repairs" id="calc-h-repairs">
+<input type="hidden" name="arv" id="calc-h-arv">
+<label for="calc-name">Your name *</label>
+<input type="text" id="calc-name" name="name" required maxlength="120" autocomplete="name">
+<label for="calc-email">Email *</label>
+<input type="email" id="calc-email" name="email" required autocomplete="email">
+<label for="calc-phone">Phone <span class="ask-opt">(optional)</span></label>
+<input type="tel" id="calc-phone" name="phone" maxlength="40" autocomplete="tel">
+<label for="calc-city">Property city *</label>
+<input type="text" id="calc-city" name="city" required maxlength="80">
+<div class="ask-hp" aria-hidden="true"><input type="text" name="website" tabindex="-1" autocomplete="off"></div>
+<button type="submit" class="btn">Send me my numbers</button>
+<p class="footnote">Steve Waller will follow up with you about your deal. <a href="/privacy">Privacy Policy</a>.</p>
+</form>
+</div>
+</section>
+
 <section class="ask-qa" aria-labelledby="ask-qa-title">
 <h2 id="ask-qa-title">Questions investors ask</h2>
 <div id="ask-qa" data-src="/data/ask-qa.json"><!--ASK-QA--></div>
@@ -175,6 +213,6 @@
   </div>
 </footer>
 <script src="/js/nav.js?v=34" defer></script>
-<script src="/js/ask.js?v=1" defer></script>
+<script src="/js/ask.js?v=2" defer></script>
 </body>
 </html>

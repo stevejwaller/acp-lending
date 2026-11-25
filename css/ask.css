@@ -32,3 +32,11 @@ color: var(--ink);
 .ask-box { padding: 16px; }
 .ask-form button { width: 100%; }
 }
+/* Loan-size calculator (added 25 Nov 2026) */
+.calc-result { margin-top: 18px; max-width: 560px; }
+.calc-row { display: flex; justify-content: space-between; gap: 12px; padding: 10px 0; border-bottom: 1px solid #ccd3dd; font-size: 17px; }
+.calc-row strong { font-size: 20px; }
+.calc-why { margin: 10px 0 0; color: #333; }
+.calc-min { margin: 10px 0 0; font-weight: 700; color: #a00; }
+.calc-box .calc-result form { margin-top: 20px; border-top: 2px solid var(--gold); padding-top: 8px; }
+.calc-box h3 { margin: 12px 0 0; font-size: 18px; }
