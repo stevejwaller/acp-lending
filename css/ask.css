@@ -1,0 +1,34 @@
+/* ACP Lending - /ask "Ask a Lender" page. Added 25 Nov 2026. */
+.ask-box {
+background: var(--gray-bg);
+border-left: 4px solid var(--gold);
+border-radius: 6px;
+padding: 20px 24px;
+margin: 24px 0 36px;
+}
+.ask-box h2 { margin-top: 0; font-size: 20px; }
+.ask-form label { display: block; font-weight: 700; margin-top: 12px; }
+.ask-form input, .ask-form select, .ask-form textarea {
+display: block;
+width: 100%;
+max-width: 560px;
+font: inherit;
+font-size: 16px;
+padding: 10px;
+margin: 6px 0 4px;
+border: 1px solid #999;
+border-radius: 4px;
+background: #fff;
+color: var(--ink);
+}
+.ask-form textarea { resize: vertical; min-height: 120px; }
+.ask-form button { margin-top: 16px; font-size: 17px; border: 0; cursor: pointer; }
+.ask-opt { font-weight: 400; color: #555; }
+.ask-hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+.ask-msg { font-size: 17px; margin: 0 0 12px; }
+.ask-msg.ask-err { color: #a00; }
+.ask-qa .faq-item p { margin-top: 4px; }
+@media (max-width: 600px) {
+.ask-box { padding: 16px; }
+.ask-form button { width: 100%; }
+}

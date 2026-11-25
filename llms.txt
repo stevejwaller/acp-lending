@@ -89,6 +89,7 @@ Service area: United States, with Texas-specific programs
 
 - [About ACP Lending and Steve Waller](https://acp-lending.com/about)
 - [Videos](https://acp-lending.com/videos): short ACP videos on fix-and-flip financing, the ACP deal report and case studies, each with a short written summary.
+- [Ask a Lender](https://acp-lending.com/ask): send ACP Real Estate Lending a financing question, plus short answers to the questions investors ask most (closing speed, credit, first flips, fix-and-flip sizing, DSCR, what to send for a quote, where we lend).
 
 ## Policies
 

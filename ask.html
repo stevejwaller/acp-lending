@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ask a Lender | ACP Lending</title>
+<link rel="stylesheet" href="/css/style.css?v=35">
+<link rel="stylesheet" href="/css/ask.css?v=1">
+<link rel="canonical" href="https://acp-lending.com/ask">
+<meta name="description" content="Ask ACP Real Estate Lending a question about fix-and-flip, DSCR rental, construction or commercial financing, and read answers to the questions investors ask most.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="ACP Lending">
+<meta property="og:title" content="Ask a Lender | ACP Lending">
+<meta property="og:description" content="Ask ACP Real Estate Lending a question about fix-and-flip, DSCR rental, construction or commercial financing, and read answers to the questions investors ask most.">
+<meta property="og:url" content="https://acp-lending.com/ask">
+<meta property="og:image" content="https://acp-lending.com/og-image.png?v=2">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Ask a Lender | ACP Lending">
+<meta name="twitter:description" content="Ask ACP Real Estate Lending a question about fix-and-flip, DSCR rental, construction or commercial financing, and read answers to the questions investors ask most.">
+<meta name="twitter:image" content="https://acp-lending.com/og-image.png?v=2">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<!--ASK-JSONLD-->
+</head>
+<body>
+<header class="site-header">
+  <div class="header-inner">
+    <a class="brand" href="/">ACP Lending</a>
+    <button class="nav-toggle" aria-label="Menu">&#9776;</button>
+    <nav class="main-nav">
+      <div class="nav-group">
+        <span class="nav-label">Financing Products</span>
+        <ul>
+          <li><a href="/fix-and-flip-bridge-loans">Fix-and-Flip Bridge Loans</a></li>
+          <li><a href="/dscr-rental-loans">DSCR Rental Loans</a></li>
+          <li><a href="/ground-up-construction-loans">Ground-Up Construction Loans</a></li>
+          <li><a href="/multifamily-loans">Multifamily Loans</a></li>
+          <li><a href="/portfolio-loans">Portfolio Loans</a></li>
+          <li><a href="/commercial-real-estate-loans">Commercial Real Estate Loans</a></li>
+        </ul>
+      </div>
+      <div class="nav-group">
+        <span class="nav-label">Client Tools</span>
+        <ul>
+          <li><a href="/pre-approval">Pre-Approval</a></li>
+          <li><a href="/analyze-deal">Deal Executive Summary Analyzer</a></li>
+          <li><a href="/dscr-calculator">DSCR Calculator</a></li>
+          <li><a href="/request-financing">Request Financing</a></li>
+          <li><a href="/loan-documents">Forms</a></li>
+          <li><a href="/investor-resources">Investor Guidance</a></li>
+          <li><a href="/investor-brief/daily/">ACP Investor Brief</a></li>
+          <li><a href="/commercial-loan-credit-application">Commercial Credit Application</a></li>
+          <li><a href="/case-studies">Case Studies</a></li>
+        </ul>
+      </div>
+      <div class="nav-group">
+        <span class="nav-label">About</span>
+        <ul>
+          <li><a href="/about">About ACP Lending</a></li>
+          <li><a href="/videos">Videos</a></li>
+          <li class="active"><a href="/ask">Ask a Lender</a></li>
+        </ul>
+      </div>
+    </nav>
+  </div>
+</header>
+<div class="hero">
+  <div class="hero-inner">
+    <h1>Ask a Lender</h1>
+  </div>
+</div>
+<main id="top">
+
+<p>Have a question about financing an investment property? Ask it here. Steve Waller reads every question and gets back to you directly by email or phone. Answers to the questions investors ask most are below.</p>
+
+<div class="ask-box" id="ask-box">
+<h2>Ask your question</h2>
+<p class="ask-msg" id="ask-msg" role="status" aria-live="polite" hidden></p>
+<form id="ask-form" class="ask-form" method="POST" action="/ask/submit">
+<label for="ask-name">Your name *</label>
+<input type="text" id="ask-name" name="name" required autocomplete="name" maxlength="120">
+<label for="ask-email">Email *</label>
+<input type="email" id="ask-email" name="email" required autocomplete="email" maxlength="200">
+<label for="ask-phone">Phone <span class="ask-opt">(optional)</span></label>
+<input type="tel" id="ask-phone" name="phone" autocomplete="tel" maxlength="40">
+<label for="ask-state">Property state *</label>
+<select id="ask-state" name="state" required>
+<option value="">Choose a state</option>
+<option>Alabama</option>
+<option>Alaska</option>
+<option>Arizona</option>
+<option>Arkansas</option>
+<option>California</option>
+<option>Colorado</option>
+<option>Connecticut</option>
+<option>Delaware</option>
+<option>District of Columbia</option>
+<option>Florida</option>
+<option>Georgia</option>
+<option>Hawaii</option>
+<option>Idaho</option>
+<option>Illinois</option>
+<option>Indiana</option>
+<option>Iowa</option>
+<option>Kansas</option>
+<option>Kentucky</option>
+<option>Louisiana</option>
+<option>Maine</option>
+<option>Maryland</option>
+<option>Massachusetts</option>
+<option>Michigan</option>
+<option>Minnesota</option>
+<option>Mississippi</option>
+<option>Missouri</option>
+<option>Montana</option>
+<option>Nebraska</option>
+<option>Nevada</option>
+<option>New Hampshire</option>
+<option>New Jersey</option>
+<option>New Mexico</option>
+<option>New York</option>
+<option>North Carolina</option>
+<option>North Dakota</option>
+<option>Ohio</option>
+<option>Oklahoma</option>
+<option>Oregon</option>
+<option>Pennsylvania</option>
+<option>Rhode Island</option>
+<option>South Carolina</option>
+<option>South Dakota</option>
+<option>Tennessee</option>
+<option>Texas</option>
+<option>Utah</option>
+<option>Vermont</option>
+<option>Virginia</option>
+<option>Washington</option>
+<option>West Virginia</option>
+<option>Wisconsin</option>
+<option>Wyoming</option>
+</select>
+<label for="ask-loan">Loan type *</label>
+<select id="ask-loan" name="loan_type" required>
+<option value="">Choose a loan type</option>
+<option>Fix and flip / bridge</option>
+<option>DSCR rental</option>
+<option>Ground-up construction</option>
+<option>Multifamily</option>
+<option>Portfolio</option>
+<option>Commercial real estate</option>
+<option>Not sure yet</option>
+</select>
+<label for="ask-question">Your question *</label>
+<textarea id="ask-question" name="question" required rows="5" maxlength="2000"></textarea>
+<div class="ask-hp" aria-hidden="true"><input type="text" name="website" tabindex="-1" autocomplete="off"></div>
+<button type="submit" class="btn">Send my question</button>
+<p class="footnote">We may add your question to the answers below, without your name or any details about you. <a href="/privacy">Privacy Policy</a>.</p>
+</form>
+</div>
+
+<section class="ask-qa" aria-labelledby="ask-qa-title">
+<h2 id="ask-qa-title">Questions investors ask</h2>
+<div id="ask-qa" data-src="/data/ask-qa.json"><!--ASK-QA--></div>
+</section>
+
+<p>Ready to run a deal? <a href="/request-financing">Request financing</a> or call or text Steve Waller at <a href="tel:+19365228951">936-522-8951</a>.</p>
+
+</main>
+<footer class="site-footer">
+  <div class="footer-inner">
+    <p class="footer-contact">ACP Lending | Steve Waller | <a href="tel:+19365228951" style="color:#c9974a;text-decoration:underline;">936-522-8951</a> | <a href="mailto:steve@acp-lending.com" style="color:#c9974a;text-decoration:underline;">steve@acp-lending.com</a></p>
+    <p class="footer-disclaimer">Investment-property financing is subject to underwriting, lender approval, appraisal or valuation, title, insurance, property eligibility, and program availability. Preliminary analyses are not commitments to lend.</p>
+    <p class="footer-links"><a href="https://www.biggerpockets.com/users/stevew482">BiggerPockets</a> | <a href="https://www.linkedin.com/in/steve-waller-b974b3424/">LinkedIn</a> | <a href="https://www.facebook.com/ACPRealEstateLending">ACP Lending on Facebook</a> | <a href="https://www.facebook.com/profile.php?id=61579789534054">Steve J Waller on Facebook</a></p>
+    <p class="footer-links footer-legal"><a href="/privacy">Privacy Policy</a> &middot; <a href="/terms">Terms of Use</a> &middot; <a href="/wire-fraud">Wire Fraud Warning</a></p>
+  </div>
+</footer>
+<script src="/js/nav.js?v=34" defer></script>
+<script src="/js/ask.js?v=1" defer></script>
+</body>
+</html>

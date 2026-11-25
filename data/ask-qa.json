@@ -1,0 +1,42 @@
+{
+  "updated": "2026-11-25",
+  "note": "Questions and answers shown on /ask, in this order. Each entry: q (the question) and a (the answer, plain text; a blank line starts a new paragraph). Add a new entry to publish a new answer; the page and its FAQPage data update on the next deploy.",
+  "items": [
+    {
+      "q": "How fast can you close?",
+      "a": "Quotes usually come back the same day. Closing typically takes 5 to 10 business days after we receive a complete file, depending on the appraisal or valuation, title and insurance. Some programs skip a full appraisal, which saves time."
+    },
+    {
+      "q": "What credit score do I need?",
+      "a": "Our fix-and-flip programs start at a 650 credit score. Some DSCR rental programs have no minimum score, and most price best at 680 and up. A higher score and more completed projects raise how much we can lend. We start with a soft credit pull, which does not affect your credit score."
+    },
+    {
+      "q": "Can I get a loan on my first flip?",
+      "a": "Yes. Several of our programs take first-time flippers. Expect a lower after-repair value cap and a bit more cash at closing until you have completed flips on record. Heavy rehabs, where repairs cost more than the purchase price, usually need prior experience."
+    },
+    {
+      "q": "How much will you lend on a fix and flip?",
+      "a": "We size most fix-and-flip loans at the lower of 90% of your total cost (purchase price plus repairs) and 75% of the after-repair value (ARV). Repair funds are released in draws as the work is completed and inspected. Closing costs are paid at closing, not added to the loan."
+    },
+    {
+      "q": "What is a DSCR loan?",
+      "a": "A DSCR loan qualifies a rental on the property's rent instead of your personal income. DSCR is the monthly rent divided by the full payment: principal, interest, taxes, insurance and HOA. Most DSCR programs want 1.0 or better, meaning the rent covers the payment. The loan can close in your LLC or your personal name."
+    },
+    {
+      "q": "What should I send for a quote?",
+      "a": "For a fix and flip: the property address, purchase price, repair budget, after-repair value, your middle credit score and how many flips you have finished in the last three years. For a rental: the address, purchase price or value, the rent, taxes, insurance and HOA, and your middle credit score. We usually come back the same day with the loan amount and your cash to close."
+    },
+    {
+      "q": "Do you only lend in Texas?",
+      "a": "No. We are based in the Houston area and focus on Houston, Dallas-Fort Worth, San Antonio and Austin, and our programs are available nationwide, subject to underwriting."
+    },
+    {
+      "q": "What won't you finance?",
+      "a": "We make business-purpose loans on non-owner-occupied investment property only, so we don't lend on a home you will live in. We don't lend on manufactured or mobile homes, and our minimum loan is $50,000."
+    },
+    {
+      "q": "What do I need to have ready when I ask for a loan?",
+      "a": "Introducing your loan request to a lender begins with credit score, liquidity, and experience for the last 24-36 months.  Most lenders generally will not spend a lot of time with prospects that will not provide that information at the beginning of the discussion.  Many borrowers make the mistake of providing inaccurate information or evading the questions or providing vague responses.  Lenders want to make loans because that’s how they make money so most of the time actual information provides the lender the opportunity to slot you into the program that you could get approved.   If you answer credit score questions with round numbers or I have a great credit score usually is a sign that you don’t.  It’s the same with answering questions regarding liquidity and experience.  The reality is that the loan request will not fund if you cannot document what you’re saying."
+    }
+  ]
+}
