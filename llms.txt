@@ -13,7 +13,7 @@ Service area: United States, with Texas-specific programs
 - [Fix-and-Flip Bridge Loans](https://acp-lending.com/fix-and-flip-bridge-loans): Up to 100%
   of purchase and 100% of renovation, capped by the lower of loan-to-cost and 65% to 80% of
   after-repair value depending on program, credit and experience. Rates from 9.99% with 1% to 3%
-  in points, 6-24 month interest-only terms, $75,000 to $5,000,000. 600 minimum credit on some
+  in points, 6-24 month interest-only terms, $50,000 to $5,000,000. 600 minimum credit on some
   programs, 640-650 on most. 100% programs: 650+ credit capped at 65% of ARV (70% at 700+, 75% at
   700+ with 3 completed flips, loans to $1,250,000); 720+ credit with 10+ flips (5 in state) capped
   at 75% of ARV, loans to $800,000. Closing costs are paid at closing. Individual and LLC borrowers.
@@ -37,7 +37,7 @@ Service area: United States, with Texas-specific programs
   interest-only structures. Purchase, rate-and-term refinance and cash-out refinance.
   Leverage up to 80% LTV on purchase and rate-and-term; cash-out refinances are typically
   capped lower, generally around 75%. DSCR requirements as low as 0.80x on certain programs. A Flexible Credit DSCR program
-  (30-year fixed, $75,000-$2,000,000) has no minimum credit score and no minimum DSCR, up to 75% LTV
+  (30-year fixed, $50,000-$2,000,000) has no minimum credit score and no minimum DSCR, up to 75% LTV
   on purchases (70% for first-time investors); refinances 75% LTV at 675+, 70% at 650-674, 65% at 600-649, 60% under 600; vacant properties qualify on market rent.
 - [Ground-Up Construction Loans](https://acp-lending.com/ground-up-construction-loans): Loan
   amounts generally $100,000 to $10 million. Interest-only on funds actually drawn.
@@ -56,7 +56,7 @@ Service area: United States, with Texas-specific programs
   score. 5, 7 or 10-year terms with 30-year amortization or interest-only. Non-recourse
   structure available. Portfolios generally need to be at least 90% leased.
 - [Commercial Real Estate Loans](https://acp-lending.com/commercial-real-estate-loans): 30-year fixed, no balloon,
-  for assisted living homes (1-4 units, $75,000-$2,000,000 up to 75% LTV on purchases (70% for first-time investors); up to $10,000,000 at 65% LTV with 600+ credit for
+  for assisted living homes (1-4 units, $50,000-$2,000,000 up to 75% LTV on purchases (70% for first-time investors); up to $10,000,000 at 65% LTV with 600+ credit for
   experienced investors in major metros), 5+ unit and mixed-use from $100,000 up to 75% LTV on purchases (70% for first-time investors). Property types include office, retail, warehouse, self-storage and automotive. No minimum
   credit score on certain programs.
 
