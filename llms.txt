@@ -10,14 +10,27 @@ Service area: United States, with Texas-specific programs
 
 ## Financing programs
 
-- [Fix-and-Flip Bridge Loans](https://acp-lending.com/fix-and-flip-bridge-loans): Tiered by
-  experience. Standard: up to 90% purchase and 100% renovation, capped by the lower of 90%
-  loan-to-cost and 70% of after-repair value. Preferred (720+ credit, 10+ flips in three
-  years): up to 95% purchase and 100% renovation, capped at 75% of after-repair value.
-  Maximum (720+ credit, 10+ flips with five in state, loan $800,000 or less, $1,000,000 in
-  California): up to 100% purchase and 100% renovation, capped at 75% of after-repair value. Texas only: a 70% advance structure under
-  which a deal may close with nothing out of pocket when purchase, renovation and closing
-  costs all fit inside 70% of after-repair value. Individual and LLC borrowers.
+- [Fix-and-Flip Bridge Loans](https://acp-lending.com/fix-and-flip-bridge-loans): Up to 100%
+  of purchase and 100% of renovation, capped by the lower of loan-to-cost and 65% to 80% of
+  after-repair value depending on program, credit and experience. Rates from 9.99% with 1% to 3%
+  in points, 6-24 month interest-only terms, $75,000 to $5,000,000. 600 minimum credit on some
+  programs, 640-650 on most. 100% programs: 650+ credit capped at 65% of ARV (70% at 700+, 75% at
+  700+ with 3 completed flips, loans to $1,250,000); 720+ credit with 10+ flips (5 in state) capped
+  at 75% of ARV, loans to $800,000. Closing costs are paid at closing. Individual and LLC borrowers.
+- [Texas Fix and Flip Loans](https://acp-lending.com/texas-fix-and-flip-loans): The fix-and-flip
+  terms above for Texas properties statewide (Houston, Dallas-Fort Worth, San Antonio, Austin),
+  with answers on 100% financing, cash to close, credit score and first flips.
+- [100% Fix and Flip Financing](https://acp-lending.com/100-percent-fix-and-flip-financing): What
+  100% financing covers (purchase and renovation), what the borrower still pays (points, lender
+  fees, prepaid interest, title, insurance), and who qualifies.
+- [Texas Bridge Loans](https://acp-lending.com/texas-bridge-loans): Short-term investor bridge
+  loans in Texas for purchase, renovation, and refinance of a maturing or matured hard money loan.
+- [Texas DSCR Loans](https://acp-lending.com/texas-dscr-loans): Texas rental loans qualified on rent,
+  no tax returns. 30-year fixed, up to 80% LTV purchase, 75% cash-out, no minimum DSCR on some
+  programs, from about 7.75%.
+- [Texas Ground-Up Construction Loans](https://acp-lending.com/texas-ground-up-construction-loans):
+  Texas spec, infill and build-to-rent construction loans, up to 85% of cost and 70% of completed
+  value, 9% to 12%, interest only on drawn funds.
 - [DSCR Rental Loans](https://acp-lending.com/dscr-rental-loans): Qualification on property
   cash flow rather than personal income. 30-year fixed, 5/1 ARM and 7/1 ARM, with
   interest-only structures. Purchase, rate-and-term refinance and cash-out refinance.
@@ -85,6 +98,5 @@ Service area: United States, with Texas-specific programs
 
 All figures above are program maximums, not offers. Financing is subject to underwriting,
 lender approval, appraisal or valuation, title, insurance, property eligibility and program
-availability. Preliminary analyses are not commitments to lend. Advance rates vary by state;
-the 70% advance with zero out-of-pocket closing is specific to Texas. Rates are not published
-because they move with the market - contact ACP Lending for current pricing.
+availability. Preliminary analyses are not commitments to lend. Starting rates move with the
+market and are updated weekly at https://acp-lending.com/rates - contact ACP Lending for a quote.
