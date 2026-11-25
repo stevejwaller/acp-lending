@@ -48,6 +48,7 @@ follow the request and update this file in the same commit.
   - Financing Products: Fix & Flip Bridge, DSCR Rental, Ground-Up Construction,
     Multifamily, Portfolio, Commercial Real Estate Loans.
   - About: About ACP Lending (/about) — added 9 Nov 2026 at Steve's request.
+  - About: Videos (/videos) — added 25 Nov 2026 at Steve's request.
 - Request for Information submissions: the details email Steve only. The
   borrower gets only a short receipt with no figures (Steve, 4 Nov 2026).
 
