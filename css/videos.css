@@ -23,3 +23,9 @@ a.video-frame:focus-visible { outline: 3px solid var(--gold); outline-offset: 2p
 .video-card .brief-meta { margin: 0 0 6px; }
 .video-card p.video-summary { margin: 0; }
 .video-card .video-more { margin: 8px 0 0; }
+/* Outside videos (Learn the basics, Rates and markets). Added 25 Nov 2026. */
+.outside-videos { margin: 44px 0 0; padding-top: 28px; border-top: 1px solid var(--border); }
+.outside-videos .video-section-title { margin: 0 0 8px; }
+.outside-videos .video-section-note { margin: 0; font-size: 0.95rem; color: #4a5463; }
+.video-card h3 { font-size: 1.05rem; line-height: 1.35; margin: 14px 0 6px; }
+.video-list .video-fallback { grid-column: 1 / -1; margin: 0; }
