@@ -55,6 +55,10 @@ follow the request and update this file in the same commit.
   - About: Referral Partners (/partners) — added 26 Nov 2026 at Steve's request.
     Sign-ups post to functions/partners/submit.js, which emails Steve and logs to
     D1 partner_signups.
+- Commercial Bridge Loans (/commercial-bridge-loans) — campaign landing page added
+  26 Nov 2026 at Steve's request; not in the header menu. Requests post to
+  functions/commercial-bridge/submit.js, which emails Steve (reply-to = borrower) and
+  logs to D1 commercial_bridge_requests. No lender name or program code on the page.
 - Request for Information submissions: the details email Steve only. The
   borrower gets only a short receipt with no figures (Steve, 4 Nov 2026).
 
