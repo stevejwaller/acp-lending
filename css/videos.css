@@ -29,3 +29,5 @@ a.video-frame:focus-visible { outline: 3px solid var(--gold); outline-offset: 2p
 .outside-videos .video-section-note { margin: 0; font-size: 0.95rem; color: #4a5463; }
 .video-card h3 { font-size: 1.05rem; line-height: 1.35; margin: 14px 0 6px; }
 .video-list .video-fallback { grid-column: 1 / -1; margin: 0; }
+/* Ask a Lender videos, self-hosted. Added 26 Nov 2026. */
+.video-frame video { position: absolute; inset: 0; width: 100%; height: 100%; display: block; background: var(--navy-dark); }
