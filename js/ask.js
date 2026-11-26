@@ -80,6 +80,18 @@
           p.textContent = para.trim();
           d.appendChild(p);
         });
+        if (it.video && /^\/videos\/ask\/[a-z0-9-]+$/.test(it.video)) {
+          var w = document.createElement('div');
+          w.className = 'qa-video';
+          var v = document.createElement('video');
+          v.controls = true; v.preload = 'none';
+          v.setAttribute('playsinline', '');
+          v.poster = it.video + '.jpg';
+          v.setAttribute('aria-label', 'Video answer: ' + it.q);
+          var s = document.createElement('source');
+          s.src = it.video + '.mp4'; s.type = 'video/mp4';
+          v.appendChild(s); w.appendChild(v); d.appendChild(w);
+        }
         box.appendChild(d);
       });
     })

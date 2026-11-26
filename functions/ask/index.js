@@ -5,6 +5,14 @@
 // returned and js/ask.js renders the list in the browser instead.
 import { esc } from "../_lib/mailer.js";
 
+// Optional "video" on an item: a /videos/ask/ path (no extension) with .mp4 and .jpg beside it.
+const VID_RE = /^\/videos\/ask\/[a-z0-9-]+$/;
+function vid(it) {
+  if (!it.video || !VID_RE.test(it.video)) return "";
+  const v = esc(it.video);
+  return `\n<div class="qa-video"><video controls playsinline preload="none" poster="${v}.jpg" aria-label="Video answer: ${esc(it.q)}"><source src="${v}.mp4" type="video/mp4"></video></div>`;
+}
+
 export async function onRequestGet({ request, env }) {
   const page = await env.ASSETS.fetch(new URL("/ask", request.url));
   if (!page.ok) return page;
@@ -16,7 +24,7 @@ export async function onRequestGet({ request, env }) {
     if (items.length) {
       const list = items.map(it =>
         `<div class="faq-item">\n<h3>${esc(it.q)}</h3>\n` +
-        String(it.a).split(/\n\s*\n/).map(p => `<p>${esc(p.trim())}</p>`).join("\n") + `\n</div>`
+        String(it.a).split(/\n\s*\n/).map(p => `<p>${esc(p.trim())}</p>`).join("\n") + vid(it) + `\n</div>`
       ).join("\n");
       const ld = {
         "@context": "https://schema.org",
