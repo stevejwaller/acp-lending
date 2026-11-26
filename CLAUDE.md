@@ -52,6 +52,9 @@ follow the request and update this file in the same commit.
   - About: Ask a Lender (/ask) — added 25 Nov 2026 at Steve's request. Its Q&A
     lives in data/ask-qa.json (rendered by functions/ask/index.js); questions post to
     functions/ask/submit.js, which emails Steve and logs to D1 ask_questions.
+  - About: Referral Partners (/partners) — added 26 Nov 2026 at Steve's request.
+    Sign-ups post to functions/partners/submit.js, which emails Steve and logs to
+    D1 partner_signups.
 - Request for Information submissions: the details email Steve only. The
   borrower gets only a short receipt with no figures (Steve, 4 Nov 2026).
 
