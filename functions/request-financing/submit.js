@@ -15,10 +15,17 @@ export async function onRequestPost({ request, env, waitUntil }) {
   const phone = (form.get("client_phone") || "").toString().trim();
   const name = (form.get("client_full_name") || "").toString();
 
+  // 26 Nov 2026 (Steve): optional "Referred by" field for the Referral Partner Program.
+  // The forms worker has no column for it, so it rides at the top of the project summary
+  // (it shows in Steve's alert and on the saved D1 row) and is logged to D1 partner_referrals.
+  const referredBy = (form.get("referred_by") || "").toString().replace(/[\r\n]+/g, " ").trim().slice(0, 120);
+
   const out = new FormData();
   for (const [k, v] of form.entries()) {
     if (k === "client_email") continue;
     if (k === "client_phone") continue;
+    if (k === "referred_by") continue;
+    if (k === "project_summary" && referredBy) { out.append(k, `REFERRED BY: ${referredBy}\n\n${v}`); continue; }
     out.append(k, v);
   }
   out.append("client_email", "");
@@ -42,6 +49,14 @@ export async function onRequestPost({ request, env, waitUntil }) {
       if (row && row.id) {
         await env.DB.prepare("UPDATE rfi_submissions SET client_email = ?, client_phone = ? WHERE id = ?")
           .bind(email, phone, row.id).run();
+      }
+      if (referredBy) {
+        await env.DB.prepare(`CREATE TABLE IF NOT EXISTS partner_referrals (
+          id INTEGER PRIMARY KEY AUTOINCREMENT, referred_by TEXT, rfi_id INTEGER,
+          borrower_name TEXT, borrower_email TEXT, property TEXT, status TEXT NOT NULL DEFAULT 'New',
+          created_at TEXT NOT NULL DEFAULT (datetime('now')))`).run();
+        await env.DB.prepare("INSERT INTO partner_referrals (referred_by, rfi_id, borrower_name, borrower_email, property) VALUES (?, ?, ?, ?, ?)")
+          .bind(referredBy, row && row.id ? row.id : null, name, email, (form.get("property_address") || "").toString().slice(0, 200)).run();
       }
     } catch (e) {}
   }
