@@ -22,8 +22,8 @@
     }
   }
 
-  // Loan-size calculator (25 Nov 2026, Steve): loan = the lower of 90% of cost
-  // (purchase + repairs) and 75% of ARV. Cash shown = purchase + repairs - loan.
+  // Loan-size calculator (25 Nov 2026, Steve): loan = the lower of 100% of cost
+  // (purchase + repairs) and 80% of ARV (27 Nov 2026). Cash shown = purchase + repairs - loan.
   var cIn = { p: document.getElementById('calc-price'), r: document.getElementById('calc-repairs'), a: document.getElementById('calc-arv') };
   var cMsg = document.getElementById('calc-msg');
   function num(el) { var n = parseFloat(String(el.value || '').replace(/[^0-9.]/g, '')); return isFinite(n) && n > 0 ? Math.round(n) : 0; }
@@ -32,13 +32,13 @@
     var P = num(cIn.p), R = num(cIn.r), A = num(cIn.a);
     var out = document.getElementById('calc-result');
     if (!P || !A) { out.hidden = true; return; }
-    var cost = P + R, byCost = Math.round(0.9 * cost), byArv = Math.round(0.75 * A);
+    var cost = P + R, byCost = Math.round(1.0 * cost), byArv = Math.round(0.8 * A);
     var L = Math.min(byCost, byArv), cash = Math.max(0, cost - L);
     document.getElementById('calc-loan').textContent = usd(L);
     document.getElementById('calc-cash').textContent = usd(cash);
     document.getElementById('calc-why').textContent = byArv < byCost
-      ? '75% of the ARV (' + usd(byArv) + ') is lower than 90% of your cost (' + usd(byCost) + '), so it sets the loan.'
-      : '90% of your cost (' + usd(byCost) + ') is lower than 75% of the ARV (' + usd(byArv) + '), so it sets the loan.';
+      ? '80% of the ARV (' + usd(byArv) + ') is lower than 100% of your cost (' + usd(byCost) + '), so it sets the loan.'
+      : '100% of your cost (' + usd(byCost) + ') is lower than 80% of the ARV (' + usd(byArv) + '), so it sets the loan.';
     document.getElementById('calc-min').hidden = L >= 50000;
     document.getElementById('calc-h-price').value = P;
     document.getElementById('calc-h-repairs').value = R;

@@ -1,6 +1,6 @@
 // POST /ask/numbers - "Send me my numbers" form under the loan-size calculator on /ask
 // (25 Nov 2026, Steve). Recomputes the estimate from the inputs (loan = the lower of
-// 90% of purchase + repairs and 75% of ARV), emails it to Steve as a lead (reply-to set
+// 100% of purchase + repairs and 80% of ARV; 27 Nov 2026), emails it to Steve as a lead (reply-to set
 // to the visitor) and logs it to D1 ask_calc. Same pattern as functions/ask/submit.js.
 import { sendMail, EMAIL_RE, STEVE, clip, sameOrigin } from "../_lib/mailer.js";
 
@@ -25,9 +25,9 @@ export async function onRequestPost({ request, env }) {
     P: amt(form.get("purchase")), R: amt(form.get("repairs")), A: amt(form.get("arv")) };
   if (!d.name || !EMAIL_RE.test(d.email) || !d.city || !d.P || !d.A) return back("missing");
 
-  const cost = d.P + d.R, byCost = Math.round(0.9 * cost), byArv = Math.round(0.75 * d.A);
+  const cost = d.P + d.R, byCost = Math.round(1.0 * cost), byArv = Math.round(0.8 * d.A);
   const L = Math.min(byCost, byArv), cash = Math.max(0, cost - L);
-  const sets = byArv < byCost ? "75% of ARV" : "90% of cost";
+  const sets = byArv < byCost ? "80% of ARV" : "100% of cost";
 
   if (env.DB) {
     try {
@@ -41,7 +41,7 @@ export async function onRequestPost({ request, env }) {
     to: STEVE,
     replyTo: d.email,
     subject: `Loan calculator lead: ${d.name} (${d.city}) ${money(L)} estimate`,
-    text: `New loan calculator lead from acp-lending.com/ask\n\nName: ${d.name}\nEmail: ${d.email}\nPhone: ${d.phone || "not given"}\nProperty city: ${d.city}\n\nPurchase price: ${money(d.P)}\nRepair budget: ${money(d.R)}\nARV: ${money(d.A)}\n\n90% of cost: ${money(byCost)}\n75% of ARV: ${money(byArv)}\nEstimated loan: ${money(L)} (set by ${sets})\nTheir cash for purchase and repairs: ${money(cash)}${L < 50000 ? "\nBelow the $50,000 minimum loan." : ""}\n\nReply to this email to answer them directly.`,
+    text: `New loan calculator lead from acp-lending.com/ask\n\nName: ${d.name}\nEmail: ${d.email}\nPhone: ${d.phone || "not given"}\nProperty city: ${d.city}\n\nPurchase price: ${money(d.P)}\nRepair budget: ${money(d.R)}\nARV: ${money(d.A)}\n\n100% of cost: ${money(byCost)}\n80% of ARV: ${money(byArv)}\nEstimated loan: ${money(L)} (set by ${sets})\nTheir cash for purchase and repairs: ${money(cash)}${L < 50000 ? "\nBelow the $50,000 minimum loan." : ""}\n\nReply to this email to answer them directly.`,
   });
   if (!res || res.ok === false) return back("error");
   return back("sent");
