@@ -51,7 +51,7 @@ var monthsToSell = num('monthsToSell');
 var sellingCostsPct = num('sellingCostsPct');
 
 var totalProjectCost = purchase + repairs;
-var ltcLimit = 0.90 * totalProjectCost;
+var ltcLimit = 1.00 * totalProjectCost; // 27 Nov 2026: up to 100% of purchase + renovation
 var arvLimit = (arvPct / 100) * arv;
 var stEl = document.getElementById('propertyState');
 var hmEl = document.getElementById('hmlFunded');
@@ -84,7 +84,7 @@ var maxLoan = Math.min(approvedAdvance, loanNeeded);
 // Solving back through the advance gives the ARV this loan is actually written on -
 // the value at which the surplus disappears. It sizes the loan ONLY; the profit
 // section still resells at the ARV the user entered, which is the market figure.
-// A surplus can only ever arise on an HML deal: on a standard deal the 90% cost test
+// A surplus can only ever arise on an HML deal: on a standard deal the 100% cost test
 // holds the loan below cost, which is always below what the deal needs.
 var arvAdjusted = (approvedAdvance - maxLoan) > 0.5;
 var arvApplied = (arvAdjusted && arvPct > 0) ? (maxLoan / (arvPct / 100)) : arv;
@@ -170,9 +170,9 @@ if (isTX && hasInput && !txHml) {
     var msg;
     if (diff > 0.5) {
       msg = 'On this deal the HML advance is worth ' + fmt.format(diff) +
-            ' more, because 70-75 percent of ARV comes in above 90 percent of cost.';
+            ' more, because the ARV advance comes in above 100 percent of cost.';
     } else {
-      var needArv = (arvPct > 0) ? (0.90 * totalProjectCost) / (arvPct / 100) : 0;
+      var needArv = (arvPct > 0) ? (1.00 * totalProjectCost) / (arvPct / 100) : 0;
       msg = 'Identical on this deal. The ARV limit is already the binding constraint, so the HML advance adds nothing here. ' +
             'It only starts to help once ARV clears about ' + fmt.format(needArv) +
             ' at a ' + arvPct + ' percent advance.';
@@ -284,7 +284,7 @@ var isTx = !!(_stSel && _stSel.value === 'TX');
 if (_hmFld) _hmFld.style.display = isTx ? '' : 'none';
 if (!isTx && _hmSel) _hmSel.value = '';
 var _pct = document.getElementById('arvPct');
-if (isTx && _pct && !_pct.value) _pct.value = '70';
+if (isTx && _pct && !_pct.value) _pct.value = '80';
 var _on = isTx && _hmSel && _hmSel.value === 'hml';
 if (_note) _note.style.display = _on ? '' : 'none';
 calc();

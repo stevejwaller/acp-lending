@@ -38,7 +38,7 @@ var panel = document.createElement('div');
 panel.id = 'calc-leverage';
 panel.innerHTML =
   '<h2 style="margin-top:0;border:none;padding:0;font-size:1.2rem;">Your Leverage</h2>' +
-  '<div class="result-row" id="lv-ltcRow"><span>90% of Purchase + Repairs</span><span class="val" id="lv-ltc">—</span></div>' +
+  '<div class="result-row" id="lv-ltcRow"><span>100% of Purchase + Renovation</span><span class="val" id="lv-ltc">—</span></div>' +
   '<div class="result-row"><span id="lv-arvLabel">ARV Limit</span><span class="val" id="lv-arv">—</span></div>' +
   '<div class="result-row strong"><span>Estimated Maximum Loan <span class="hint" id="lv-note"></span></span><span class="val" id="lv-max">—</span></div>' +
   '<p class="calc-note" id="lv-hint">Enter the purchase price, repairs, ARV and ARV limit, then choose Calculate Leverage.</p>';
@@ -119,8 +119,8 @@ if (!(p > 0 && a > 0 && pct > 0)) {
 $('lv-hint').textContent = 'Enter the purchase price, repairs, ARV and ARV limit, then choose Calculate Leverage.';
 return false;
 }
-if (pct > 75) { $('lv-hint').textContent = 'The ARV advance runs 70-75 percent. Enter 75 or less.'; return false; }
-var ltc = 0.90 * (p + r), arvLim = (pct / 100) * a;
+if (pct > 80) { $('lv-hint').textContent = 'The ARV advance runs up to 80 percent. Enter 80 or less.'; return false; }
+var ltc = 1.00 * (p + r), arvLim = (pct / 100) * a;
 var tx = val('propertyState') === 'TX' && val('hmlFunded') === 'hml';
 var max = tx ? arvLim : Math.min(ltc, arvLim);
 $('lv-ltc').textContent = tx ? fmt.format(ltc) + ' — not applied' : fmt.format(ltc);
@@ -128,7 +128,7 @@ $('lv-arvLabel').textContent = 'ARV Limit (' + pct + '% of ' + fmt.format(a) + '
 $('lv-arv').textContent = fmt.format(arvLim);
 $('lv-max').textContent = fmt.format(max);
 $('lv-note').textContent = tx ? 'Texas HML Advance, sized on ARV' : (ltc <= arvLim ? 'cost test governs' : 'ARV test governs');
-$('lv-hint').textContent = 'Preliminary leverage before closing costs. Add your details below to see the rate, fees, cash due at closing, monthly carry and profit.';
+$('lv-hint').textContent = 'Up to this amount, depending on your experience, credit and liquidity. Preliminary leverage before closing costs. Add your details below to see the rate, fees, cash due at closing, monthly carry and profit.';
 return true;
 }
 

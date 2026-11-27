@@ -19,7 +19,7 @@
   function range(){
     var pctEl=document.getElementById('arvPct'),arvEl=document.getElementById('arvEstimate');
     var pct=vnum('arvPct'),arv=vnum('arvEstimate'),cost=vnum('purchasePrice')+vnum('repairsBudget');
-    if(pctEl&&pct>75){return {el:pctEl,msg:'The ARV advance runs 70-75 percent. Enter 75 or less.'};}
+    if(pctEl&&pct>80){return {el:pctEl,msg:'The ARV advance runs up to 80 percent. Enter 80 or less.'};}
     if(arvEl&&cost>0&&arv>0&&(pct/100)*arv>cost*10){return {el:arvEl,msg:'Check the After-Repair Value: that ARV is more than ten times the project cost. Look for an extra zero.'};}
     return null;
   }
