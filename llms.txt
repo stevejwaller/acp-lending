@@ -65,7 +65,6 @@ Service area: United States, with Texas-specific programs
 
 - [Deal Calculator](https://acp-lending.com/deal-calculator): Flip underwriting calculator
   plus a flip-versus-rent exit comparison (refinance proceeds, NOI, DSCR, cash flow).
-  Includes a Texas HML advance option that sizes the loan on after-repair value alone.
 - [DSCR Calculator](https://acp-lending.com/dscr-calculator): Debt-service coverage calculator
   for rental-property financing. Returns LTV, NOI, payment, PITIA, lender DSCR (rent divided by
   PITIA) and a stricter NOI-based DSCR, plus monthly cash flow.
